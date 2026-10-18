@@ -8344,12 +8344,14 @@ function fbInit() {
       await loadScript(FB_SDK + 'firebase-auth-compat.js');
       await loadScript(FB_SDK + 'firebase-database-compat.js');
     }
-    const fb = window.firebase, app = fb.apps.length ? fb.app() : fb.initializeApp(C), db = fb.database(app);
+    const fb = window.firebase;
+    // ?guest=1 — sinov: alohida ilova nusxasi va xotirasiz kirish, shu oynada boshqa foydalanuvchi bo‘ladi (asosiy oynaga tegmaydi)
+    const app = GUEST ? (fb.apps.find((a) => a.name === 'guest') || fb.initializeApp(C, 'guest')) : (fb.apps.find((a) => a.name === '[DEFAULT]') || fb.initializeApp(C)), db = fb.database(app);
     let uid = null;
     try {
       const auth = fb.auth(app);
-      if (GUEST) await auth.setPersistence(fb.auth.Auth.Persistence.NONE);   // sinov: shu oynada alohida mehmon (?guest=1)
-      if (!auth.currentUser || GUEST) await auth.signInAnonymously();
+      if (GUEST) await auth.setPersistence(fb.auth.Auth.Persistence.NONE);
+      if (!auth.currentUser) await auth.signInAnonymously();
       uid = auth.currentUser.uid;
     } catch (e) { console.warn('Anonim kirish yoqilmagan:', e && e.code); }
     return { fb, app, db, uid };

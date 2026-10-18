@@ -8332,6 +8332,7 @@ function teamCfg() { return playerCfg(3); }
 
 /* ================= Do‘stlar va zallar (Firebase yoki ?net=local sinov bazasi) ================= */
 let fbP = null;
+const GUEST = /[?&]guest=1\b/.test(location.search);
 // Firebase: bitta ilova, anonim kirish (ro‘yxatdan o‘tmasdan har kimga o‘z ID si).
 function fbInit() {
   if (fbP) return fbP;
@@ -8345,7 +8346,12 @@ function fbInit() {
     }
     const fb = window.firebase, app = fb.apps.length ? fb.app() : fb.initializeApp(C), db = fb.database(app);
     let uid = null;
-    try { const auth = fb.auth(app); if (!auth.currentUser) await auth.signInAnonymously(); uid = auth.currentUser.uid; } catch (e) { console.warn('Anonim kirish yoqilmagan:', e && e.code); }
+    try {
+      const auth = fb.auth(app);
+      if (GUEST) await auth.setPersistence(fb.auth.Auth.Persistence.NONE);   // sinov: shu oynada alohida mehmon (?guest=1)
+      if (!auth.currentUser || GUEST) await auth.signInAnonymously();
+      uid = auth.currentUser.uid;
+    } catch (e) { console.warn('Anonim kirish yoqilmagan:', e && e.code); }
     return { fb, app, db, uid };
   })().catch((e) => { console.warn(e); fbP = null; return null; });
   return fbP;
@@ -8416,7 +8422,7 @@ async function socialInit(local) {
     const db = local ? localDB() : await firebaseDB();
     if (!db) return;
     SOC.db = db;
-    const tstore = local ? sessionStorage : null;
+    const tstore = local || GUEST ? sessionStorage : null;
     let tag = tstore ? tstore.getItem('jl_tag') : store.get('jl_tag');
     if (!tag) { tag = String(1000 + ((Math.random() * 9000) | 0)); if (tstore) tstore.setItem('jl_tag', tag); else store.set('jl_tag', tag); }
     SOC.tag = tag;

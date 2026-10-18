@@ -26,6 +26,12 @@ Jonlar tugaganda bir o‘yinda bir marta «📺 Reklama ko‘rib, shu joydan dav
 - `off` — taklif umuman chiqmaydi.
 `h5` va `admob` qismlari haqiqiy reklama hisobisiz sinab ko‘rilmagan — ulashda bir marta tekshirish kerak.
 
+## Sifat (v1.2)
+- Ovoz: kompressor + reverb zanjiri, bir xil ovoz 50 ms ichida takrorlanmaydi, fon rejimida butunlay to‘xtaydi, o‘rmon atrof-muhiti (shamol, chigirtka, qush), qadam/tanga/karta ovozlari.
+- Grafika: devor soyalari, o‘t tutamlari, mox bosgan toshlar, quyosh dog‘lari, uch qatlamli tuman, issiq mash’al nuri, vinyetka. Zaif telefonda (3 s davomida <40 FPS) qimmat effektlar o‘zi o‘chadi (`jl_lowfx`).
+- Mini-o‘yin 45 soniya bosilmasa — yutqaziladi (karta ochiq qolib ketmaydi).
+- Botlar kalit joyini «bilib qolmaydi»: puli yetsa do‘kondan kalit xaritasini oladi.
+
 ## Fayllar
 - `index.html` — o‘yin
 - `manifest.webmanifest` — ilova nomi, rangi, ikonkalari
@@ -43,7 +49,7 @@ Jonlar tugaganda bir o‘yinda bir marta «📺 Reklama ko‘rib, shu joydan dav
 - **Kompyuter (Chrome/Edge):** manzil qatoridagi o‘rnatish belgisi.
 
 ## Yangilash
-O‘yinni o‘zgartirgach `sw.js` ichidagi `VERSION` ni oshiring (`jl-v5` → `jl-v6`), aks holda eski nusxa keshda qolishi mumkin.
+O‘yinni o‘zgartirgach `sw.js` ichidagi `VERSION` ni oshiring (`jl-v6` → `jl-v7`), aks holda eski nusxa keshda qolishi mumkin.
 
 ## Eslatma
 Onlayn xona va ovozli suhbat:

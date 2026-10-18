@@ -742,6 +742,28 @@ body.flip #view { transform: rotate(180deg); }
 .ttt { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; width: min(210px, 100%); margin: 6px auto; }
 .tc { aspect-ratio: 1; border-radius: 8px; border: 2px solid var(--brass-dim); background: rgba(0, 0, 0, .3); font: 400 2rem var(--font-display); cursor: pointer; padding: 0; touch-action: manipulation; }
 .tc.x { color: #ffd56e; } .tc.o { color: #7fd7ff; }
+@media (prefers-reduced-motion: no-preference) {
+  .board.card { animation: cardin .28s cubic-bezier(.2, .9, .3, 1.2) both; }
+  @keyframes cardin { from { opacity: 0; transform: translateY(14px) scale(.96); } to { opacity: 1; transform: none; } }
+  .overlay:not([hidden]) > .board { animation: boardin .32s ease-out both; }
+  @keyframes boardin { from { opacity: 0; transform: translateY(10px); } }
+  .result.good .msg, .result.bad .msg, .result.warn .msg { display: inline-block; animation: resultpop .4s cubic-bezier(.2, .9, .3, 1.3) both; }
+  @keyframes resultpop { from { transform: scale(.7); opacity: 0; } 60% { transform: scale(1.08); } to { transform: none; opacity: 1; } }
+  .chip { animation: chipin .25s ease-out both; }
+  @keyframes chipin { from { transform: translateY(-6px); opacity: 0; } }
+  .ldbar i { background-size: 200% 100%; background-image: linear-gradient(90deg, #8a5f1f 0%, #f2cf7c 40%, #fff3c4 50%, #f2cf7c 60%, #8a5f1f 100%); animation: shimmer 1.4s linear infinite; }
+  @keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+  .stats.tutstars div { animation: rowin .35s ease-out both; }
+  .stats.tutstars div:nth-child(2) { animation-delay: .12s; } .stats.tutstars div:nth-child(3) { animation-delay: .24s; }
+  @keyframes rowin { from { opacity: 0; transform: translateX(-10px); } }
+  .btn { transition: transform .08s ease, filter .12s ease, box-shadow .12s ease; }
+  .btn:active { transform: translateY(2px) scale(.98); }
+  @media (hover: hover) { .btn:hover { filter: brightness(1.08); } .btn.primary:hover { box-shadow: inset 0 1px 0 rgba(255, 255, 255, .5), 0 3px 0 #3d2a10, 0 10px 22px rgba(0, 0, 0, .5); } }
+  .endmap { animation: mapin .5s ease-out both; }
+  @keyframes mapin { from { opacity: 0; transform: scale(.97); } }
+  .tl.next { animation: tlpulse 2s ease-in-out infinite; }
+  @keyframes tlpulse { 50% { box-shadow: 0 0 0 1px var(--brass), 0 0 24px rgba(214, 168, 76, .45); } }
+}
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .12s !important; }
 }
@@ -2175,42 +2197,93 @@ const ui = {};
  'vpTpl', 'cardTpl'].forEach((id) => { ui[id] = $(id); });
 
 /* ================= Ovoz (Web Audio) ================= */
+// Ovoz: Web Audio sintez. Zanjir: effektlar → (quruq + reverb) → kompressor → chiqish. Bir xil ovoz 50 ms ichida qayta chalinmaydi.
 const Sound = {
-  ctx: null, out: null, noise: null, muted: store.get('jl_mute') === '1', quiet: false,
+  ctx: null, out: null, master: null, wet: null, amb: null, noise: null, muted: store.get('jl_mute') === '1', quiet: false, last: {}, asleep: false,
   init() {
-    if (this.ctx) { if (this.ctx.state === 'suspended') this.ctx.resume(); return; }
+    if (this.ctx) { if (this.ctx.state === 'suspended' && !this.asleep) this.ctx.resume().catch(() => {}); return; }
     const AC = window.AudioContext || window.webkitAudioContext;
     if (!AC) return;
     try {
-      this.ctx = new AC();
-      this.out = this.ctx.createGain();
-      this.out.gain.value = this.muted ? 0 : 0.8;
-      this.out.connect(this.ctx.destination);
-      const len = this.ctx.sampleRate, buf = this.ctx.createBuffer(1, len, this.ctx.sampleRate), d = buf.getChannelData(0);
+      const ac = this.ctx = new AC();
+      const comp = ac.createDynamicsCompressor();
+      comp.threshold.value = -14; comp.knee.value = 18; comp.ratio.value = 4; comp.attack.value = 0.004; comp.release.value = 0.18;
+      this.master = ac.createGain(); this.master.gain.value = this.muted ? 0 : 0.85;
+      comp.connect(this.master); this.master.connect(ac.destination);
+      this.out = ac.createGain(); this.out.gain.value = 1; this.out.connect(comp);   // quruq signal
+      // Reverb: sintez qilingan impuls (0.9 s, o‘rmon kabi yumshoq)
+      const sr = ac.sampleRate, L = Math.floor(sr * 0.9), ir = ac.createBuffer(2, L, sr);
+      for (let ch = 0; ch < 2; ch++) { const d = ir.getChannelData(ch); for (let i = 0; i < L; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / L, 2.6) * 0.6; }
+      const conv = ac.createConvolver(); conv.buffer = ir;
+      this.wet = ac.createGain(); this.wet.gain.value = 0.22;
+      this.out.connect(conv); conv.connect(this.wet); this.wet.connect(comp);
+      const len = sr, buf = ac.createBuffer(1, len, sr), d = buf.getChannelData(0);
       for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
       this.noise = buf;
+      this.ambient();
     } catch (e) { this.ctx = null; }
   },
   setMuted(m) {
     this.muted = m; store.set('jl_mute', m ? '1' : '0');
-    if (this.out) this.out.gain.setTargetAtTime(m ? 0 : 0.8, this.ctx.currentTime, 0.05);
+    if (this.master) this.master.gain.setTargetAtTime(m ? 0 : 0.85, this.ctx.currentTime, 0.05);
+  },
+  // Sahifa fonga o‘tganda butun ovoz to‘xtaydi, qaytganda davom etadi
+  sleep(on) {
+    this.asleep = on;
+    if (!this.ctx) return;
+    if (on) this.ctx.suspend().catch(() => {}); else this.ctx.resume().catch(() => {});
+  },
+  gate(name, ms = 50) { const n = performance.now(); if (n - (this.last[name] || 0) < ms) return false; this.last[name] = n; return true; },
+  // O‘rmon atrof-muhiti: shamol (filtrlangan shovqin + sekin LFO), chigirtkalar, ahyon-ahyonda qush
+  ambient() {
+    const ac = this.ctx; if (!ac || this.amb) return;
+    const g = ac.createGain(); g.gain.value = 0; g.connect(this.out);
+    const wind = ac.createBufferSource(); wind.buffer = this.noise; wind.loop = true;
+    const lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 420; lp.Q.value = 0.6;
+    const lfo = ac.createOscillator(), lg = ac.createGain(); lfo.frequency.value = 0.11; lg.gain.value = 220; lfo.connect(lg); lg.connect(lp.frequency);
+    const wg = ac.createGain(); wg.gain.value = 0.12;
+    wind.connect(lp); lp.connect(wg); wg.connect(g); wind.start(); lfo.start();
+    const cr = ac.createOscillator(), cg = ac.createGain(), ct = ac.createOscillator(), ctg = ac.createGain();   // chigirtka: 4.2 kHz, 28 Hz titrash
+    cr.type = 'sine'; cr.frequency.value = 4200; cg.gain.value = 0;
+    ct.type = 'square'; ct.frequency.value = 28; ctg.gain.value = 0.012; ct.connect(ctg); ctg.connect(cg.gain);
+    cr.connect(cg); cg.connect(g); cr.start(); ct.start();
+    this.amb = { g, cg, t: 0 };
+    const bird = () => {
+      if (!this.amb) return;
+      if (!this.muted && !this.asleep && (G.mode === 'play' || G.mode === 'menu')) {
+        const f0 = 1800 + Math.random() * 1400, n = 2 + ((Math.random() * 3) | 0);
+        for (let k = 0; k < n; k++) this.tone('sine', f0 + Math.random() * 300, f0 * (0.8 + Math.random() * 0.5), 0.12, 0.05, k * 0.14);
+      }
+      setTimeout(bird, 7000 + Math.random() * 14000);
+    };
+    setTimeout(bird, 4000);
+    this.ambTick();
+  },
+  ambTick() {
+    if (!this.amb) return;
+    const on = G.mode === 'play' || G.mode === 'menu', m = me(), danger = on && m && (m.drumD <= 5.2 || G.beasts.some((b) => b.state === 'chase' && b.target === m.id));
+    this.amb.g.gain.setTargetAtTime(on ? (danger ? 0.5 : 1) : 0, this.ctx.currentTime, 0.6);
+    this.amb.cg.gain.setTargetAtTime(on && !danger ? 0.012 : 0, this.ctx.currentTime, 0.8);
+    setTimeout(() => this.ambTick(), 500);
   },
   env(g, t, a, peak, dec) {
     g.gain.setValueAtTime(0.0001, t);
     g.gain.exponentialRampToValueAtTime(Math.max(0.0002, peak), t + a);
     g.gain.exponentialRampToValueAtTime(0.0001, t + a + dec);
   },
-  tone(type, f0, f1, dur, vol, when = 0) {
-    if (!this.ctx || this.muted || this.quiet) return;
+  tone(type, f0, f1, dur, vol, when = 0, detune = 0) {
+    if (!this.ctx || this.muted || this.quiet || this.asleep) return;
     const t = this.ctx.currentTime + when, o = this.ctx.createOscillator(), g = this.ctx.createGain();
-    o.type = type; o.frequency.setValueAtTime(f0, t);
+    o.type = type; o.frequency.setValueAtTime(f0, t); if (detune) o.detune.value = detune;
     if (f1) o.frequency.exponentialRampToValueAtTime(f1, t + dur);
     this.env(g, t, 0.006, vol, dur);
     o.connect(g); g.connect(this.out);
     o.start(t); o.stop(t + dur + 0.05);
   },
+  // Ikki tebratgichli «boy» ton: yengil detune, chiroyli jaranglaydi
+  rich(type, f0, f1, dur, vol, when = 0) { this.tone(type, f0, f1, dur, vol * 0.6, when, -6); this.tone(type, f0, f1, dur, vol * 0.6, when, 6); },
   burst(dur, vol, freq, q, when = 0, type = 'bandpass') {
-    if (!this.ctx || this.muted || this.quiet) return;
+    if (!this.ctx || this.muted || this.quiet || this.asleep) return;
     const t = this.ctx.currentTime + when, s = this.ctx.createBufferSource(), f = this.ctx.createBiquadFilter(), g = this.ctx.createGain();
     s.buffer = this.noise; f.type = type; f.frequency.value = freq; f.Q.value = q;
     this.env(g, t, 0.003, vol, dur);
@@ -2233,16 +2306,26 @@ const Sound = {
   splash() { this.burst(0.4, 0.3, 1800, 0.5); this.burst(0.25, 0.2, 700, 0.8, 0.05); },
   portal() { this.tone('sine', 280, 1300, 0.7, 0.2); this.tone('triangle', 620, 180, 0.7, 0.1, 0.12); this.burst(0.6, 0.12, 2400, 2); },
   rewind() { this.tone('sawtooth', 1100, 120, 1.1, 0.08); this.tone('sine', 880, 90, 1.1, 0.12, 0.1); },
-  pickup() { [784, 988, 1319, 1568].forEach((f, i) => this.tone('triangle', f, 0, 0.28, 0.2, i * 0.06)); },
-  ok() { [392, 523.25, 659.25].forEach((f, i) => this.tone('triangle', f, 0, 0.3, 0.22, i * 0.07)); },
-  tap() { this.burst(0.04, 0.2, 1500, 2); },
+  pickup() { [784, 988, 1319, 1568].forEach((f, i) => this.rich('triangle', f, 0, 0.3, 0.2, i * 0.06)); this.burst(0.05, 0.12, 6000, 1.5); },
+  coin() { this.tone('sine', 2093, 0, 0.18, 0.18); this.tone('sine', 2637, 0, 0.32, 0.14, 0.05); this.burst(0.04, 0.1, 7000, 2); },
+  ok() { [392, 523.25, 659.25].forEach((f, i) => this.rich('triangle', f, 0, 0.32, 0.22, i * 0.07)); },
+  tap() { this.burst(0.035, 0.18, 1500, 2); this.tone('sine', 900, 500, 0.05, 0.08); },
+  whoosh() { this.burst(0.28, 0.16, 900, 0.5, 0, 'bandpass'); this.burst(0.2, 0.1, 2400, 0.6, 0.05); },
+  step(k) { this.burst(0.05, 0.07, k ? 700 : 560, 0.9, 0, 'lowpass'); },
   tick() { this.tone('square', 880, 0, 0.09, 0.1); },
   pad(k) { this.tone('triangle', [392, 523.25, 329.63, 261.63][k], 0, 0.35, 0.28); },
-  win() { [523.25, 659.25, 783.99, 1046.5, 1318.5, 1567.98].forEach((f, i) => this.tone('triangle', f, 0, 0.55, 0.28, i * 0.11)); },
+  win() {
+    [523.25, 659.25, 783.99, 1046.5, 1318.5, 1567.98].forEach((f, i) => this.rich('triangle', f, 0, 0.6, 0.26, i * 0.11));
+    [[523.25, 659.25, 783.99], [587.33, 739.99, 880], [659.25, 783.99, 1046.5]].forEach((ch, i) => ch.forEach((f) => this.rich('sawtooth', f, 0, 0.9, 0.05, 0.7 + i * 0.32)));
+    this.drum(1, 1, 0.7); this.drum(1, 1.5, 1.02);
+  },
   lose() { [220, 185, 155, 110].forEach((f, i) => this.tone('sawtooth', f, f * 0.98, 0.7, 0.12, i * 0.28)); this.drum(1, 0.6); },
   bump() { this.burst(0.05, 0.12, 180, 0.7, 0, 'lowpass'); },
 };
 
+for (const k of ['sting', 'roar', 'growl', 'hurt', 'boing', 'sad', 'horn', 'cluck', 'boom', 'jump', 'splash', 'portal', 'rewind', 'pickup', 'coin', 'ok', 'tap', 'tick', 'win', 'lose', 'bump', 'whoosh', 'step', 'dice']) {
+  const f = Sound[k]; Sound[k] = function (...a) { if (!this.gate(k, k === 'tick' || k === 'tap' ? 25 : 50)) return; return f.apply(this, a); };
+}
 // Labirint barabanlari: yashirin tuzoq yaqinlashganda kuchayadi.
 const DRUM = [1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0];
 let drumStep = 0;
@@ -2308,6 +2391,7 @@ function drawPerson(g, x, y, s, L, o) {
   g.translate(x, y - (o.lift || 0) * s * 0.55);
   if (o.rot) g.rotate(o.rot);
   if (o.scale !== undefined) g.scale(o.scale, o.scale);
+  if (mv) { const q = 1 + Math.abs(Math.sin(o.ph || 0)) * 0.04; g.scale(1 / q, q); }   // qadamda yengil cho‘zilish
   if (dir === 'left') g.scale(-1, 1);
   if (o.alpha !== undefined) g.globalAlpha *= o.alpha;
   const hipY = -s * 0.17 - bob, shY = hipY - s * 0.21, hr = s * 0.125, headY = shY - hr * 0.92;
@@ -2409,25 +2493,33 @@ function avatarURL(look) {
 }
 
 /* ---- Plitkalar ---- */
-function stoneSprite(ts, r) {
+function stoneSprite(ts, r, mossy) {
   const c = makeCanvas(ts, ts), g = c.getContext('2d'), cs = ts / 2;
-  g.fillStyle = '#2f2a22'; g.fillRect(0, 0, ts, ts);
+  g.fillStyle = mossy ? '#2a2e20' : '#2f2a22'; g.fillRect(0, 0, ts, ts);
   for (let j = 0; j < 2; j++) for (let i = 0; i < 2; i++) {
     const pad = cs * (0.06 + r() * 0.05);
     const x = i * cs + pad + (r() - 0.5) * cs * 0.06, y = j * cs + pad + (r() - 0.5) * cs * 0.06;
-    const w = cs - pad * 2, h = cs - pad * 2, rad = cs * (0.16 + r() * 0.16), base = 118 + ((r() * 34) | 0);
-    g.fillStyle = `rgb(${base + 10},${base + 2},${base - 16})`; rr(g, x, y, w, h, rad); g.fill();
+    const w = cs - pad * 2, h = cs - pad * 2, rad = cs * (0.16 + r() * 0.16), base = 112 + ((r() * 36) | 0), warm = (r() * 10) | 0;
+    g.fillStyle = 'rgba(0,0,0,0.35)'; rr(g, x + cs * 0.025, y + cs * 0.035, w, h, rad); g.fill();   // tosh ostidagi soya
+    g.fillStyle = `rgb(${base + 12 + warm},${base + 4},${base - 14 - warm})`; rr(g, x, y, w, h, rad); g.fill();
     const gr = g.createLinearGradient(x, y, x + w, y + h);
-    gr.addColorStop(0, 'rgba(255,240,210,0.22)'); gr.addColorStop(0.45, 'rgba(255,255,255,0)'); gr.addColorStop(1, 'rgba(0,0,0,0.32)');
+    gr.addColorStop(0, 'rgba(255,240,210,0.28)'); gr.addColorStop(0.45, 'rgba(255,255,255,0)'); gr.addColorStop(1, 'rgba(0,0,0,0.36)');
     g.fillStyle = gr; rr(g, x, y, w, h, rad); g.fill();
+    g.strokeStyle = 'rgba(255,245,220,0.18)'; g.lineWidth = Math.max(1, cs * 0.03);   // yuqori qirra yorug‘i
+    g.beginPath(); g.moveTo(x + rad, y + cs * 0.015); g.lineTo(x + w - rad, y + cs * 0.015); g.stroke();
+    if (r() < 0.35) {   // yoriq
+      g.strokeStyle = 'rgba(30,22,14,0.45)'; g.lineWidth = Math.max(1, cs * 0.02);
+      const cx0 = x + r() * w, cy0 = y + r() * h; g.beginPath(); g.moveTo(cx0, cy0); g.lineTo(cx0 + (r() - 0.5) * w * 0.6, cy0 + (r() - 0.5) * h * 0.6); g.lineTo(cx0 + (r() - 0.5) * w * 0.6, cy0 + (r() - 0.5) * h * 0.6); g.stroke();
+    }
     for (let k = 0; k < 4; k++) {
       g.fillStyle = `rgba(40,30,20,${0.08 + r() * 0.12})`;
       g.beginPath(); g.arc(x + r() * w, y + r() * h, cs * (0.02 + r() * 0.035), 0, TAU); g.fill();
     }
   }
-  if (r() < 0.6) {
+  if (mossy) { g.fillStyle = 'rgba(80,130,60,0.16)'; g.fillRect(0, 0, ts, ts); }
+  if (r() < 0.6 || mossy) {
     g.fillStyle = 'rgba(96,140,64,0.5)';
-    for (let k = 0; k < 7; k++) {
+    for (let k = 0; k < (mossy ? 14 : 7); k++) {
       const along = r() * ts, off = cs + (r() - 0.5) * ts * 0.05;
       g.beginPath();
       if (r() < 0.5) g.arc(off, along, ts * 0.022, 0, TAU); else g.arc(along, off, ts * 0.022, 0, TAU);
@@ -2447,11 +2539,15 @@ function hedgeSprite(ts, r, flowers) {
       if (px < -L || py < -L || px > ts + L || py > ts + L) continue;
       g.save(); g.translate(px, py); g.rotate(a);
       g.fillStyle = col; g.beginPath(); g.ellipse(0, 0, L, L * 0.42, 0, 0, TAU); g.fill();
+      g.fillStyle = 'rgba(180,230,150,0.16)'; g.beginPath(); g.ellipse(-L * 0.15, -L * 0.12, L * 0.55, L * 0.2, 0, 0, TAU); g.fill();   // barg yorug‘i
       g.strokeStyle = 'rgba(0,0,0,0.2)'; g.lineWidth = Math.max(1, ts * 0.012);
       g.beginPath(); g.moveTo(-L * 0.9, 0); g.lineTo(L * 0.9, 0); g.stroke();
       g.restore();
     }
   }
+  const vg = g.createRadialGradient(ts / 2, ts / 2, ts * 0.25, ts / 2, ts / 2, ts * 0.78);   // chekkalari qorong‘iroq — devor hajmli ko‘rinadi
+  vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,0.3)');
+  g.fillStyle = vg; g.fillRect(0, 0, ts, ts);
   if (flowers) {
     const fc = ['#e85d75', '#f2c14e', '#c77dff', '#ff8c42'][(r() * 4) | 0];
     for (let k = 0; k < 3; k++) {
@@ -2473,10 +2569,20 @@ function faceSprite(ts, r) {
   return c;
 }
 function shadeSprite(ts, side) {
-  const c = makeCanvas(ts, ts), g = c.getContext('2d'), d = ts * (side === 't' ? 0.42 : 0.22);
-  const gr = side === 't' ? g.createLinearGradient(0, 0, 0, d) : side === 'l' ? g.createLinearGradient(0, 0, d, 0) : g.createLinearGradient(ts, 0, ts - d, 0);
-  gr.addColorStop(0, `rgba(0,0,0,${side === 't' ? 0.55 : 0.3})`); gr.addColorStop(1, 'rgba(0,0,0,0)');
+  const c = makeCanvas(ts, ts), g = c.getContext('2d'), d = ts * (side === 't' ? 0.46 : side === 'b' ? 0.14 : 0.24);
+  const gr = side === 't' ? g.createLinearGradient(0, 0, 0, d) : side === 'b' ? g.createLinearGradient(0, ts, 0, ts - d) : side === 'l' ? g.createLinearGradient(0, 0, d, 0) : g.createLinearGradient(ts, 0, ts - d, 0);
+  gr.addColorStop(0, `rgba(0,0,0,${side === 't' ? 0.58 : side === 'b' ? 0.18 : 0.32})`); gr.addColorStop(1, 'rgba(0,0,0,0)');
   g.fillStyle = gr; g.fillRect(0, 0, ts, ts);
+  return c;
+}
+// Tosh yo‘lak chetidagi o‘t tutamlari (devor yonida)
+function tuftSprite(ts, r) {
+  const c = makeCanvas(ts, Math.round(ts * 0.3)), g = c.getContext('2d');
+  for (let k = 0; k < 9; k++) {
+    const x = ts * (0.05 + r() * 0.9), h = ts * (0.08 + r() * 0.14);
+    g.strokeStyle = `rgba(${60 + (r() * 40) | 0},${120 + (r() * 60) | 0},${50 + (r() * 30) | 0},0.85)`; g.lineWidth = Math.max(1, ts * 0.018);
+    g.beginPath(); g.moveTo(x, c.height); g.quadraticCurveTo(x + (r() - 0.5) * ts * 0.08, c.height - h * 0.6, x + (r() - 0.5) * ts * 0.16, c.height - h); g.stroke();
+  }
   return c;
 }
 function pitSprite(ts, r) {
@@ -2558,6 +2664,28 @@ function lockedExitSprite(ts, side) {
   g.strokeStyle = '#d6a84c'; g.lineWidth = Math.max(1, ts * 0.06); g.strokeRect(ts * 0.04, ts * 0.04, ts * 0.92, ts * 0.92);
   return c;
 }
+const FXQ = { dapple: true, vignette: true, fog3: true, light2: true, tuft: true };
+function dappleSprite(n) {
+  const c = makeCanvas(n, n), g = c.getContext('2d'), r = mulberry32(31), u = n / 256;
+  for (let k = 0; k < 22; k++) {
+    const x = r() * n, y = r() * n, rad = (26 + r() * 70) * u, a = 0.05 + r() * 0.07;
+    for (const ox of [-n, 0, n]) for (const oy of [-n, 0, n]) {
+      const gr = g.createRadialGradient(x + ox, y + oy, 0, x + ox, y + oy, rad);
+      gr.addColorStop(0, `rgba(255,225,150,${a})`); gr.addColorStop(0.6, `rgba(255,210,120,${a * 0.4})`); gr.addColorStop(1, 'rgba(255,200,100,0)');
+      g.fillStyle = gr; g.fillRect(x + ox - rad, y + oy - rad, rad * 2, rad * 2);
+    }
+  }
+  return c;
+}
+function drawDapple(V, t) {
+  if (!SPR.dapple) SPR.dapple = dappleSprite(Math.round(256 * DPR));
+  const { ox, oy, W, H } = V, sp = SPR.dapple, ms = sp.width * 1.6;
+  ctx.save(); ctx.globalAlpha = 0.75;   // oddiy aralashtirish: «lighter» zaif telefonlarda qimmat
+  const mx = ox * 0.8 + Math.sin(t * 0.07) * 40 * DPR, my = oy * 0.8 + Math.cos(t * 0.05) * 30 * DPR;
+  const sx0 = ((mx % ms) + ms) % ms - ms, sy0 = ((my % ms) + ms) % ms - ms;
+  for (let y = sy0; y < H; y += ms) for (let x = sx0; x < W; x += ms) ctx.drawImage(sp, x, y, ms, ms);
+  ctx.restore();
+}
 function mistSprite(n) {
   const c = makeCanvas(n, n), g = c.getContext('2d'), r = mulberry32(7), u = n / 256;
   for (let k = 0; k < 46; k++) {
@@ -2575,10 +2703,11 @@ function buildSprites() {
   if (ts === SPR.ts) return;
   SPR.ts = ts;
   const r = mulberry32(90210);
-  SPR.stone = [0, 1, 2, 3].map(() => stoneSprite(ts, r));
+  SPR.stone = [0, 1, 2, 3].map((k) => stoneSprite(ts, r, k >= 2));
   SPR.hedge = [0, 1, 2, 3, 4, 5].map((k) => hedgeSprite(ts, r, k >= 4));
   SPR.face = faceSprite(ts, r);
-  SPR.shT = shadeSprite(ts, 't'); SPR.shL = shadeSprite(ts, 'l'); SPR.shR = shadeSprite(ts, 'r');
+  SPR.shT = shadeSprite(ts, 't'); SPR.shL = shadeSprite(ts, 'l'); SPR.shR = shadeSprite(ts, 'r'); SPR.shB = shadeSprite(ts, 'b');
+  SPR.tuft = tuftSprite(ts, r);
   SPR.pit = pitSprite(ts, r);
   SPR.water = waterSprite(ts);
   SPR.rim = {}; SPR.bank = {};
@@ -2681,9 +2810,10 @@ function drawTiles(V, t) {
         if (y < N - 1 && g[i + N] !== T.WALL) ctx.drawImage(SPR.face, sx, sy + ts - SPR.face.height);
       } else if (tt === T.PATH || tt === T.PORTAL) {
         ctx.drawImage(SPR.stone[h & 3], sx, sy);
-        if (y > 0 && g[i - N] === T.WALL) ctx.drawImage(SPR.shT, sx, sy);
+        if (y > 0 && g[i - N] === T.WALL) { ctx.drawImage(SPR.shT, sx, sy); if (FXQ.tuft && (h & 3) === 0) ctx.drawImage(SPR.tuft, sx, sy); }
         if (g[i - 1] === T.WALL) ctx.drawImage(SPR.shL, sx, sy);
         if (g[i + 1] === T.WALL) ctx.drawImage(SPR.shR, sx, sy);
+        if (y < N - 1 && g[i + N] === T.WALL) ctx.drawImage(SPR.shB, sx, sy);
         if (p.visited[i]) ctx.drawImage(SPR.foot[(h >> 3) & 1], sx, sy);
         if (tt === T.PORTAL) drawPortal(sx, sy, ts, t);
         const tr = G.trap[i];
@@ -2921,9 +3051,11 @@ function drawLight(V, px, py, t) {
   const { ts, p } = V;
   const R = ts * lightRadius(p) * (1 + Math.sin(t * 7.3) * 0.015 + Math.sin(t * 17.1) * 0.01);
   const gr = ctx.createRadialGradient(px, py, ts * 0.25, px, py, R);
-  gr.addColorStop(0, 'rgba(2,6,4,0)'); gr.addColorStop(0.55, 'rgba(2,6,4,0.1)'); gr.addColorStop(1, 'rgba(2,6,4,0.7)');
+  gr.addColorStop(0, 'rgba(2,6,4,0)'); gr.addColorStop(0.5, 'rgba(2,6,4,0.08)'); gr.addColorStop(0.85, 'rgba(2,6,4,0.5)'); gr.addColorStop(1, 'rgba(2,6,4,0.74)');
   ctx.fillStyle = gr; ctx.fillRect(0, 0, V.W, V.H);
-  glowAt(px, py, R, p.torch > 0 ? 'rgba(255,150,60,0.16)' : 'rgba(255,170,80,0.10)');
+  const fl = 1 + Math.sin(t * 11) * 0.06 + Math.sin(t * 23.7) * 0.04;
+  if (FXQ.light2) glowAt(px, py, R * 0.55, p.torch > 0 ? `rgba(255,160,70,${0.22 * fl})` : `rgba(255,190,110,${0.12 * fl})`);
+  glowAt(px, py, R, p.torch > 0 ? 'rgba(255,130,40,0.12)' : 'rgba(255,170,80,0.07)');
 }
 function drawFog(V, t) {
   const { ts, ox, oy, x0, y0, x1, y1, p } = V, N = G.N, E = p.explored;
@@ -2950,11 +3082,12 @@ function drawFog(V, t) {
   fctx.drawImage(fogLow, (ox + x0 * ts) * hs, (oy + y0 * ts) * hs, cw * ts * hs, ch * ts * hs);
   fctx.globalCompositeOperation = 'source-atop';
   const ms = SPR.mist.width;
-  const layers = [[(t * 14 * DPR + ox) * hs, (t * 6 * DPR + oy) * hs, 0.55], [(-t * 9 * DPR + ox) * hs + ms * 0.37, (t * 11 * DPR + oy) * hs + ms * 0.61, 0.35]];
-  for (const [mx, my, a] of layers) {
+  const layers = [[(t * 14 * DPR + ox) * hs, (t * 6 * DPR + oy) * hs, 0.5, 1], [(-t * 9 * DPR + ox) * hs + ms * 0.37, (t * 11 * DPR + oy) * hs + ms * 0.61, 0.32, 1], [(t * 4 * DPR + ox * 0.6) * hs, (-t * 3 * DPR + oy * 0.6) * hs, 0.28, 1.9]];
+  for (const [mx, my, a, sc] of layers) {
+    if (sc > 1 && !FXQ.fog3) continue;
     fctx.globalAlpha = a;
-    const sx0 = Math.round(((mx % ms) + ms) % ms - ms), sy0 = Math.round(((my % ms) + ms) % ms - ms);
-    for (let y = sy0; y < H; y += ms) for (let x = sx0; x < W; x += ms) fctx.drawImage(SPR.mist, x, y);
+    const mz = ms * sc, sx0 = Math.round(((mx % mz) + mz) % mz - mz), sy0 = Math.round(((my % mz) + mz) % mz - mz);
+    for (let y = sy0; y < H; y += mz) for (let x = sx0; x < W; x += mz) fctx.drawImage(SPR.mist, x, y, mz, mz);
   }
   fctx.globalAlpha = 1; fctx.globalCompositeOperation = 'source-over';
   ctx.imageSmoothingEnabled = true;
@@ -3278,6 +3411,7 @@ function renderVP(p, t, dt) {
   const ox = Math.round(W / 2 - (p.cam.x + 0.5) * ts + shx), oy = Math.round(H / 2 - (p.cam.y + 0.5) * ts + shy);
   const V = { ts, ox, oy, W, H, p, x0: Math.floor(-ox / ts) - 1, y0: Math.floor(-oy / ts) - 1, x1: Math.ceil((W - ox) / ts), y1: Math.ceil((H - oy) / ts) };
   drawTiles(V, t);
+  if (FXQ.dapple) drawDapple(V, t);
   drawPTraps(V, t);
   drawEntities(V, t);
   drawParts(V);
@@ -3295,7 +3429,21 @@ function renderVP(p, t, dt) {
   drawPops(V, t);
   drawFloats(V);
   drawAmbient(V, t);
+  if (FXQ.vignette) drawVignette(V);
   ctx.restore();
+}
+// Post-effekt: chekkalari qorong‘i vinyetka + yengil iliq rang (telefonda arzon: bitta gradient)
+let vigCache = null;
+function drawVignette(V) {
+  const { W, H } = V;
+  if (!vigCache || vigCache.width !== W || vigCache.height !== H) {
+    vigCache = makeCanvas(W, H); const g = vigCache.getContext('2d');
+    const gr = g.createRadialGradient(W / 2, H / 2, Math.min(W, H) * 0.35, W / 2, H / 2, Math.hypot(W, H) * 0.6);
+    gr.addColorStop(0, 'rgba(0,0,0,0)'); gr.addColorStop(1, 'rgba(0,0,0,0.5)');
+    g.fillStyle = gr; g.fillRect(0, 0, W, H);
+    g.globalCompositeOperation = 'lighter'; g.fillStyle = 'rgba(60,40,10,0.06)'; g.fillRect(0, 0, W, H);
+  }
+  ctx.drawImage(vigCache, 0, 0);
 }
 function render(t, dt) {
   ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -3483,6 +3631,7 @@ function stepFromInput(p) {
 
 function arrive(p) {
   const i = p.py * G.N + p.px;
+  if (p === me()) { p.stepK = !p.stepK; Sound.step(p.stepK); }
   p.dist += G.tileM;
   markVisited(p, i);
   p.trail.push(i);
@@ -3632,6 +3781,7 @@ function learnChestMap(p) {
   toast(p, '🗺️ Hamma sandiqlar joyi belgilandi: minixaritaga va tepadagi yo‘nalishga qara!', 4200);
 }
 function takeCoins(p, i) {
+  ears(p, () => Sound.coin());
   const n = G.coin[i];
   G.coin[i] = 0; mmSetAll(i);
   p.coins += n; p.stats.coins += n;
@@ -5087,12 +5237,15 @@ function toolsRender(p) {
   }
 }
 // Bot kalit joyini bilmaydi; ma’lum vaqtdan keyin xaritani «topgandek» kalit tomonga yo‘naladi (mahoratiga qarab).
+// Bot kalit joyini bilmaydi: o‘yinchi kabi, puli yetsa do‘kondan kalit xaritasini sotib oladi (yashirin ma’lumotdan foydalanmaydi).
 function botKeyHint(p, dt) {
   const B = p.bot;
   if (hasKey(p) || p.knowKey) return;
-  if (B.keyT === undefined) B.keyT = [95, 60, 35][BOT_SKILL.indexOf(B.K)] * (0.7 + Math.random() * 0.6);
-  B.keyT -= dt;
-  if (B.keyT <= 0) p.knowKey = true;
+  B.keyT = (B.keyT === undefined ? 20 : B.keyT) - dt;
+  if (B.keyT > 0) return;
+  B.keyT = 6 + Math.random() * 6;
+  const price = priceOf(p, MAPS.keymap.price());
+  if (p.coins >= price && p.shutT <= 0 && Math.random() < [0.4, 0.7, 0.95][BOT_SKILL.indexOf(B.K)]) { p.coins -= price; p.stats.spent += price; learnKeyMap(p); botSay(p, 5, false); }
 }
 // Botlar ham gapiradi (o‘yinchi boshida pufak): sehr ishlatganda, kalit topganda, qayta tug‘ilganda, oldinda ketayotganda maqtanadi.
 function botSay(p, i, loud) {
@@ -5759,6 +5912,7 @@ function openCard(p, o) {
   const c = Object.assign({}, o, { p, root, stage: 'intro', ok: false, saved: false,
     el: { result: q('.result'), main: q('.b-main'), back: q('.b-back'), game: q('.game') } });
   p.card = c;
+  Sound.whoosh();
   p.sab.open = false;
   mapPickClose(p, false);
   c.g = makeGame(o.game, c);
@@ -5807,6 +5961,7 @@ function cardDir(p, d) {
   const c = p.card;
   if (!c || G.mode !== 'play') return;
   if (c.back && !c.el.back.hidden && c.backDir && d[0] === c.backDir[0] && d[1] === c.backDir[1]) { cardBack(p); return; }
+  c.idle = 0;
   if (c.stage === 'play' && c.g.dir) c.g.dir(dirName(d));
 }
 function cardBack(p) {
@@ -5994,7 +6149,7 @@ function chestCard(p, i) {
 const fmt1 = (x) => x.toFixed(1).replace('.', ',');
 const live = (c) => c.stage === 'play' && c.p.card === c && G.mode === 'play';
 function setGame(c, html) { c.el.game.innerHTML = html; return (s) => c.el.game.querySelector(s); }
-function tap(c, el, fn) { el.addEventListener('pointerdown', (e) => { e.preventDefault(); if (live(c)) fn(e); }); }
+function tap(c, el, fn) { el.addEventListener('pointerdown', (e) => { e.preventDefault(); c.idle = 0; if (live(c)) fn(e); }); }
 const timeBar = (bar, t, T0) => { if (bar) bar.style.width = clamp(t / T0, 0, 1) * 100 + '%'; };
 const bump = (el, cls) => { el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); };
 // To‘rt tomonga joylashgan javob tugmalari: klaviatura/joystik yo‘nalishi — shu javob.
@@ -7891,6 +8046,8 @@ function updatePlayerInner(p, dt) {
   if (p.card) {
     const c = p.card;
     if (c.stage === 'play' && c.g.update) c.g.update(dt);
+    // Umumiy chegara: 45 soniya hech narsa bosilmasa — sinov yutqaziladi (karta ochiq holda qolib ketmasin)
+    if (c.stage === 'play') { c.idle = (c.idle || 0) + dt; if (c.idle > 45) { c.idle = 0; finishCard(c, false, '⏱ Vaqt tugadi — hech narsa bosmading.'); } }
     const q = quant({ x: (p.joy.on ? p.joy.x : 0) + p.pad.x, y: (p.joy.on ? p.joy.y : 0) + p.pad.y });
     const qs = q ? q.join() : '', ps = p.prevQ ? p.prevQ.join() : '';
     if (q && qs !== ps && p.card === c) cardDir(p, q);
@@ -7972,8 +8129,7 @@ function setMode(m) {
   const inGame = m === 'play' || m === 'paused';
   ui.tools.hidden = !inGame;
   ui.stage.hidden = !(inGame || m === 'over' || m === 'won');
-  ui.menu.hidden = m !== 'menu' && !(m === 'loading' && false);
-  if (m === 'loading') { ui.menu.hidden = true; ui.end.hidden = true; ui.pause.hidden = true; }
+  ui.menu.hidden = m !== 'menu';
   voiceUI();
   ui.pause.hidden = m !== 'paused';
   ui.end.hidden = !(m === 'over' || m === 'won');
@@ -8441,7 +8597,7 @@ function launch(run, opts = {}) {
   (async () => {
     try {
       await to(35, 500);
-      if (ad) { lastAdAt = Date.now(); await Ads.interstitial().catch(() => {}); }
+      if (ad) { lastAdAt = Date.now(); await Promise.race([Ads.interstitial().catch(() => {}), new Promise((r) => setTimeout(r, 20000))]); }
       await to(85, ad ? 300 : 500);
       await new Promise((r) => setTimeout(r, 30));
       run();   // labirint shu yerda quriladi (katta labirintda biroz vaqt oladi)
@@ -9714,7 +9870,7 @@ function bindUI() {
   document.querySelectorAll('input[name="diff"]').forEach((inp) => inp.addEventListener('change', () => store.set('jl_diff', inp.value)));
   document.querySelectorAll('input[name="bots"]').forEach((inp) => inp.addEventListener('change', () => { cfg.bots = +inp.value; saveCfg(); syncBots(); }));
   document.querySelectorAll('input[name="skill"]').forEach((inp) => inp.addEventListener('change', () => { cfg.skill = +inp.value; saveCfg(); syncBots(); }));
-  document.addEventListener('visibilitychange', () => { if (document.hidden && !G.online) pause(); });
+  document.addEventListener('visibilitychange', () => { if (document.hidden) { if (!G.online) pause(); Sound.sleep(true); } else Sound.sleep(false); });
   window.addEventListener('resize', resize);
   ui.stage.addEventListener('wheel', (e) => { if (G.mode !== 'play') return; e.preventDefault(); setZoom(G.zoom * (e.deltaY < 0 ? 1.08 : 1 / 1.08)); }, { passive: false });
   bindKeys();
@@ -9745,9 +9901,15 @@ function stepWorld(dt) {
   if (G.sleepT > 0) G.sleepT -= dt;
   if (!G.tut && G.time >= G.nextZar) { G.nextZar += 120; zarEvent(); }
 }
+let fpsAcc = 0, fpsN = 0, fpsT = 0, lowFrames = 0;
 function frame(now) {
   const dt = Math.min(0.05, Math.max(0, (now - lastT) / 1000));
   lastT = now;
+  // Avto-sifat: o‘yin paytida 3 soniya davomida o‘rtacha 40 FPS dan past bo‘lsa — qimmat effektlar o‘chadi (keyin yana yoqilmaydi)
+  if (G.mode === 'play' && FXQ.auto !== false) {
+    fpsAcc += dt; fpsN++;
+    if (fpsAcc >= 1) { const fps = fpsN / fpsAcc; fpsAcc = 0; fpsN = 0; lowFrames = fps < 40 ? lowFrames + 1 : 0; if (lowFrames >= 3) { FXQ.dapple = false; FXQ.fog3 = false; FXQ.light2 = false; FXQ.auto = false; store.set('jl_lowfx', '1'); } }
+  }
   pollPads();
   if (G.mode === 'play') stepWorld(dt);
   for (const b of G.beasts) if (b.pounce > 0) b.pounce = Math.max(0, b.pounce - dt);
@@ -9762,6 +9924,7 @@ function frame(now) {
 }
 
 function boot() {
+  if (store.get('jl_lowfx') === '1') { FXQ.dapple = false; FXQ.fog3 = false; FXQ.light2 = false; FXQ.auto = false; }
   const savedZoom = parseFloat(store.get('jl_zoom2'));
   G.zoom = savedZoom > 0 ? clamp(savedZoom, 0.6, 1.8) : 1;
   const savedDiff = store.get('jl_diff');
@@ -9781,7 +9944,7 @@ function boot() {
   initRoom();
 }
 
-window.__jl = { SOC, socAdd, socAccept, quickPlay, launch, zarEvent, guardCard, ghostPuff, dropKey, refreshKeys, hasKey, replayRoutes, achLoad, teamCfg, ZAR_EV, startDaily, dailyNo, dailyText, adRevive, Ads, ADS, startTut, tutTick, tutLoad, LEVELS, TASKS, finish, DIFFS, endGame, G, NET, VOICE, voiceJoin, voiceLeave, voiceToggle, voiceMute, voiceUI, sdpPack, sdpUnpack, playerDown, respawn, loseLife, pipsTick, pipView, pipOpen, pipClose, updateHUD, generate, stepWorld, bfs, bfsMulti, botInit, toolsTab, shopTab, shopRows, buyMap, MAPS, MAP_KEYS, scrDesc, SCRAMBLES, scrVec, buyMapUI, ITEMS, ITEM_IX, takeGateKey, learnKeyMap, learnChestMap, nearestGate, setKeySlot, FX, trapXus, fxTok, botKeyHint, TOOLS, toolTargets, fireTool, toolsOpen, toolsPick, toolsDo, toolsKey, toolsRender, addTool, botTools, leaderTarget, newGame, cardMain, cardDir, EFFECTS, trapCard, beastCard, chestCard, portalStep, teleportTo, pickTarget, keysDown, GAMES, QGEN, RIDDLES, TRAPS, BEASTS, CHEST, REWARDS, TIERS, ECON, pickReward, challengeResult, giveCoins, WORDS, openCard, playerCfg, cfg, describe, lvl, closeCard, cardBack, sendToJail, freeFromJail, jailCard, banditCatch, callBandit, applyFx, applyGift, sabotage, rivalTargets, pickReward, takeCoins, tryStep, onEnterTile, readPeer, PTRAPS, PTRAP_KEYS, PT_MAX, PT_LIFE, myTraps, destOk, trapSpot, trapCommit, trapPlace, placedHit, trapTaken, expireTraps, ptList, mapPickOpen, mapPickClose, mapPickSet, mapPickMove, mapPickZoom, mapPickConfirm, mapPickDraw, botTraps, startAmnesia, endAmnesia, reflectFx, T, MASKS, maskOf, priceOf, canPay, toolCost, fireSelf, fireChaos, hasBad, cleanse, moveKey, feed, feedShow, FEED_Q, TARGET_KEYS, FOE_KEYS, PLACE_KEYS, validSpot, startMask, freshTools, freshFx, drawRadar, revengeOn, PWALL, PW_LIFE, PW_MAX, myWalls, wallCheck, wallPlace, wallSet, expireWalls, dropWalls, wallList, botWalls, updateLeader, BAIT_FX, trapFx, netDirty, netFlush, bombTick, bombPass, bombExplode, duelCandidates, duelChallenge, duelAccept, duelDecline, duelAbort, duelNet, duelUI, DUEL_S, DUEL_COUNT, DUEL_R, dlSet };
+window.__jl = { FXQ, Sound, SP, openCard, cardMain, closeCard, finishCard, SOC, socAdd, socAccept, quickPlay, launch, zarEvent, guardCard, ghostPuff, dropKey, refreshKeys, hasKey, replayRoutes, achLoad, teamCfg, ZAR_EV, startDaily, dailyNo, dailyText, adRevive, Ads, ADS, startTut, tutTick, tutLoad, LEVELS, TASKS, finish, DIFFS, endGame, G, NET, VOICE, voiceJoin, voiceLeave, voiceToggle, voiceMute, voiceUI, sdpPack, sdpUnpack, playerDown, respawn, loseLife, pipsTick, pipView, pipOpen, pipClose, updateHUD, generate, stepWorld, bfs, bfsMulti, botInit, toolsTab, shopTab, shopRows, buyMap, MAPS, MAP_KEYS, scrDesc, SCRAMBLES, scrVec, buyMapUI, ITEMS, ITEM_IX, takeGateKey, learnKeyMap, learnChestMap, nearestGate, setKeySlot, FX, trapXus, fxTok, botKeyHint, TOOLS, toolTargets, fireTool, toolsOpen, toolsPick, toolsDo, toolsKey, toolsRender, addTool, botTools, leaderTarget, newGame, cardMain, cardDir, EFFECTS, trapCard, beastCard, chestCard, portalStep, teleportTo, pickTarget, keysDown, GAMES, QGEN, RIDDLES, TRAPS, BEASTS, CHEST, REWARDS, TIERS, ECON, pickReward, challengeResult, giveCoins, WORDS, openCard, playerCfg, cfg, describe, lvl, closeCard, cardBack, sendToJail, freeFromJail, jailCard, banditCatch, callBandit, applyFx, applyGift, sabotage, rivalTargets, pickReward, takeCoins, tryStep, onEnterTile, readPeer, PTRAPS, PTRAP_KEYS, PT_MAX, PT_LIFE, myTraps, destOk, trapSpot, trapCommit, trapPlace, placedHit, trapTaken, expireTraps, ptList, mapPickOpen, mapPickClose, mapPickSet, mapPickMove, mapPickZoom, mapPickConfirm, mapPickDraw, botTraps, startAmnesia, endAmnesia, reflectFx, T, MASKS, maskOf, priceOf, canPay, toolCost, fireSelf, fireChaos, hasBad, cleanse, moveKey, feed, feedShow, FEED_Q, TARGET_KEYS, FOE_KEYS, PLACE_KEYS, validSpot, startMask, freshTools, freshFx, drawRadar, revengeOn, PWALL, PW_LIFE, PW_MAX, myWalls, wallCheck, wallPlace, wallSet, expireWalls, dropWalls, wallList, botWalls, updateLeader, BAIT_FX, trapFx, netDirty, netFlush, bombTick, bombPass, bombExplode, duelCandidates, duelChallenge, duelAccept, duelDecline, duelAbort, duelNet, duelUI, DUEL_S, DUEL_COUNT, DUEL_R, dlSet };
 boot();
 })();
 </script>

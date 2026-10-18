@@ -2,6 +2,7 @@
 # Zar Labirinti — TURN server (coturn) o'rnatish skripti
 # Ubuntu 22.04 / 24.04 uchun. Root sifatida ishga tushiring:
 #   curl -fsSL https://raw.githubusercontent.com/araufov/zar-labirinti/main/turn-setup.sh | sudo bash
+# (ixtiyoriy) TURN_PASS=... bilan parolni oldindan berish mumkin
 set -euo pipefail
 
 if [ "$(id -u)" -ne 0 ]; then echo "root kerak: sudo bash turn-setup.sh"; exit 1; fi
@@ -20,6 +21,8 @@ echo "== 3/5 Login/parol"
 if [ -f /etc/turnserver.conf ] && grep -q '^user=zar:' /etc/turnserver.conf; then
   PASS="$(grep '^user=zar:' /etc/turnserver.conf | cut -d: -f2)"
   echo "   mavjud parol saqlanadi"
+elif [ -n "${TURN_PASS:-}" ]; then
+  PASS="$TURN_PASS"
 else
   PASS="$(openssl rand -hex 16)"
 fi

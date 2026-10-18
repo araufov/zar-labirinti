@@ -8,7 +8,16 @@ Bitta `index.html` — kutubxonalarsiz; PWA sifatida o‘rnatiladi va oflayn ish
 - **📅 Kunlik labirint** — har kuni hamma uchun bitta labirint (sana bo‘yicha). Natija va seriya (🔥) saqlanadi, «Ulashish» tugmasi natijani matn qilib yuboradi.
 - **Erkin o‘yin** — avvalgidek: qiyinlik, botlar soni va kuchi.
 
-## Reklama (ko‘rib davom etish)
+## Do‘stlar va zallar (Firebase)
+- Har o‘yinchiga ID: `Ism#1234` (Firebase anonim kirish — ro‘yxatdan o‘tish shart emas).
+- Do‘st qo‘shish (ID yoki ism bo‘yicha qidirish), so‘rov → qabul, onlayn holati, «Chaqirish» taklifi.
+- «🏠 Zal ochish» (ochiq yoki faqat do‘stlar uchun), «⚡ Tez o‘yin», ochiq zallar ro‘yxati.
+- Firebase konsolida: Realtime Database (test mode) + Authentication → Anonymous yoqilgan bo‘lishi kerak.
+- Ko‘p foydalanuvchi bo‘lganda Rules ga indeks qo‘shing: `"users": { ".indexOn": ["nl"] }`.
+
+## Reklama (o‘yin oldidan va ko‘rib davom etish)
+- O‘yin oldidan: yuklanish ekrani (0–100%) paytida. Birinchi o‘yinda chiqmaydi, keyin 3 daqiqada ko‘pi bilan bir marta (`ADS.gapMs`). 1–3 o‘rgatish bosqichi va onlayn o‘yinda chiqmaydi.
+
 Jonlar tugaganda bir o‘yinda bir marta «📺 Reklama ko‘rib, shu joydan davom et» taklifi chiqadi.
 `index.html` ichida `const ADS = { mode: 'demo', ... }`:
 - `demo` — hozirgi holat: 5 soniyalik sinov oynasi (haqiqiy reklama yo‘q).
@@ -34,7 +43,7 @@ Jonlar tugaganda bir o‘yinda bir marta «📺 Reklama ko‘rib, shu joydan dav
 - **Kompyuter (Chrome/Edge):** manzil qatoridagi o‘rnatish belgisi.
 
 ## Yangilash
-O‘yinni o‘zgartirgach `sw.js` ichidagi `VERSION` ni oshiring (`jl-v4` → `jl-v5`), aks holda eski nusxa keshda qolishi mumkin.
+O‘yinni o‘zgartirgach `sw.js` ichidagi `VERSION` ni oshiring (`jl-v5` → `jl-v6`), aks holda eski nusxa keshda qolishi mumkin.
 
 ## Eslatma
 Onlayn xona va ovozli suhbat:

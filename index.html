@@ -126,6 +126,51 @@ kbd { font-family: var(--font-ui); font-size: .72rem; padding: 2px 6px; border-r
 .actions.col { flex-direction: column; align-items: stretch; }
 
 /* menu */
+.online { margin: 0 0 20px; padding: 14px 14px 12px; border: 1px solid rgba(127, 220, 106, .45); border-radius: 6px; background: linear-gradient(180deg, rgba(127, 220, 106, .08), rgba(0, 0, 0, .25)); }
+.online .h3 { color: #b6f09c; }
+.socme { margin: 4px 0 10px; font-size: .92rem; }
+.socme b { color: #ffe7a6; font-size: 1.05rem; letter-spacing: .02em; }
+.btn.sm { min-height: 34px; padding: 4px 12px; font-size: .78rem; }
+.socbtns .btn { flex: 1 1 130px; }
+.socpub { display: flex; gap: 8px; align-items: center; margin: 8px 0 4px; font-size: .84rem; color: var(--muted); }
+.soclist { margin: 6px 0 4px; padding: 0; list-style: none; display: grid; gap: 6px; }
+.soclist:empty { display: none; }
+.soclist li { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; gap: 8px; align-items: center; padding: 6px 8px; border-radius: 6px; background: rgba(0, 0, 0, .25); border: 1px solid rgba(214, 168, 76, .25); }
+.soclist li img { width: 34px; height: 34px; border-radius: 50%; }
+.soclist li b { display: block; font-size: .9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.soclist li small { display: block; color: var(--muted); font-size: .76rem; }
+.soclist li .acts { display: flex; gap: 4px; }
+.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 5px; background: #6b6b6b; vertical-align: middle; }
+.dot.on { background: #6fd36a; box-shadow: 0 0 6px #6fd36a; }
+.soclist .empty { display: block; padding: 8px; color: var(--muted); font-size: .84rem; text-align: center; }
+.codehd { margin-top: 14px; }
+.invbar { position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom, 0px) + 16px); transform: translateX(-50%); z-index: 70; width: min(94vw, 440px); display: flex; gap: 8px; align-items: center;
+  padding: 10px 12px; border-radius: 12px; background: linear-gradient(180deg, #2c4a24, #16280f); border: 1px solid #8fbf4a; box-shadow: 0 12px 30px rgba(0, 0, 0, .6); }
+.invbar span { flex: 1; font-weight: 700; font-size: .92rem; }
+.seg.wide span { min-width: 6.5rem; }
+.vout .ghostbtn { margin-top: 10px; pointer-events: auto; }
+.zarban { position: fixed; left: 50%; top: 32%; z-index: 30; transform: translate(-50%, -10px); opacity: 0; transition: opacity .3s, transform .3s; pointer-events: none;
+  width: min(92vw, 380px); padding: 14px 16px; border-radius: 12px; text-align: center; background: linear-gradient(180deg, rgba(61, 39, 21, .97), rgba(36, 22, 11, .98)); border: 2px solid var(--brass); box-shadow: 0 12px 34px rgba(0, 0, 0, .6); }
+.zarban.show { opacity: 1; transform: translate(-50%, 0); }
+.zarban .zd { font-size: 2.6rem; line-height: 1; display: inline-block; }
+.zarban.roll .zd { animation: zroll .25s linear infinite; }
+@keyframes zroll { to { transform: rotate(360deg); } }
+.zarban b { display: block; margin-top: 6px; font: 400 1.35rem var(--font-display); color: #ffe7a6; }
+.zarban span { display: block; margin-top: 2px; font-size: .92rem; color: var(--parchment); }
+.ach { margin: 0 0 18px; }
+.achlist { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.achlist li { display: grid; grid-template-columns: 2rem minmax(0, 1fr); gap: 8px; align-items: center; padding: 6px 8px; border-radius: 6px; background: rgba(0, 0, 0, .22); border: 1px solid rgba(214, 168, 76, .25); font-size: .86rem; }
+.achlist li.off { opacity: .45; filter: grayscale(1); }
+.achlist li i { font-style: normal; font-size: 1.3rem; text-align: center; }
+.achlist li small { display: block; color: var(--muted); }
+.loader { z-index: 40; }
+.ldbar { height: 14px; margin: 22px 0 6px; border-radius: 8px; overflow: hidden; background: rgba(0, 0, 0, .45); border: 1px solid var(--brass-dim); }
+.ldbar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #8a5f1f, #f2cf7c); transition: width .12s linear; }
+.ldpct { margin: 0; text-align: right; font-weight: 800; color: var(--brass); font-variant-numeric: tabular-nums; }
+.ldtip { margin-top: 14px; font-size: 1rem; }
+.ldad { display: grid; gap: 4px; margin: 14px 0 0; padding: 16px 14px; border-radius: 8px; text-align: center; background: #12161b; border: 1px solid #3a4652; color: #e8eef5; }
+.ldad span { color: #9aa7b4; font-size: .86rem; }
+.ldad .ldadc { color: #e8eef5; font-weight: 800; }
 .daily { margin: 0 0 20px; padding: 14px 14px 12px; border: 1px solid rgba(90, 184, 255, .45); border-radius: 6px; background: linear-gradient(180deg, rgba(90, 184, 255, .08), rgba(0, 0, 0, .25)); }
 .daily .h3 { color: #9fd4ff; }
 .daily .tut-sum { color: #9fd4ff; }
@@ -739,7 +784,7 @@ body.flip #view { transform: rotate(180deg); }
     <div class="vfeed" aria-live="polite"></div>
     <div class="vtoast" role="status" aria-live="polite"></div>
     <div class="vflash"></div>
-    <div class="vout" hidden><div><p class="title"><span class="big sm"></span></p><p class="verse"></p><button class="btn primary adrev" type="button" hidden>📺 Reklama ko‘rib, shu joydan davom et</button></div></div>
+    <div class="vout" hidden><div><p class="title"><span class="big sm"></span></p><p class="verse"></p><button class="btn primary adrev" type="button" hidden>📺 Reklama ko‘rib, shu joydan davom et</button><button class="btn ghost ghostbtn" type="button" hidden>👻 Arvoh bo‘lib yetakchiga tuman pufla</button></div></div>
     <div class="cardwrap" hidden></div>
   </div>
 </template>
@@ -783,6 +828,41 @@ Kalitingni top, darvozani och va hammadan oldin chiq.</p></div>
         <p class="tut-lead" id="dailyLead"></p>
         <div class="orow daily-row"><button class="btn primary" id="dailyGo" type="button"></button><button class="btn ghost" id="dailyShare" type="button" hidden>📤 Ulashish</button></div>
       </section>
+      <section class="online" id="online" hidden>
+        <h3 class="h3">👥 Do‘stlar bilan o‘ynash</h3>
+        <p class="lead">Har kim o‘z telefonida, bir vaqtda. Zal och yoki ochiq zalga qo‘shil, do‘stlaringni chaqir. Xonada <b>🎙 mikrofonni yoqib</b> gaplashib o‘ynang.</p>
+        <div class="lobby" id="oLobby" hidden>
+          <span class="lbl">Xona kodi</span> <span class="code" id="oCodeShow"></span>
+          <ul class="peers" id="oPeers"></ul>
+          <div class="orow"><button class="btn primary" id="oStart" type="button" hidden>Hammaga boshlash</button><button class="btn ghost" id="oLeave" type="button">Xonadan chiqish</button></div>
+          <div class="orow"><button class="btn ghost" id="oMic" type="button">🎙 Mikrofonni yoqish</button><button class="btn ghost" id="oMicOff" type="button" hidden>Suhbatdan chiqish</button></div>
+          <p class="ostatus" id="oVoice"></p>
+          <p class="ostatus" id="oStatus"></p>
+        </div>
+        <div class="soc" id="soc" hidden>
+          <div class="socme">Sening ID: <b id="socId">…</b> <button class="btn ghost sm" id="socCopy" type="button">Nusxa</button></div>
+          <div class="orow socbtns"><button class="btn primary" id="hallOpen" type="button">🏠 Zal ochish</button><button class="btn ghost" id="quickPlay" type="button">⚡ Tez o‘yin</button></div>
+          <label class="socpub"><input type="checkbox" id="hallPub" checked> Ochiq zal — hamma ko‘radi (o‘chirsang, faqat do‘stlaring)</label>
+          <p class="h4">Ochiq zallar</p>
+          <ul class="soclist" id="hallList"></ul>
+          <p class="h4">Do‘stlar <span id="frCount"></span></p>
+          <div class="orow"><input id="frIn" maxlength="24" placeholder="Ism#1234 yoki ism" autocomplete="off" spellcheck="false" aria-label="Do‘st ID si yoki ismi"><button class="btn ghost" id="frAdd" type="button">➕ Qo‘shish</button></div>
+          <p class="ostatus" id="frMsg"></p>
+          <ul class="soclist" id="frSearch"></ul>
+          <ul class="soclist" id="frReq"></ul>
+          <ul class="soclist" id="frList"></ul>
+        </div>
+        <p class="h4 codehd">Kod bilan</p>
+        <div class="orow">
+          <button class="btn primary" id="oCreate" type="button">Xona yaratish</button>
+          <input id="oCode" maxlength="8" placeholder="kod" autocomplete="off" spellcheck="false" aria-label="Xona kodi">
+          <button class="btn ghost" id="oJoin" type="button">Qo‘shilish</button>
+        </div>
+      </section>
+      <details class="guide ach">
+        <summary class="h3">🏆 Yutuqlar <span class="tut-sum" id="achSum"></span></summary>
+        <ul class="achlist" id="achList"></ul>
+      </details>
       <h3 class="h3 freehd">Erkin o‘yin</h3>
       <div class="lineup">
         <fieldset class="players">
@@ -791,7 +871,11 @@ Kalitingni top, darvozani och va hammadan oldin chiq.</p></div>
         </fieldset>
         <fieldset class="players">
           <legend class="lbl">Raqib botlar</legend>
-          <div class="segs" role="radiogroup" aria-label="Botlar soni">
+          <div class="segs" id="modeRow" role="radiogroup" aria-label="Rejim">
+            <label class="seg wide"><input type="radio" name="tmode" value="0" id="tm0"><span>Yakka</span></label>
+            <label class="seg wide"><input type="radio" name="tmode" value="1" id="tm1"><span>2×2 jamoa</span></label>
+          </div>
+          <div class="segs" id="botRow" role="radiogroup" aria-label="Botlar soni">
             <label class="seg"><input type="radio" name="bots" value="0" id="bc0"><span>0</span></label>
             <label class="seg"><input type="radio" name="bots" value="1" id="bc1"><span>1</span></label>
             <label class="seg"><input type="radio" name="bots" value="2" id="bc2"><span>2</span></label>
@@ -815,23 +899,6 @@ Kalitingni top, darvozani och va hammadan oldin chiq.</p></div>
       </fieldset>
       <button class="btn primary big" id="bStart" type="button">Zarni tashla — boshla <kbd>Enter</kbd></button>
       <p class="note">Ovozni yoqib o‘ynang: barabanlar tuzoqdan, bo‘kirish hayvondan ogohlantiradi.</p>
-      <section class="online" id="online" hidden>
-        <h3 class="h3">Onlayn xona</h3>
-        <p class="lead">Har kim o‘z telefonida, bir vaqtda. Do‘stlaringiz shu sahifani ochib, xona kodini kiritadi. Xona egasi tanlagan botlar ham poygaga qo‘shiladi. Xonada <b>🎙 mikrofonni yoqib</b> bir-biringiz bilan gaplashib o‘ynang.</p>
-        <div class="orow">
-          <button class="btn primary" id="oCreate" type="button">Xona yaratish</button>
-          <input id="oCode" maxlength="8" placeholder="kod" autocomplete="off" spellcheck="false" aria-label="Xona kodi">
-          <button class="btn ghost" id="oJoin" type="button">Qo‘shilish</button>
-        </div>
-        <div class="lobby" id="oLobby" hidden>
-          <span class="lbl">Xona kodi</span> <span class="code" id="oCodeShow"></span>
-          <ul class="peers" id="oPeers"></ul>
-          <div class="orow"><button class="btn primary" id="oStart" type="button" hidden>Hammaga boshlash</button><button class="btn ghost" id="oLeave" type="button">Xonadan chiqish</button></div>
-          <div class="orow"><button class="btn ghost" id="oMic" type="button">🎙 Mikrofonni yoqish</button><button class="btn ghost" id="oMicOff" type="button" hidden>Suhbatdan chiqish</button></div>
-          <p class="ostatus" id="oVoice"></p>
-          <p class="ostatus" id="oStatus"></p>
-        </div>
-      </section>
     </div>
     <div class="side">
       <details class="guide">
@@ -842,7 +909,7 @@ Kalitingni top, darvozani och va hammadan oldin chiq.</p></div>
           <li><b>📜🗺️ Ikkita yashirin xarita</b> bor: biri kalit joyini, ikkinchisi sandiqlar joyini ko‘rsatadi. Ularni labirintdan top yoki do‘kondan juda qimmatga sotib ol.</li>
           <li>Hamma bir vaqtda o‘ynaydi: raqiblaring — botlar yoki o‘z telefonidan kirgan do‘stlar. Har kimning o‘z tumani bor, ular xaritada rangli nuqta bo‘lib ko‘rinadi.</li>
           <li>Tosh yo‘laklarda erkin yuriladi, yo‘llar ko‘p — har xil tomondan aylanib o‘tish mumkin. Jarlik va daryodan faqat zar bilan sakrab o‘tiladi.</li>
-          <li>Har tuzoq va hayvonda sinov har safar tasodifan tanlanadi: 25 xil mini-o‘yin (eng oddiy, ma’nosiz o‘yinlar olib tashlangan — faqat aql, xotira va epchillik talab qiladiganlari qoldi). Ular orasida: Qizil chiroq, Shisha ko‘prik, Dalgona, Arqon tortish, So‘z topish, 2048, Uchar qush, Pianino plitkalari, Minora, Dinozavr, Shisha ag‘darish, Ilon, X-O va To‘rt qatorda (botga qarshi strategik o‘yin).</li>
+          <li>Har tuzoq va hayvonda sinov har safar tasodifan tanlanadi: 15 xil tez va tushunarli mini-o‘yin — Strelkalar, Qochib qol, Muvozanat, Xotira, Ko‘zalar, Barabanlar, Naqsh, Qizil chiroq, Shisha ko‘prik, Arqon tortish, Uchar qush, Pianino, Minora, Dinozavr va Shisha ag‘darish. Tushunish oson, yutish — qiyin!</li>
           <li>Xazina sandiqlari topishmoq yoki jumboq so‘raydi. <b>⭐ Sovg‘a darajalari:</b> oddiy ⭐ (tanga, mash’al, etik, qalqon, yelim, tuman bombasi, teskari dunyo, maskalash, kompas aldaydi, cho‘ntak o‘g‘risi, tozalash, radar), noyob ⭐⭐ (+1 jon, kompas, sehrli xarita, ko‘rinmas plash, qamoq kaliti, muzlatish, aralashtirish, akleroz, ko‘zgu qalqoni, tuzoq to‘plami, kalitni ko‘chirish, do‘konni yopish, ovchini yuborish, bomba) va afsonaviy ⭐⭐⭐ (katta xazina, oltin girdob, qanotlar, omadli zar, qaroqchi chaqirig‘i, joy almashtirish, tartibsizlik). Qiyin xaritada yaxshi sovg‘a ko‘proq tushadi.</li>
           <li><b>💰 Pul standarti:</b> pul xaltasi — 5 tanga. <b>Sinovni yutsang standart mukofot:</b> oddiy tuzoq +2, jonga xavfli tuzoq +3, hayvon +4 tanga. Sehrlar narxi 5 / 10 / 15 tanga.</li>
           <li><b>🪄 Do‘kon tugmasi</b> (klaviaturada <kbd>T</kbd>) uch varaqdan iborat: <b>🪄 Xalaqit</b> (<kbd>Q</kbd>) — 18 xil sehr, guruhlarga bo‘lingan: sekinlatish, aqlni chalg‘itish, hazil, hujum, hayvonlar, joy almashtirish va o‘zingga himoya; <b>🪤 Tuzoq</b> (<kbd>R</kbd>) — qo‘yib ketiladigan tuzoqlar va devor; <b>🗺️ Xaritalar</b> (<kbd>E</kbd>). Sehrni pulga sotib olasan yoki yo‘lda/sandiqda topasan, so‘ng qaysi raqibga tegishini tanlaysan. Raqib zarba yegach 12 soniya himoyada.</li>
@@ -896,6 +963,20 @@ Kalitingni top, darvozani och va hammadan oldin chiq.</p></div>
   </section>
 </div>
 
+<div class="invbar" id="invBar" hidden role="alert"><span id="invTxt"></span><button class="btn primary sm" id="invGo" type="button">Qo‘shilish</button><button class="btn ghost sm" id="invNo" type="button" aria-label="Yopish">✕</button></div>
+
+<!-- Yuklanish -->
+<div id="loader" class="overlay loader" hidden>
+  <section class="board" style="max-width:440px" aria-live="polite">
+    <p class="eyebrow" id="ldKicker">Zar Labirinti</p>
+    <h2 class="title"><span class="big sm">Labirint qurilmoqda…</span></h2>
+    <div class="ldbar"><i id="ldFill"></i></div>
+    <p class="ldpct" id="ldPct">0%</p>
+    <div class="ldad" id="ldAd" hidden><b>📺 Reklama</b><span id="ldAdTxt">Sinov rejimi: haqiqiy reklama ulanganda bu yerda chiqadi.</span><span class="ldadc" id="ldAdC"></span></div>
+    <p class="verse ldtip" id="ldTip"></p>
+  </section>
+</div>
+
 <!-- Pauza -->
 <div id="pause" class="overlay" hidden>
   <section class="board" role="dialog" aria-modal="true" aria-labelledby="pTitle" style="max-width:440px">
@@ -929,6 +1010,7 @@ Kalitingni top, darvozani och va hammadan oldin chiq.</p></div>
       <button class="btn primary" id="eNew" type="button">Yangi labirint</button>
       <button class="btn ghost" id="eSame" type="button">Shu labirintni qaytadan</button>
       <button class="btn primary" id="eShare" type="button" hidden>📤 Natijani ulashish</button>
+      <button class="btn ghost" id="eReplay" type="button">▶ Yo‘llarni takrorlash</button>
       <button class="btn ghost" id="eMenu" type="button">Bosh menyu</button>
     </div>
     <p class="ostatus" id="eNote" hidden></p>
@@ -961,6 +1043,7 @@ const store = {
   get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
   set(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* storage blocked */ } },
 };
+const buzz = (ms) => { try { if (!Sound.muted && navigator.vibrate) navigator.vibrate(ms); } catch (e) { /* yo'q */ } };
 const reduceMotion = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
 const touchUI = !!(window.matchMedia && matchMedia('(hover: none), (pointer: coarse)').matches);
 const fmtTime = (s) => { s = Math.max(0, Math.floor(s)); return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0'); };
@@ -988,8 +1071,8 @@ const ECON = {
   pouch: 5,                                   // yerdagi pul xaltasi
   win: { trap: 2, lethal: 3, beast: 4 },      // yutilgan sinov uchun mukofot: oddiy tuzoq / jonga xavfli tuzoq / hayvon
   chest: 10, jackpot: 25,                     // sandiqdan chiqadigan tanga: oddiy / afsonaviy daraja
-  price: { common: 5, rare: 10, epic: 15 },   // xalaqit sehrlari narxi darajalar bo‘yicha
-  steal: 5, bounty: 3, disarm: 2, bomb: 5, duel: 5,   // cho‘ntak o‘g‘risi / yetakchiga xalaqit mukofoti / tuzoqni zararsizlantirish / bomba portlasa yo‘qotiladigan / duel yutug‘i
+  price: { common: 5, rare: 10, epic: 15, legend: 20 },   // xalaqit sehrlari narxi: ta’siri qanchalik kuchli bo‘lsa — shuncha qimmat
+  steal: 7, bounty: 3, disarm: 2, bomb: 5, duel: 5,   // cho‘ntak o‘g‘risi / yetakchiga xalaqit mukofoti / tuzoqni zararsizlantirish / bomba portlasa yo‘qotiladigan / duel yutug‘i
 };
 const MIRROR_S = 45;   // ko‘zgu qalqoni shuncha soniya turadi (yoki bitta sehrni qaytargunicha)
 const AMNESIA_S = 60;   // akleroz: ochgan joylar shuncha soniya ko‘rinmaydi
@@ -1142,7 +1225,7 @@ const PORTAL = { icon: '🌀', name: 'Sehrli girdob',
   xus: 'Girdob seni labirintning tasodifiy joyiga uloqtiradi: chiqishga yaqin ham, kirishga qaytarib ham tashlashi mumkin. Yetib borgan joying tuman ichida bo‘ladi.' };
 const CHEST = { icon: '🧰', name: 'Xazina sandig‘i',
   rhyme: 'Qadimiy sandiq, qulfida sir bor,\nTopsang javobni — xazinang tayyor.',
-  shart: 'Topishmoq, savol yoki aql o‘yini: qulf, so‘z tikla, xotira, naqsh, ko‘zalar, so‘z topish va boshqalar.',
+  shart: 'Tez mini-o‘yin: xotira, naqsh, ko‘zalar, barabanlar, minora va boshqalar.',
   xus: 'Yechsang — sovg‘a, uch darajadan biri: ⭐ oddiy (tanga, mash’al, tezyurar etik, qalqon, yelim, tuman bombasi), ⭐⭐ noyob (+1 jon, kompas, sehrli xarita, ko‘rinmas plash, qamoq kaliti, muzlatish, boshqaruvni aralashtirish) yoki ⭐⭐⭐ afsonaviy (katta xazina, oltin girdob, qanotlar, omadli zar, qaroqchini chaqirish, joy almashtirish). Qiyin xaritada yaxshi sovg‘a ko‘proq tushadi. Yecha olmasang — sandiq yopiladi, hech narsa yo‘qotmaysan.',
   games: [V('riddle'), V('riddle'), V('riddle'), V('riddle'), V('riddle'), V('lock'), V('scramble'), V('memory'), V('stroop'), V('pattern'), V('simon'), V('shell', { item: '💎' }), V('wordle'), V('g2048'), V('tictactoe'), V('connect4'), V('stack'), V('snake'), V('flappy'), V('piano'), V('dalgona'), V('bottle'), V('dino')] };
 
@@ -1156,7 +1239,7 @@ const ITEMS = [
   { key: 'fogbomb', icon: '🌫️', name: 'Tuman bombasi', w: 0.07, text: 'Tuman bombasi sumkangga tushdi — 🪄 tugmadan raqibga ishlat!', shart: 'Ustiga bos.', xus: 'Raqibning atrofdagi xaritasi yana tumanga burkanadi.' },
   { key: 'freeze', icon: '❄️', name: 'Muzlatish sehri', w: 0.07, text: 'Muzlatish sehri sumkangga tushdi — 🪄 tugmadan raqibga ishlat!', shart: 'Ustiga bos.', xus: 'Raqib 8 soniya qimirlay olmaydi.' },
   { key: 'bandit', icon: '📯', name: 'Qaroqchi chaqirig‘i', w: 0.06, text: 'Qaroqchini chaqiruvchi shox sumkangga tushdi — 🪄 tugmadan ishlat!', shart: 'Ustiga bos.', xus: 'Qaroqchi raqibni quvadi: 5–10 tanga oladi, puli shundan kam bo‘lsa qamoqqa tashlaydi.' },
-  { key: 'scramble', icon: '🎮', name: 'Aralashtirish sehri', w: 0.05, text: 'Aralashtirish sehri sumkangga tushdi — 🪄 do‘kondan raqibga ishlat!', shart: 'Ustiga bos.', xus: 'Raqibning joystik yo‘nalishlari 1 daqiqa aralashib ketadi (har safar boshqacha).' },
+  { key: 'scramble', icon: '🎮', name: 'Aralashtirish sehri', w: 0.05, text: 'Aralashtirish sehri sumkangga tushdi — 🪄 do‘kondan raqibga ishlat!', shart: 'Ustiga bos.', xus: 'Raqibning joystik yo‘nalishlari 30 soniya aralashib ketadi (har safar boshqacha).' },
   { key: 'keymap', icon: '📜', name: 'Kalit xaritasi', w: 0, text: 'Kalit xaritasi! Darvoza kaliting qayerdaligi belgilandi — minixaritaga qara.', shart: 'Ustiga bos. Butun labirintda faqat bitta, yashirin.', xus: 'Kalitingning joyi minixaritada va ekranda belgilanadi, tepada yo‘nalish yozuvi chiqadi. Do‘kondan juda qimmatga sotib ham olsa bo‘ladi.' },
   { key: 'chestmap', icon: '🗺️', name: 'Xazina xaritasi', w: 0, text: 'Xazina xaritasi! Hamma sandiqlar joyi belgilandi — minixaritaga qara.', shart: 'Ustiga bos. Butun labirintda faqat bitta, yashirin.', xus: 'Hamma ochilmagan sandiqlar minixaritada va ekranda belgilanadi. Do‘kondan juda qimmatga sotib ham olsa bo‘ladi.' },
   { key: 'mirror', icon: '🪞', name: 'Ko‘zgu qalqoni', w: 0.07, text: 'Ko‘zgu qalqoni topding — kimdir senga sehr ishlatsa, u o‘sha odamning o‘ziga qaytadi!', shart: 'Ustiga bos.', xus: 'Kimdir senga xalaqit sehri ishlatsa (muzlatish, yelim, akleroz…), u sehr yuboruvchining o‘ziga qaytadi. Bir marta ishlaydi, 45 soniya turadi.' },
@@ -1751,6 +1834,8 @@ const LOOKS = [
   { title: 'Zoolog', skin: '#a8714b', hair: '#1d130c', shirt: '#4f8a3a', shirt2: '#376428', pants: '#a08a63', pants2: '#7d6b4b', hat: 'cap', capColor: '#2e5a8a' },
   { title: 'Sayyoh', skin: '#f0c9a0', hair: '#e2c26a', shirt: '#2f6fa0', shirt2: '#22527a', pants: '#4a4f57', pants2: '#33373d', hat: 'none', glasses: true },
 ];
+// Har qahramonning o'z kuchi (botlarda ham ishlaydi).
+const ABIL = ['👁 Tumanda uzoqroq ko‘radi', '⚠️ Yaqin yashirin tuzoqlarni sezadi', '🐾 Hayvonlar unga sekinroq yetadi', '👟 Tez yuradi, lekin tumanda kamroq ko‘radi'];
 const VAN_LOOK = { title: 'Burgut', skin: '#e0b48c', hair: '#5a4630', shirt: '#7a1d16', shirt2: '#56140f', pants: '#3a2e22', pants2: '#2a2018', hat: 'safari' };
 const PCOLORS = ['#ff9a3d', '#ff5470', '#7fdc6a', '#5ab8ff'];
 const DEF_NAME = 'Jasur';
@@ -2621,10 +2706,14 @@ function drawTiles(V, t) {
           glowAt(sx + ts / 2, sy + ts / 2, ts * 0.55, `rgba(255,210,120,${0.32 + 0.12 * Math.sin(t * 4 + h)})`);
           ctx.drawImage(SPR.items[it], sx, sy - ts * 0.12 + bob);
         }
-        if (G.keyAt[i] === p.keySlot && !p.gkey) {   // darvoza kaliti: faqat egasiga ko‘rinadi
+        if (G.keyAt[i] === p.keySlot && !p.gkey) {   // o‘z kaliting
           const bob = Math.sin(t * 3.2 + (h & 7)) * ts * 0.06, sp = SPR.gkey;
           glowAt(sx + ts / 2, sy + ts / 2, ts * 0.7, `rgba(120,220,255,${0.4 + 0.15 * Math.sin(t * 4 + h)})`);
           ctx.drawImage(sp, sx + (ts - sp.width) / 2, sy + (ts - sp.height) / 2 - ts * 0.1 + bob);
+        } else if (G.keyAt[i] >= 0 && G.keyLive[G.keyAt[i]]) {   // raqib kaliti: ko‘rinadi, lekin olib bo‘lmaydi
+          const sp = SPR.gkey;
+          glowAt(sx + ts / 2, sy + ts / 2, ts * 0.55, 'rgba(255,90,70,0.28)');
+          ctx.save(); ctx.globalAlpha = 0.5; ctx.drawImage(sp, sx + (ts - sp.width) / 2, sy + (ts - sp.height) / 2 - ts * 0.06); ctx.restore();
         }
       } else if (tt === T.CHASM || tt === T.RIVER) {
         const isC = tt === T.CHASM, horiz = g[i - 1] !== T.WALL || g[i + 1] !== T.WALL;
@@ -2640,7 +2729,7 @@ function drawTiles(V, t) {
         ctx.drawImage(SPR.gate, sx, sy);
       } else if (tt === T.EXIT) {
         const sd = gateSide(x, y);
-        if (p.gkey) ctx.drawImage(SPR.exit[sd], sx, sy);
+        if (hasKey(p)) ctx.drawImage(SPR.exit[sd], sx, sy);
         else { ctx.drawImage(SPR.exitLocked[sd], sx, sy); ctx.drawImage(SPR.lock, sx + (ts - SPR.lock.width) / 2, sy + (ts - SPR.lock.height) / 2); }
       }
     }
@@ -2648,7 +2737,11 @@ function drawTiles(V, t) {
 }
 
 function beastMs(b) {
-  const D = BEASTS[b.type];
+  const D = BEASTS[b.type], q = G.players[b.target];
+  if (q && q.look === 2 && b.state !== 'wander') return Math.round(beastMs0(b, D) * 1.3);   // Zoolog: hayvonlar sekinroq yetadi
+  return beastMs0(b, D);
+}
+function beastMs0(b, D) {
   if (b.state === 'chase') return b.lunge > 0 ? D.lunge : D.chase;
   if (b.state === 'charge') return D.charge;
   if (b.state === 'track') return D.track;
@@ -2868,7 +2961,7 @@ function drawFog(V, t) {
   ctx.drawImage(fogL, 0, 0, W, H, 0, 0, W / hs, H / hs);
 }
 function drawExitBeacon(V, t) {
-  const { ts, ox, oy, p } = V, k = p.gkey ? 1 : 0.55;   // qulflangan darvoza xiraroq
+  const { ts, ox, oy, p } = V, k = hasKey(p) ? 1 : 0.55;   // qulflangan darvoza xiraroq
   for (const q of G.exits) {
     if (!p.explored[q.idx]) continue;      // darvoza ochilmaguncha hech narsa ko‘rinmaydi
     const x = ox + (q.x + 0.5) * ts, y = oy + (q.y + 0.5) * ts;
@@ -3005,7 +3098,7 @@ function drawAmbient(V, t) {
 /* ---- Xalaqit oynachasi: raqib ko‘rinishi (tepada kichik ekran) ---- */
 const PIP_MAX = 2, PIP_R = 3.3, PIP_TILES = 5.2;
 const PIP_REFL = 4;   // ko‘zgu qaytargani oynachada shuncha soniya ko‘rinadi
-const PIP_SIM = { freeze: 8, glue: 20, scramble: 60, bandit: 12, fogbomb: 5, swap: 3.5, amnesia: AMNESIA_S, refl: PIP_REFL, flip: FLIP_S, mask: MASK_S, liar: LIAR_S, shut: SHUT_S, kmove: 3, steal: 3, sic: 14, chaos: 3.5, bomb: BOMB_S };   // onlayn raqibda ta’sir muddati (u yerdagi haqiqiy qiymatlarga mos)
+const PIP_SIM = { freeze: 8, glue: 20, scramble: 30, bandit: 12, fogbomb: 5, swap: 3.5, amnesia: AMNESIA_S, refl: PIP_REFL, flip: FLIP_S, mask: MASK_S, liar: LIAR_S, shut: SHUT_S, kmove: 3, steal: 3, sic: 14, chaos: 3.5, bomb: BOMB_S };   // onlayn raqibda ta’sir muddati (u yerdagi haqiqiy qiymatlarga mos)
 const banditOn = (q) => G.beasts.some((b) => BEASTS[b.type].bandit && (b.state === 'chase' || b.state === 'charge') && b.target === q.id);
 // Raqibning hozirgi holati. Shu qurilmadagi (bot) raqib — haqiqiy holat; onlayn raqib — joyi presence'dan, ta’sirlari yuborilgan sehrdan hisoblanadi.
 function pipView(pp) {
@@ -3193,6 +3286,7 @@ function renderVP(p, t, dt) {
   drawFog(V, t);
   drawMarks(V, t);
   drawRadar(V, t);
+  if (V.p.look === 1) drawSense(V, t);
   drawWalls(V, t);
   drawExitBeacon(V, t);
   drawBeastEyes(V, t);
@@ -3224,6 +3318,7 @@ function mmColor(p, i) {
   if (t === T.PORTAL) return [160, 100, 255];
   if (G.coin[i]) return [255, 196, 0];
   if (G.keyAt[i] === p.keySlot && !p.gkey) return [90, 220, 255];
+  if (G.keyAt[i] >= 0 && G.keyLive[G.keyAt[i]]) return [230, 110, 90];
   if (G.item[i] >= 0) return [255, 225, 120];
   if (G.chest[i] && !p.spent[i]) return [255, 180, 60];
   if (G.trap[i] >= 0 && p.spent[i]) return [228, 104, 60];
@@ -3298,7 +3393,7 @@ const REV = (() => {
   return a.sort((p, q) => Math.abs(p[0]) + Math.abs(p[1]) - Math.abs(q[0]) - Math.abs(q[1]));
 })();
 function reveal(p) {
-  const N = G.N, cx = p.px, cy = p.py, R2 = p.fever > 0 ? 2 : p.torch > 0 ? 10 : 5, vis = new Uint8Array(49);
+  const N = G.N, cx = p.px, cy = p.py, R2 = p.fever > 0 ? 2 : p.torch > 0 ? 10 : p.fogT > 0 ? 2 : p.look === 0 ? 8 : p.look === 3 ? 4 : 5, vis = new Uint8Array(49);
   const open = (x, y) => x >= 0 && y >= 0 && x < N && y < N && G.g[y * N + x] !== T.WALL;
   vis[24] = 1; markExplored(p, cx, cy);
   for (const [dx, dy] of REV) {
@@ -3344,10 +3439,11 @@ function tryStep(p, dx, dy) {
   p.face = { x: dx, y: dy };
   p.lastMove = G.time;
   if (t === T.ENTRY) { toast(p, 'Ortga yo‘l yo‘q. O‘yinni oxiriga yetkaz!'); return true; }
-  if (t === T.EXIT && !p.gkey) { toast(p, '🔒 Darvoza qulflangan! Labirintda yashirilgan kalitingni top.'); return true; }
+  if (t === T.EXIT && hasKey(p) && !p.guardOk && !(G.tut && G.tut.n < LEVELS.length)) { guardCard(p); return true; }
+  if (t === T.EXIT && !hasKey(p)) { toast(p, G.teams ? '🔒 Darvoza qulflangan! Sen yoki sherigingdan biri kalitni topishi kerak.' : '🔒 Darvoza qulflangan! Labirintda yashirilgan kalitingni top.'); return true; }
   if (t === T.CHASM || t === T.RIVER) { jumpCard(p, dx, dy); return true; }
   p.mfx = p.px; p.mfy = p.py; p.px = nx; p.py = ny;
-  p.moving = true; p.moveT = 0; p.stepMs = (p.fever > 0 ? 336 : p.boots > 0 ? 118 : 186) * (p.bot ? p.bot.K.step : 1) * (p.slow > 0 ? 1.9 : 1);
+  p.moving = true; p.moveT = 0; p.stepMs = (p.fever > 0 ? 336 : p.boots > 0 ? 118 : 186) * (p.bot ? p.bot.K.step : 1) * (p.slow > 0 ? 1.9 : 1) * (p.look === 3 ? 0.85 : 1);
   reveal(p);
   if (Math.random() < 0.5) emit(p.mfx, p.mfy + 0.25, 1, 'dust');
   netDirty(p);
@@ -3390,6 +3486,7 @@ function arrive(p) {
   p.dist += G.tileM;
   markVisited(p, i);
   p.trail.push(i);
+  if (p.route && p.route.length < 60000) p.route.push(i);
   if (p.trail.length > 240) p.trail.splice(0, 40);
   histPush(p, i);
   onEnterTile(p, i);
@@ -3410,6 +3507,7 @@ function onEnterTile(p, i) {
 }
 function holdThen(p, sec, fn) { p.pending = { t: reduceMotion ? 0.05 : sec, fn }; }
 function triggerTrap(p, i) {
+  if (!p.bot) buzz(45);
   G.pops.push({ x: p.px, y: p.py, icon: TRAPS[G.trap[i]].icon, t: 0 });
   Sound.sting();
   p.shake = 0.25;
@@ -3471,6 +3569,40 @@ function applyGift(p, key) {
   else if (TOOLS[key]) addTool(p, key);
 }
 
+/* ---- Kalitlar: har kimga bittadan; raqib kalitlari ko‘rinadi (ololmaysan), halok bo‘lsang kaliting o‘sha joyda qoladi ---- */
+G.keyLive = new Int8Array(8);   // 0 — egasi yo‘q yoki olib bo‘lgan; 1 — yerda yotibdi (egasi bor)
+function keyOwners() {
+  const out = [];
+  for (const q of G.players) out.push({ slot: q.keySlot, got: q.gkey, team: q.team });
+  for (const r of remoteList()) if (r.ks >= 0) out.push({ slot: r.ks, got: !!r.gk, team: r.team });
+  return out;
+}
+function refreshKeys() {
+  G.keyLive.fill(0);
+  for (const o of keyOwners()) if (o.slot >= 0 && o.slot < 8 && !o.got) G.keyLive[o.slot] = 1;
+}
+// Jamoada: sherikdan biri kalit topsa — darvoza ikkalasiga ochiq.
+const hasKey = (p) => !!p && (p.gkey || (!!G.teams && (G.players.some((q) => q !== p && q.team === p.team && q.gkey) || remoteList().some((r) => r.team === p.team && r.gk))));
+const sameTeam = (p, x) => !!G.teams && !!p && !!x && p.team !== undefined && p.team === x.team;
+function placeKey(slot, cell) {
+  const old = G.keyCells[slot];
+  if (old === cell) return;
+  if (old >= 0 && G.keyAt[old] === slot) { G.keyAt[old] = -1; mmSetAll(old); }
+  G.keyCells[slot] = cell;
+  if (cell >= 0) { G.keyAt[cell] = slot; mmSetAll(cell); }
+}
+function dropKey(p) {
+  if (!p.gkey) return;
+  const N = G.N, here = p.py * N + p.px;
+  let cell = -1;
+  if (G.g[here] === T.PATH && G.keyAt[here] < 0) cell = here;
+  else { const d = bfs(N, G.g, here, walk); let bd = 1e9; for (let i = 0; i < N * N; i++) if (d[i] >= 0 && d[i] < bd && G.g[i] === T.PATH && G.keyAt[i] < 0) { bd = d[i]; cell = i; } }
+  if (cell < 0) return;
+  placeKey(p.keySlot, cell);
+  p.gkey = false; p.keyDropAt = cell;
+  netDirty(p, true);
+}
+
 /* ---- Pul, qaroqchi, qamoq ---- */
 // Darvoza kaliti: har kimning o‘zi uchun alohida; olgach boshqa kalit ko‘rinmaydi.
 function setKeySlot(p, slot) {
@@ -3481,7 +3613,8 @@ function setKeySlot(p, slot) {
   if (nw >= 0 && p.explored[nw]) mmSet(p, nw);
 }
 function takeGateKey(p, i) {
-  p.gkey = true; mmSet(p, i);
+  p.gkey = true; mmSet(p, i); p.guardOk = false;
+  if (!p.bot) buzz(60);
   if (p.bot) botSay(p, 5, true);
   emit(p.px, p.py, 22, 'gold'); Sound.pickup();
   floatText(p.px, p.py, '🔑 Kalit!', '#9fe3ff');
@@ -3590,16 +3723,16 @@ const TOOLS = {
   fogbomb: { grp: 'Aqlni chalg‘itish', icon: '🌫️', name: 'Tuman bombasi', price: ECON.price.common, text: 'Raqibning atrofdagi xaritasi yana tumanga burkanadi.' },
   amnesia: { grp: 'Aqlni chalg‘itish', icon: '🧠', name: 'Akleroz', price: ECON.price.rare, text: 'Raqibning ochgan joylari 1 daqiqa xaritada va ekranda ko‘rinmaydi (faqat hozirgi atrofini ko‘radi).' },
   liar: { grp: 'Aqlni chalg‘itish', icon: '🧭', name: 'Kompas aldaydi', price: ECON.price.common, text: `Raqibning kompasi va kalit/sandiq yo‘naltirgichlari ${LIAR_S} soniya noto‘g‘ri tomonni ko‘rsatadi.` },
-  scramble: { grp: 'Aqlni chalg‘itish', icon: '🎮', name: 'Boshqaruvni aralashtirish', price: ECON.price.rare, text: 'Raqibning joystik yo‘nalishlari 1 daqiqa aralashib ketadi (har safar boshqacha).' },
+  scramble: { grp: 'Aqlni chalg‘itish', icon: '🎮', name: 'Boshqaruvni aralashtirish', price: ECON.price.rare, text: 'Raqibning joystik yo‘nalishlari 30 soniya aralashib ketadi (har safar boshqacha).' },
   flip: { grp: 'Hazil', icon: '🙃', name: 'Teskari dunyo', price: ECON.price.common, text: `Raqibning ekrani ${FLIP_S} soniya teskari ag‘dariladi — joystik esa o‘sha-o‘sha!` },
   mask: { grp: 'Hazil', icon: '🐔', name: 'Maskalash', price: ECON.price.common, text: 'Raqib 1 daqiqa hammaga tovuq, masxaraboz yoki kartoshka bo‘lib ko‘rinadi — o‘ziga ham.' },
   steal: { grp: 'Hujum', icon: '🤏', name: 'Cho‘ntak o‘g‘risi', price: ECON.price.common, text: `Yaqin (${STEAL_R} katak ichida) turgan raqibdan ${ECON.steal} tanga o‘g‘irlaysan.` },
-  kmove: { grp: 'Hujum', icon: '🔑', name: 'Kalitni ko‘chirish', price: ECON.price.rare, text: 'Raqibning hali topilmagan darvoza kaliti boshqa uzoq yo‘lakka ko‘chadi.' },
+  kmove: { grp: 'Hujum', icon: '🔑', name: 'Kalitni ko‘chirish', price: ECON.price.epic, text: 'Raqibning hali topilmagan darvoza kaliti boshqa uzoq yo‘lakka ko‘chadi.' },
   shut: { grp: 'Hujum', icon: '🏪', name: 'Do‘konni yopish', price: ECON.price.rare, text: `Raqib ${SHUT_S} soniya do‘kondan hech narsa sotib ololmaydi, keyin yana ${TAX_S - SHUT_S} soniya narxlar 2 baravar qimmat.` },
-  bomb: { grp: 'Hujum', icon: '💣', name: 'Bomba', price: ECON.price.rare, text: `Raqibga bomba tushadi: ${BOMB_S} soniyada portlaydi. Uni boshqa o‘yinchiga tegib topshirish mumkin (senga ham qaytishi mumkin!). Portlagan o‘yinchi labirint boshiga uloqtiriladi va ${ECON.bomb} tanga yo‘qotadi.` },
+  bomb: { grp: 'Hujum', icon: '💣', name: 'Bomba', price: ECON.price.legend, text: `Raqibga bomba tushadi: ${BOMB_S} soniyada portlaydi. Uni boshqa o‘yinchiga tegib topshirish mumkin (senga ham qaytishi mumkin!). Portlagan o‘yinchi labirint boshiga uloqtiriladi va ${ECON.bomb} tanga yo‘qotadi.` },
   bandit: { grp: 'Hayvonlar', icon: '📯', name: 'Qaroqchi chaqirish', price: ECON.price.rare, text: 'Qaroqchi raqibni quvadi: 5–10 tanga oladi, puli kam bo‘lsa qamoqqa tashlaydi.' },
   sic: { grp: 'Hayvonlar', icon: '🚐', name: 'Ovchini yuborish', price: ECON.price.rare, text: 'Ovchi Burgut raqibning izidan tushib, uni quvadi.' },
-  swap: { grp: 'Joy almashtirish', icon: '🔀', name: 'Joy almashtirish', price: ECON.price.epic, text: 'Oldinda ketayotgan raqib bilan o‘rningni almashtirasan.' },
+  swap: { grp: 'Joy almashtirish', icon: '🔀', name: 'Joy almashtirish', price: ECON.price.legend, text: 'Oldinda ketayotgan raqib bilan o‘rningni almashtirasan.' },
   chaos: { grp: 'Joy almashtirish', all: true, icon: '🌪️', name: 'Tartibsizlik', price: ECON.price.epic, text: 'Hamma o‘yinchi (sen ham) joylari tasodifan almashadi — yetakchi ortga, ortda qolgan oldinga!' },
   cleanse: { grp: 'Himoya', self: true, icon: '🧼', name: 'Tozalash', price: ECON.price.common, text: 'Senga qilingan hamma xalaqit (muz, yelim, aralash boshqaruv, akleroz, maska, teskari dunyo…) yo‘qoladi.' },
   radar: { grp: 'Himoya', self: true, icon: '📡', name: 'Radar', price: ECON.price.common, text: `${RADAR_S} soniya atrofdagi yashirin tuzoqlarni ko‘rsatadi; ustiga bossang tuzoq zararsizlanadi (+${ECON.disarm} 💰).` },
@@ -3622,8 +3755,8 @@ const PLACE_KEYS = PTRAP_KEYS.concat('wall');   // sumkada saqlanadigan qo‘yib
 const PT_MAX = 3, PT_LIFE = 180, PICK_MIN = 3;   // bir odam ko‘pi bilan 3 ta tuzoq qo‘yadi; 3 daqiqadan keyin eskiradi
 // Juda qimmat xaritalar: labirintda yashirin ham (1 tadan), do‘kondan sotib ham olsa bo‘ladi.
 const MAPS = {
-  keymap: { icon: '📜', name: 'Kalit xaritasi', text: 'Darvoza kaliting qayerdaligini minixaritada va ekranda ko‘rsatadi.', price: () => [25, 40, 70][lvl()], has: (p) => p.knowKey, useless: (p) => p.gkey, learn: (p) => learnKeyMap(p) },
-  chestmap: { icon: '🗺️', name: 'Xazina xaritasi', text: 'Hamma ochilmagan sandiqlar joyini minixaritada va ekranda ko‘rsatadi.', price: () => [15, 25, 50][lvl()], has: (p) => p.knowChest, useless: () => false, learn: (p) => learnChestMap(p) },
+  keymap: { icon: '📜', name: 'Kalit xaritasi', text: 'Darvoza kaliting qayerdaligini minixaritada va ekranda ko‘rsatadi.', price: () => [25, 40, 70][mapLvl()], has: (p) => p.knowKey, useless: (p) => p.gkey, learn: (p) => learnKeyMap(p) },
+  chestmap: { icon: '🗺️', name: 'Xazina xaritasi', text: 'Hamma ochilmagan sandiqlar joyini minixaritada va ekranda ko‘rsatadi.', price: () => [15, 25, 50][mapLvl()], has: (p) => p.knowChest, useless: () => false, learn: (p) => learnChestMap(p) },
 };
 const MAP_KEYS = Object.keys(MAPS);
 function buyMap(p, key) {
@@ -3668,8 +3801,8 @@ const myDist = (p) => G.distExit[p.py * G.N + p.px];
 // Boshqarish mumkin bo‘lgan raqiblar: shu qurilmadagi botlar, onlayn do‘stlar va xona egasining botlari.
 function rivalTargets(p) {
   const N = G.N, out = [];
-  for (const q of G.players) if (q !== p && q.alive && !q.finished) out.push({ kind: 'local', q, name: q.name, idx: q.py * N + q.px });
-  for (const r of remoteList()) if (r.alive && !r.fin && r.peer) out.push({ kind: 'remote', r, name: r.name, peer: r.peer, bi: r.bi, idx: Math.round(r.y) * N + Math.round(r.x) });
+  for (const q of G.players) if (q !== p && q.alive && !q.finished && !sameTeam(p, q)) out.push({ kind: 'local', q, name: q.name, idx: q.py * N + q.px });
+  for (const r of remoteList()) if (r.alive && !r.fin && r.peer && !sameTeam(p, r)) out.push({ kind: 'remote', r, name: r.name, peer: r.peer, bi: r.bi, idx: Math.round(r.y) * N + Math.round(r.x) });
   for (const t of out) t.d = G.distExit[t.idx];
   return out.filter((t) => t.d >= 0);
 }
@@ -3834,7 +3967,7 @@ function applyFx(q, kind, arg, from) {
   else if (kind === 'fogbomb') { forgetArea(q, 14); say(`${who} tuman bombasi otdi — xaritang yana tumanga burkandi!`); }
   else if (kind === 'glue') { q.slow = 20; say(`${who} yelim sepdi — 20 soniya sekin yurasan.`); ears(q, () => Sound.boing()); }
   else if (kind === 'bandit') { callBandit(q); say(`${who} qaroqchini senga yubordi — qoch!`); }
-  else if (kind === 'scramble') { q.scMap = (Math.random() * SCRAMBLES.length) | 0; q.scramble = 60; say(`${who} boshqaruvingni aralashtirdi (60 s): ${scrDesc(q.scMap)}`, 5200); }
+  else if (kind === 'scramble') { q.scMap = (Math.random() * SCRAMBLES.length) | 0; q.scramble = 30; say(`${who} boshqaruvingni aralashtirdi (30 s): ${scrDesc(q.scMap)}`, 5200); }
   else if (kind === 'amnesia') { startAmnesia(q, AMNESIA_S); say(`${who} senga akleroz yubordi — ${AMNESIA_S} soniya ochgan joylaring ko‘rinmaydi!`, 4200); }
   else if (kind === 'flip') { q.flip = FLIP_S; say(`${who} dunyoni teskari ag‘dardi — ${FLIP_S} soniya! Joystik esa o‘sha-o‘sha 😄`, 4200); ears(q, () => Sound.boing()); }
   else if (kind === 'mask') { startMask(q, arg); const mk = MASKS[q.maskK]; say(`${who} seni ${mk.to} aylantirdi ${mk.e} — hamma senga qarab kulyapti!`, 4200); ears(q, () => Sound.cluck()); }
@@ -4073,6 +4206,19 @@ function drawPTraps(V, t) {
 
 // Radar: yaqin atrofdagi begona yashirin tuzoqlar belgilanadi (tumanda ham ko‘rinadi).
 const RADAR_R = 9;
+// Ovchi qiz: 2 katak ichidagi yashirin tuzoqlar yonib turadi.
+function drawSense(V, t) {
+  const { ts, ox, oy, p } = V, N = G.N, spr = popSprite('⚠️'), k = (ts * 0.6) / spr.width;
+  for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) {
+    const x = p.px + dx, y = p.py + dy;
+    if (x < 0 || y < 0 || x >= N || y >= N) continue;
+    const i = y * N + x;
+    if (G.trap[i] < 0 || p.spent[i] || !p.explored[i]) continue;
+    const cx = ox + (x + 0.5) * ts, cy = oy + (y + 0.5) * ts;
+    glowAt(cx, cy, ts * 0.7, `rgba(255,170,60,${0.25 + 0.2 * Math.sin(t * 5 + i)})`);
+    ctx.drawImage(spr, cx - (spr.width * k) / 2, cy - (spr.height * k) / 2, spr.width * k, spr.height * k);
+  }
+}
 function drawRadar(V, t) {
   const { ts, ox, oy, p } = V, N = G.N;
   if (!(p.radar > 0)) return;
@@ -4308,7 +4454,7 @@ function feed(kind, a, b, mk) {
 
 /* ---- Devor: yo‘lakni vaqtincha to‘sadi (hamma ko‘radi); hech kim qamalib qolmasligi uchun aylanib o‘tadigan yo‘l bo‘lishi shart ---- */
 const PW_LIFE = 20, PW_MAX = 2;
-const PWALL = { icon: '🚧', name: 'Devor', price: ECON.price.rare, text: `Oldingdagi yo‘lakni ${PW_LIFE} soniya to‘sib qo‘yasan — hamma uni ko‘radi, aylanib o‘tishga majbur. Boshqa yo‘l bo‘lmasa qo‘yib bo‘lmaydi.` };
+const PWALL = { icon: '🚧', name: 'Devor', price: ECON.price.common, text: `Oldingdagi yo‘lakni ${PW_LIFE} soniya to‘sib qo‘yasan — hamma uni ko‘radi, aylanib o‘tishga majbur. Boshqa yo‘l bo‘lmasa qo‘yib bo‘lmaydi.` };
 const myWalls = (p) => G.walls.filter((w) => w.owner === p);
 const wallList = (owner) => G.walls.filter((w) => w.owner === owner).map((w) => [w.id, w.cell]);
 // Katakni devorga aylantiradi / qaytaradi (bir katakda ikkita devor bo‘lsa — sanaladi).
@@ -4490,12 +4636,12 @@ function duelCandidates(p) {
   if (G.mode !== 'play' || !freeP(p) || p.jail || p.duel || p.duelCool > 0 || p.pick) return [];
   const out = [], dist = (x, y) => Math.hypot(x - p.px, y - p.py);
   for (const q of G.players) {
-    if (q === p || !q.bot || !q.alive || q.finished || !freeP(q) || q.jail || q.cloak > 0 || q.duel || q.duelCool > 0) continue;
+    if (q === p || !q.bot || !q.alive || q.finished || !freeP(q) || q.jail || q.cloak > 0 || q.duel || q.duelCool > 0 || sameTeam(p, q)) continue;
     const d = dist(q.px, q.py);
     if (d <= DUEL_R) out.push({ kind: 'bot', q, name: q.name, d });
   }
   if (G.online && NET.named) for (const r of remoteList()) {
-    if (r.isBot || !r.alive || r.fin || r.jail || !r.peer) continue;
+    if (r.isBot || !r.alive || r.fin || r.jail || !r.peer || sameTeam(p, r)) continue;
     const d = dist(r.x, r.y);
     if (d <= DUEL_R) out.push({ kind: 'remote', r, name: r.name, peer: r.peer, d });
   }
@@ -4943,7 +5089,7 @@ function toolsRender(p) {
 // Bot kalit joyini bilmaydi; ma’lum vaqtdan keyin xaritani «topgandek» kalit tomonga yo‘naladi (mahoratiga qarab).
 function botKeyHint(p, dt) {
   const B = p.bot;
-  if (p.gkey || p.knowKey) return;
+  if (hasKey(p) || p.knowKey) return;
   if (B.keyT === undefined) B.keyT = [95, 60, 35][BOT_SKILL.indexOf(B.K)] * (0.7 + Math.random() * 0.6);
   B.keyT -= dt;
   if (B.keyT <= 0) p.knowKey = true;
@@ -5192,7 +5338,7 @@ function getPDist(p) {
 }
 // Qiyinlik bo‘yicha aql: oson — sustroq, qiyin — to‘liq kuch.
 const AI_LV = [{ k: 0.5, pack: 0, leap: false, search: 4 }, { k: 0.8, pack: 1, leap: true, search: 6 }, { k: 1, pack: 2, leap: true, search: 8 }];
-const aiLv = () => AI_LV[clamp(lvl(), 0, 2)];
+const aiLv = () => AI_LV[clamp(mapLvl(), 0, 2)];
 const around = (N, c) => [c - 1, c + 1, c - N, c + N];
 // O‘yinchi yaqin soniyalarda qayerga yetib borishi mumkin: yuzi qaragan tomonga yo‘lak bo‘ylab K katak.
 function aheadCell(p, K) {
@@ -5210,6 +5356,7 @@ function aheadCell(p, K) {
   return y * N + x;
 }
 function updateBeasts(dt) {
+  if (G.sleepT > 0) return;   // zar hodisasi: hayvonlar uxlayapti
   for (const b of G.beasts) {
     if (b.cool > 0 && b.cool < 90) b.cool -= dt;
     if (b.alertT > 0) { b.alertT -= dt; if (b.alertT <= 0) b.alert = ''; }
@@ -5306,7 +5453,7 @@ function packAlert(b, p) {
   for (const o of G.beasts) {
     if (o === b || o.type !== b.type || n >= A.pack || o.cool > 0) continue;
     if (!(o.state === 'wander' || o.state === 'track' || o.state === 'search')) continue;
-    if (Math.abs(o.x - b.x) + Math.abs(o.y - b.y) > 12 + 2 * lvl()) continue;
+    if (Math.abs(o.x - b.x) + Math.abs(o.y - b.y) > 12 + 2 * mapLvl()) continue;
     o.state = 'chase'; o.target = p.id; o.timer = BEASTS[o.type].chaseTime - 1; o.role = 'flank'; o.lunge = 0; o.acc = 0;
     o.last = p.py * G.N + p.px; o.alert = '!'; o.alertT = 1; n++;
   }
@@ -5437,6 +5584,7 @@ function beastFlee(b, p) {
 }
 
 function loseLife(p) {
+  if (!p.bot) buzz([90, 40, 90]);
   p.lives = Math.max(0, p.lives - 1);
   p.hurtT = 1.1;
   if (p.lives <= 0) p.alive = false;
@@ -5453,6 +5601,7 @@ const respawnVerse = (p) => `Hamma narsang yo‘qoladi: pul, sehrlar, kalit, xar
 // Uchala jon tugadi: o‘yin tugamaydi — biroz o‘tib o‘yinchi hamma narsasini yo‘qotib, boshidan boshlaydi.
 function playerDown(p) {
   if (p.respawnT > 0) return;
+  dropKey(p);
   p.respawnT = RESPAWN_S;
   p.stats.deaths++;
   p.moving = false; p.moveT = 1; p.jump = null; p.slide = null; p.tele = null; p.pending = null;
@@ -5463,7 +5612,7 @@ function playerDown(p) {
   dropWalls(p);
   const offer = !!p.ui && !G.reviveUsed && Ads.enabled();
   if (offer) p.respawnT = RESPAWN_S + 4;   // reklama haqida o‘ylab olishga vaqt
-  if (p.ui) { p.ui.out.hidden = false; p.ui.outTitle.textContent = 'Halok bo‘lding'; p.ui.outVerse.textContent = respawnVerse(p); p.ui.adrev.hidden = !offer; }
+  if (p.ui) { p.ui.out.hidden = false; p.ui.outTitle.textContent = 'Halok bo‘lding'; p.ui.outVerse.textContent = respawnVerse(p); p.ui.adrev.hidden = !offer; p.ui.ghost.hidden = !rivalTargets(p).length; p.ui.ghost.textContent = '👻 Arvoh bo‘lib yetakchiga tuman pufla'; p.ui.ghost.disabled = false; }
   else if (p.bot) { const m = me(); if (m) toast(m, `${p.name} halok bo‘ldi — hamma narsasini yo‘qotib, boshidan boshlaydi.`); }
   netDirty(p, true);
 }
@@ -5488,13 +5637,16 @@ function respawn(p) {
   if (p.bot) { const old = p.bot; botInit(p, BOT_SKILL.indexOf(old.K)); Object.assign(p.bot, { prev: old.prev, dist: old.dist, q: old.q }); }
   G.vans = G.vans.filter((v) => v.target !== p.id);
   if (!p.bot) mmInit(p);
+  const keyLeft = p.keyDropAt >= 0 && G.keyCells[p.keySlot] === p.keyDropAt;
+  if (keyLeft) p.knowKey = true;
+  p.keyDropAt = -1;
   reveal(p); markVisited(p, st);
-  if (p.ui) { p.ui.out.hidden = true; p.ui.adrev.hidden = true; p.ui.cardwrap.hidden = true; p.ui.cardwrap.innerHTML = ''; }
+  if (p.ui) { p.ui.out.hidden = true; p.ui.adrev.hidden = true; p.ui.ghost.hidden = true; p.ui.cardwrap.hidden = true; p.ui.cardwrap.innerHTML = ''; }
   if (!p.bot) document.body.classList.remove('rewind');
   emit(x, y, 28, 'spark');
   floatText(x, y, 'Qayta tug‘ilding', '#cfe9ff');
   ears(p, () => Sound.portal());
-  toast(p, 'Hamma narsang yo‘qoldi — labirintni boshidan boshlayapsan. 3 jon qaytdi.', 4200);
+  toast(p, keyLeft ? '3 jon qaytdi. 🔑 Kaliting halok bo‘lgan joyingda qoldi — tepadagi yo‘nalish ko‘rsatadi, uni faqat sen ola olasan.' : 'Hamma narsang yo‘qoldi — labirintni boshidan boshlayapsan. 3 jon qaytdi.', 5200);
   if (p.bot) { const m = me(); if (m && nearMe(p)) toast(m, `${p.name} boshidan boshladi.`); botSay(p, 4, false); }
   netDirty(p, true);
 }
@@ -5560,7 +5712,9 @@ const DIRS = ['up', 'right', 'down', 'left'];
 const DVEC = { up: [0, -1], right: [1, 0], down: [0, 1], left: [-1, 0] };
 const ARROW = { up: '↑', right: '→', down: '↓', left: '←' };
 const dirName = (d) => (d[0] > 0 ? 'right' : d[0] < 0 ? 'left' : d[1] < 0 ? 'up' : 'down');
-const lvl = () => DIFFS[G.diff].lvl;
+const mapLvl = () => DIFFS[G.diff].lvl;
+// Mini-o'yinlar bir pog'ona qiyinroq (o'rgatish bosqichlarida — odatdagidek).
+const lvl = () => Math.min(2, DIFFS[G.diff].lvl + (G.tut ? 0 : 1));
 const FX = () => DIFFS[G.diff].fx;   // tuzoq ta’sirining davomiyligi xaritaga qarab: oson < o‘rta < qiyin
 // Matndagi {fever}, {flood}… belgilar joriy xarita (yoki kitobda — oson–qiyin oralig‘i) qiymati bilan almashtiriladi.
 const fxTok = (str, F) => str.replace(/\{(\w+)\}/g, (m, k) => (F ? F[k] : `${DIFFS.easy.fx[k]}–${DIFFS.hard.fx[k]}`));
@@ -7253,6 +7407,16 @@ const makeGame = (spec, c) => (GAMES[spec.type] || GAMES.riddle).make(spec, c);
 const describe = (spec, L) => (GAMES[spec.type] ? GAMES[spec.type].desc(spec, L) : '');
 const poolText = (games) => 'Sinovlardan biri: ' + Array.from(new Set(games.map((g) => (g.type === 'dice' ? 'zar' : GAMES[g.type].name.toLowerCase())))).join(', ') + '.';
 
+// 7 yoshdan 70 yoshgacha: faqat tez va tushunarli mini-o'yinlar qoladi (murakkablari olib tashlandi).
+const EASY_GAMES = new Set(['dice', 'arrows', 'dodge', 'balance', 'memory', 'shell', 'simon', 'pattern', 'redlight', 'glass', 'tug', 'flappy', 'piano', 'stack', 'dino', 'bottle']);
+(function simplifyGames() {
+  const fill = ['memory', 'shell', 'arrows', 'simon', 'dodge'];
+  const fix = (list) => { const out = list.filter((g) => EASY_GAMES.has(g.type)); for (const k of fill) { if (out.length >= 3) break; if (!out.some((g) => g.type === k)) out.push(V(k)); } return out; };
+  for (const t of TRAPS) t.games = fix(t.games);
+  for (const k of Object.keys(BEASTS)) if (BEASTS[k].games) BEASTS[k].games = fix(BEASTS[k].games);
+  CHEST.games = fix(CHEST.games);
+})();
+
 /* ================= Ekran va o‘yinchining paneli ================= */
 const ARR8 = ['→', '↘', '↓', '↙', '←', '↖', '↑', '↗'];   // kompas yo‘nalishi: sharq, janubi-sharq, janub, ...
 const HEART = '<svg class="heart%C" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>';
@@ -7265,7 +7429,7 @@ function buildViewports() {
     p.ui = {
       root, zone: q('.joyzone'), joy: q('.joy'), knob: q('.knob'), ava: q('.who img'), name: q('.pname'), lives: q('.lives'),
       dist: q('.pdist'), exp: q('.pexp'), coin: q('.pcoin'), chips: q('.chips'), pips: q('.rvws'), chipEls: {}, sabBtn: q('.sabbtn'), sabN: q('.sbn'), sabPanel: q('.sabpanel'), mic: q('.vmic'), chat: q('.vchat'), chatPanel: q('.chatpanel'), mappick: q('.mappick'), feed: q('.vfeed'), duelBtn: q('.duelbtn'), duelAsk: q('.duelask'), map: q('.vmap'), toast: q('.vtoast'), flash: q('.vflash'),
-      tutbox: q('.tutbox'), adrev: q('.adrev'), out: q('.vout'), outTitle: q('.vout .big'), outVerse: q('.vout .verse'), cardwrap: q('.cardwrap'), toastTimer: 0,
+      tutbox: q('.tutbox'), adrev: q('.adrev'), ghost: q('.ghostbtn'), out: q('.vout'), outTitle: q('.vout .big'), outVerse: q('.vout .verse'), cardwrap: q('.cardwrap'), toastTimer: 0,
     };
     p.ui.mapCtx = p.ui.map.getContext('2d');
     p.ui.sabBtn.addEventListener('click', () => toolsOpen(p, !p.sab.open));
@@ -7278,6 +7442,7 @@ function buildViewports() {
     p.ui.ava.src = avatarURL(p.look);
     p.ui.tutbox.hidden = !G.tut;
     p.ui.adrev.addEventListener('click', () => adRevive(p));
+    p.ui.ghost.addEventListener('click', () => ghostPuff(p));
     p.ui.name.textContent = p.name;
     root.style.setProperty('--pc', p.color);
     bindJoystick(p);
@@ -7387,7 +7552,8 @@ function updateHUD() {
     setChip(p, 'luck', p.luck > 0, 'Omadli zar', 'gold');
     setChip(p, 'key', p.key > 0, p.key > 1 ? `Qamoq kaliti ×${p.key}` : 'Qamoq kaliti', 'gold');
     setChip(p, 'jail', p.jail, 'Qamoqda', 'bad');
-    setChip(p, 'gkey', p.gkey, '🔑 Darvoza kaliti bor', 'green');
+    if (G.teams) { const al = G.players.filter((q) => q !== p && q.team === p.team).map((q) => q.name).concat(remoteList().filter((r) => r.team === p.team).map((r) => r.name)); setChip(p, 'team', true, `${p.team === 0 ? '🟧' : '🟦'} Jamoa: sen${al.length ? ' + ' + al.join(', ') : ''}`, 'blue'); }
+    setChip(p, 'gkey', hasKey(p), p.gkey ? '🔑 Darvoza kaliti bor' : '🔑 Sherigingda kalit bor — darvoza ochiq', 'green');
     const vs = G.online ? voiceStatus() : '';
     setChip(p, 'voice', !!vs, vs, VOICE.track && !VOICE.muted ? 'green' : 'gold');
     const talk = VOICE.on ? [...(VOICE.speaking ? ['sen'] : []), ...Array.from(VOICE.peers.values()).filter((E) => E.speaking).map(voiceName)] : [];
@@ -7568,7 +7734,7 @@ function botInit(p, skill) {
     prev: new Int32Array(n), dist: new Int32Array(n), q: new Int32Array(n) };
 }
 const botPass = (t) => walk(t) || t === T.EXIT;
-const botCan = (p, t) => walk(t) || (t === T.EXIT && p.gkey);   // qulfli darvozadan faqat kalit bilan o‘tadi
+const botCan = (p, t) => walk(t) || (t === T.EXIT && hasKey(p));   // qulfli darvozadan faqat kalit bilan o‘tadi
 function isFrontier(p, c) {
   const N = G.N, E = p.explored, x = c % N;
   return (x > 0 && !E[c - 1]) || (x < N - 1 && !E[c + 1]) || (c >= N && !E[c - N]) || (c < N * N - N && !E[c + N]);
@@ -7578,7 +7744,7 @@ function isFrontier(p, c) {
 function botNext(p) {
   const N = G.N, g = G.g, E = p.explored, B = p.bot, si = p.py * N + p.px, dist = B.dist, prev = B.prev, q = B.q;
   if (p.compass > 0 && !B.know) { const ng = nearestGate(p.px, p.py); B.know = { x: ng.x, y: ng.y }; }
-  const kc = !p.gkey && p.knowKey ? G.keyCells[p.keySlot] : -1, kx = kc >= 0 ? kc % N : -1, ky = kc >= 0 ? (kc / N) | 0 : -1;
+  const kc = !hasKey(p) && p.knowKey ? G.keyCells[p.keySlot] : -1, kx = kc >= 0 ? kc % N : -1, ky = kc >= 0 ? (kc / N) | 0 : -1;
   for (let sd = 0; sd < 4; sd++) B.minD[sd] = Math.min(B.minD[sd], distToSide(si, sd, N));
   const wantLoot = B.loot;
   dist.fill(-1);
@@ -7587,11 +7753,11 @@ function botNext(p) {
   while (h < t) {
     const c = q[h++], d = dist[c];
     if (g[c] === T.EXIT) { exit = c; break; }
-    if (keyC < 0 && !p.gkey && G.keyAt[c] === p.keySlot) keyC = c;
+    if (keyC < 0 && !hasKey(p) && G.keyAt[c] === p.keySlot) keyC = c;
     if (wantLoot && loot < 0 && d <= 45 && ((!B.know && G.item[c] === ITEM_IX.compass) || (G.coin[c] > 0 && p.coins < 8))) loot = c;
     if (c !== si && isFrontier(p, c)) {
       let guide = 0;
-      if (!p.gkey) { if (kx >= 0) guide = (Math.abs((c % N) - kx) + Math.abs(((c / N) | 0) - ky)) * Math.max(0.9, B.bias); }   // kalitsiz: kalit tomonga yoki eng yaqin chegaradan boshlab
+      if (!hasKey(p)) { if (kx >= 0) guide = (Math.abs((c % N) - kx) + Math.abs(((c / N) | 0) - ky)) * Math.max(0.9, B.bias); }   // kalitsiz: kalit tomonga yoki eng yaqin chegaradan boshlab
       else if (B.know) guide = (Math.abs((c % N) - B.know.x) + Math.abs(((c / N) | 0) - B.know.y)) * Math.max(0.9, B.bias);
       else if (B.side >= 0) { const ds = distToSide(c, B.side, N); guide = ds * B.bias; if (ds <= 3) band = true; }
       const s = d + guide + (hash2(c, B.salt) % 100) * B.K.noise * 0.01 + (c === B.target ? -6 : 0);
@@ -7604,7 +7770,7 @@ function botNext(p) {
     }
   }
   // taxmin qilingan tomon to‘liq tekshirib bo‘lingan bo‘lsa — boshqa tomonni taxmin qiladi
-  if (p.gkey && exit < 0 && !B.know && B.side >= 0 && B.minD[B.side] <= 4 && !band) {
+  if (hasKey(p) && exit < 0 && !B.know && B.side >= 0 && B.minD[B.side] <= 4 && !band) {
     B.done[B.side] = true;
     const left = [0, 1, 3, 2].filter((sd) => !B.done[sd]);
     B.side = left.length ? pickRand(left) : -1;
@@ -7700,6 +7866,7 @@ function updatePlayerInner(p, dt) {
   if (p.fever > 0) { p.fever -= dt; if (p.fever <= 0) { p.fever = 0; reveal(p); toast(p, 'Isitma tushdi. Ko‘zing yana ravshan.'); } }
   if (p.torch > 0) { p.torch -= dt; if (p.torch <= 0) { p.torch = 0; toast(p, 'Mash’al o‘chdi.'); } }
   if (p.compass > 0) p.compass = Math.max(0, p.compass - dt);
+  if (p.fogT > 0) { p.fogT -= dt; if (p.fogT <= 0) { p.fogT = 0; reveal(p); } }
   if (p.boots > 0) p.boots = Math.max(0, p.boots - dt);
   if (p.frozen > 0) { p.frozen = Math.max(0, p.frozen - dt); if (p.frozen === 0) toast(p, 'Muz erib ketdi — yana yurasan.'); }
   if (p.slow > 0) p.slow = Math.max(0, p.slow - dt);
@@ -7753,12 +7920,16 @@ function newGame(seed, diff, cfg, opts = {}) {
   G.online = !!opts.online;
   G.tut = opts.tut || null;
   G.daily = opts.daily || null;
+  G.teams = !!opts.teams && !opts.tut && !opts.daily;
   G.reviveUsed = false;
+  G.nextZar = 100; G.zarN = 0; G.sleepT = 0;
   G.remotes = new Map();
   NET.fx = []; NET.seen = {}; NET.slotSeed = -1; NET.pdone = new Set();
   setupWorld(seed, diff, cfg);
   for (const p of G.players) { reveal(p); markVisited(p, G.start); }
-  for (const p of G.players) { p.cam = { x: p.px, y: p.py }; p.face = { x: 0, y: -1 }; }
+  for (const p of G.players) { p.cam = { x: p.px, y: p.py }; p.face = { x: 0, y: -1 }; p.route = [G.start]; p.keyDropAt = -1; p.guardOk = false; p.ghostUsed = false; }
+  if (G.teams && !G.online) G.players.forEach((p, k) => { p.team = k < 2 ? 0 : 1; });
+  refreshKeys();
   viewers = G.players.filter((q) => !q.bot).slice(0, 1);   // ekran faqat o‘yinchining o‘ziga qaraydi (botlarning ko‘zi bilan emas)
   assignKeys();
   keysDown.clear();
@@ -7767,6 +7938,7 @@ function newGame(seed, diff, cfg, opts = {}) {
   layout();
   setMode('play');
   const rivals = G.players.length - 1;
+  if (G.teams && !G.online) toast(me(), `🟧 2×2: sen va ${G.players[1] ? G.players[1].name : 'sherik'} bir jamoasiz. Kalitni kim topsa ham — darvoza ikkalangizga ochiladi!`, 5600);
   if (G.tut) { tutSetup(); voiceUI(); return; }
   if (G.daily) { toast(me(), `📅 Kunlik labirint #${G.daily.no}. Bugun hamma aynan shu labirintni o‘ynaydi — tezroq chiq va natijangni do‘stlaringga yubor!`, 5200); voiceUI(); return; }
   toast(me(), `Kirish yopildi.${rivals ? ` ${rivals} ta raqib ham yo‘lga chiqdi.` : ''} 🔑 Kalitni top (ko‘pincha boshi berk yo‘lakda) → 🚪 darvozani och. Darvozani 🧭 kompas ko‘rsatadi.`, 5000);
@@ -7777,7 +7949,7 @@ function newGame(seed, diff, cfg, opts = {}) {
   voiceUI();
   if (G.online) netDirty(me(), true);
 }
-function startLocal() { leaveRoom(); newGame(randSeed(), selDiff(), playerCfg(cfg.bots)); }
+function startLocal() { leaveRoom(); launch(() => newGame(randSeed(), selDiff(), cfg.team ? teamCfg() : playerCfg(cfg.bots), { teams: !!cfg.team })); }
 function preview() {
   setupWorld(424242, 'medium', [{ name: '', look: cfg.look }]);
   const p = G.players[0], dist = bfs(G.N, G.g, G.start, walk);
@@ -7800,7 +7972,8 @@ function setMode(m) {
   const inGame = m === 'play' || m === 'paused';
   ui.tools.hidden = !inGame;
   ui.stage.hidden = !(inGame || m === 'over' || m === 'won');
-  ui.menu.hidden = m !== 'menu';
+  ui.menu.hidden = m !== 'menu' && !(m === 'loading' && false);
+  if (m === 'loading') { ui.menu.hidden = true; ui.end.hidden = true; ui.pause.hidden = true; }
   voiceUI();
   ui.pause.hidden = m !== 'paused';
   ui.end.hidden = !(m === 'over' || m === 'won');
@@ -7826,6 +7999,7 @@ function toMenu() {
 function selDiff() { const r = document.querySelector('input[name="diff"]:checked'); return r ? r.value : 'medium'; }
 function refreshBest() {
   buildTut();
+  buildAch();
   buildDaily();
   for (const k of ['easy', 'medium', 'hard']) {
     const v = parseFloat(store.get('jl_best_' + k));
@@ -7841,10 +8015,448 @@ function toggleMap() {
 function syncSound() { ui.bSound.setAttribute('aria-pressed', String(!Sound.muted)); }
 function setZoom(z) { G.zoom = clamp(z, 0.6, 1.8); store.set('jl_zoom2', String(G.zoom)); layout(); }
 
+/* ================= Zar hodisasi: har 2 daqiqada hammaga bir xil voqea ================= */
+const ZAR_EV = [
+  { i: '💰', t: 'Tanga yomg‘iri', d: 'Hammaning yoniga pul xaltalari tushdi!', f: (p) => coinRain(p) },
+  { i: '🌫️', t: 'Qalin tuman', d: '20 soniya hamma faqat yonini ko‘radi.', f: (p) => { p.fogT = 20; } },
+  { i: '😴', t: 'Hayvonlar uxladi', d: '25 soniya hayvonlar qimirlamaydi — fursatdan foydalan!', g: () => { G.sleepT = 25; } },
+  { i: '💨', t: 'Shamol', d: '15 soniya hamma ikki baravar tez yuradi.', f: (p) => { p.boots = Math.max(p.boots, 15); } },
+  { i: '🧭', t: 'Kompas', d: '20 soniya hammaga kompas — darvoza qayerda?', f: (p) => { p.compass = Math.max(p.compass, 20); } },
+  { i: '🐢', t: 'Yetakchiga to‘siq', d: 'Yetakchi 15 soniya sekin yuradi!', f: (p) => { if (p.leader) p.slow = Math.max(p.slow, 15); } },
+  { i: '🔥', t: 'Mash’al', d: '30 soniya hamma uzoqni ko‘radi.', f: (p) => { p.torch = Math.max(p.torch, 30); reveal(p); } },
+];
+function coinRain(p) {
+  const N = G.N, c = [];
+  for (let dy = -5; dy <= 5; dy++) for (let dx = -5; dx <= 5; dx++) {
+    const x = p.px + dx, y = p.py + dy, i = y * N + x;
+    if (x < 1 || y < 1 || x >= N - 1 || y >= N - 1 || (dx === 0 && dy === 0)) continue;
+    if (G.g[i] === T.PATH && !G.coin[i] && G.trap[i] < 0 && G.item[i] < 0 && !G.chest[i] && G.keyAt[i] < 0) c.push(i);
+  }
+  shuffle(c).slice(0, 2).forEach((i) => { G.coin[i] = ECON.pouch; mmSetAll(i); });
+}
+let zarEl = null;
+function zarEvent() {
+  const ev = ZAR_EV[hash2(G.seed, G.zarN++) % ZAR_EV.length];
+  if (ev.g) ev.g();
+  for (const p of G.players) if (p.alive && !p.finished && ev.f) ev.f(p);
+  for (const p of G.players) if (p.alive && ev.f === undefined) reveal(p);
+  for (const p of G.players) reveal(p);
+  feedShow(`🎲 Zar hodisasi: ${ev.i} ${ev.t} — ${ev.d}`);
+  if (!zarEl) { zarEl = document.createElement('div'); zarEl.className = 'zarban'; zarEl.setAttribute('role', 'status'); document.body.appendChild(zarEl); }
+  const m = me();
+  if (m && (m.card || m.pending)) return;   // karta ochiq: faqat lentada ko‘rinadi
+  zarEl.innerHTML = '<span class="zd">🎲</span><b></b><span></span>';
+  zarEl.querySelector('b').textContent = 'Zar tashlanmoqda…';
+  zarEl.classList.add('show', 'roll');
+  buzz(30); Sound.ok();
+  setTimeout(() => {
+    zarEl.classList.remove('roll');
+    zarEl.querySelector('.zd').textContent = ev.i;
+    zarEl.querySelector('b').textContent = ev.t;
+    zarEl.querySelectorAll('span')[1].textContent = ev.d;
+  }, 900);
+  setTimeout(() => zarEl.classList.remove('show'), 5200);
+}
+
+/* ================= Arvoh: halok bo'lgan o'yinchi yetakchiga tuman puflaydi (bir marta) ================= */
+function ghostPuff(p) {
+  if (p.alive || p.ghostUsed || !p.ui) return;
+  const ts = rivalTargets(p).sort((a, b) => a.d - b.d), t = ts[0];
+  if (!t) return;
+  p.ghostUsed = true;
+  if (t.kind === 'local') applyFx(t.q, 'fogbomb', undefined, p); else sendFx(t, 'fogbomb', undefined, p);
+  feed('fogbomb', p, t);
+  p.ui.ghost.textContent = `👻 ${t.name} tumanga burkandi!`;
+  p.ui.ghost.disabled = true;
+}
+
+/* ================= Darvoza qo'riqchisi: kalit bilan darvozaga yetganda oxirgi sinov ================= */
+const GUARD_GAMES = [V('arrows'), V('simon'), V('memory'), V('redlight'), V('glass'), V('dino'), V('stack'), V('pattern')];
+function guardCard(p) {
+  const game = pickRand(GUARD_GAMES);
+  openCard(p, { kind: 'guard', icon: '🗿', kicker: kick('Darvoza qo‘riqchisi', game), title: 'Oxirgi sinov', rhyme: 'Kalit qo‘lingda, eshik ro‘parangda,\nLekin qo‘riqchi turibdi yo‘lingda.', shart: describe(game, lvl()),
+    xus: 'Yutsang — darvoza ochiladi. Yutqazsang — 5 qadam ortga uloqtirilasan va yana urinib ko‘rasan.', game,
+    onResult: (ok) => { if (ok) { p.guardOk = true; Sound.ok(); return 'Qo‘riqchi yo‘l berdi — endi darvozaga kir!'; } Sound.hurt(); return 'Qo‘riqchi seni ortga itarib yubordi!'; },
+    onClose: (ok) => { if (!ok && p.alive) pushBack(p, 5, 'dust'); } });
+}
+
+/* ================= Yo'llarni takrorlash: o'yin oxirida hamma yurgan yo'l 8 soniyada ================= */
+let replayRaf = 0;
+function replayRoutes() {
+  const c = ui.endMap, g = c.getContext('2d'), N = G.N, sc = c.width / N;
+  if (!G.endBase) { G.endBase = makeCanvas(c.width, c.height); G.endBase.getContext('2d').drawImage(c, 0, 0); }
+  const base = G.endBase, many = G.players.length > 1, dur = 8000, t0 = performance.now();
+  const lines = G.players.filter((q) => q.route && q.route.length > 1).map((q) => ({ r: q.route, col: many ? q.color : '#ff3b1f' }));
+  cancelAnimationFrame(replayRaf);
+  const frame = () => {
+    const k = Math.min(1, (performance.now() - t0) / dur);
+    g.drawImage(base, 0, 0);
+    g.lineWidth = Math.max(1.5, sc * 0.55); g.lineCap = 'round'; g.lineJoin = 'round';
+    for (const L of lines) {
+      const n = Math.max(1, Math.floor(L.r.length * k));
+      g.strokeStyle = L.col; g.beginPath();
+      for (let j = 0; j < n; j++) {
+        const i = L.r[j], x = ((i % N) + 0.5) * sc, y = (((i / N) | 0) + 0.5) * sc;
+        const pr = j ? L.r[j - 1] : -1, jump = pr < 0 || Math.abs((pr % N) - (i % N)) + Math.abs(((pr / N) | 0) - ((i / N) | 0)) > 7;
+        if (jump) g.moveTo(x, y); else g.lineTo(x, y);
+      }
+      g.stroke();
+      const h = L.r[n - 1], hx = ((h % N) + 0.5) * sc, hy = (((h / N) | 0) + 0.5) * sc;
+      g.fillStyle = L.col; g.strokeStyle = '#fff'; g.lineWidth = Math.max(1, sc * 0.4);
+      g.beginPath(); g.arc(hx, hy, Math.max(4, sc * 1.4), 0, TAU); g.fill(); g.stroke();
+    }
+    if (k < 1 && (G.mode === 'won' || G.mode === 'over')) replayRaf = requestAnimationFrame(frame);
+  };
+  frame();
+}
+
+/* ================= Yutuqlar ================= */
+const ACH = [
+  { id: 'win1', i: '🏁', t: 'Birinchi g‘alaba', d: 'Erkin o‘yinda birinchi bo‘lib chiq.' },
+  { id: 'clean', i: '❤️', t: 'Toza o‘yin', d: 'Bitta ham jon yo‘qotmasdan yut.' },
+  { id: 'hard', i: '🏔️', t: 'Qiyin labirint', d: 'Qiyin labirintda yut.' },
+  { id: 'fast', i: '⚡', t: 'Chaqmoq', d: 'O‘rta labirintni 10 daqiqadan tez o‘t.' },
+  { id: 'bots3', i: '🤖', t: 'Uchtasini ham', d: '3 ta kuchli botga qarshi yut.' },
+  { id: 'team', i: '🤝', t: 'Jamoa ruhi', d: '2×2 rejimda yut.' },
+  { id: 'rich', i: '💰', t: 'Boyvachcha', d: 'Bitta o‘yinda 100 tanga yig‘.' },
+  { id: 'chest5', i: '🧰', t: 'Xazinachi', d: 'Bitta o‘yinda 5 ta sandiq och.' },
+  { id: 'duel3', i: '⚔️', t: 'Duelchi', d: 'Bitta o‘yinda 3 ta duel yut.' },
+  { id: 'sab10', i: '🪄', t: 'Sehrgar', d: 'Bitta o‘yinda 10 marta xalaqit ber.' },
+  { id: 'phoenix', i: '🔥', t: 'Qaytib keldi', d: 'Halok bo‘lib, baribir yut.' },
+  { id: 'tutall', i: '🎓', t: 'Sarguzasht tugadi', d: '10 ta bosqichning hammasini o‘t.' },
+  { id: 'tut30', i: '⭐', t: 'Uchala yulduz', d: 'Sarguzashtda 30 ta yulduz to‘pla.' },
+  { id: 'daily3', i: '📅', t: 'Uch kun ketma-ket', d: 'Kunlik labirintni 3 kun ketma-ket o‘t.' },
+  { id: 'daily7', i: '🔥', t: 'Bir hafta', d: 'Kunlik labirintni 7 kun ketma-ket o‘t.' },
+];
+['achList', 'achSum', 'eReplay'].forEach((id) => { ui[id] = $(id); });
+function achLoad() { try { const o = JSON.parse(store.get('jl_ach') || '{}'); return o && typeof o === 'object' ? o : {}; } catch (e) { return {}; } }
+function achCheck(winner) {
+  const got = achLoad(), p = me(), now = [];
+  const give = (id) => { if (!got[id]) { got[id] = Date.now(); now.push(ACH.find((a) => a.id === id)); } };
+  const won = !!winner && (winner === p || (G.teams && winner.team === p.team));
+  if (won && !G.tut && !G.daily) give('win1');
+  if (won && winner === p && p.stats.deaths === 0 && p.lives === 3 && !G.tut) give('clean');
+  if (won && G.diff === 'hard') give('hard');
+  if (won && winner === p && G.diff === 'medium' && G.time < 600) give('fast');
+  if (won && winner === p && !G.teams && G.players.filter((q) => q.bot && q.bot.K === BOT_SKILL[2]).length >= 3) give('bots3');
+  if (won && G.teams) give('team');
+  if (won && winner === p && p.stats.deaths > 0) give('phoenix');
+  if (p.stats.coins >= 100) give('rich');
+  if (p.stats.chests >= 5) give('chest5');
+  if (p.stats.duelWins >= 3) give('duel3');
+  if (p.stats.sabotage >= 10) give('sab10');
+  const tp = tutLoad();
+  if (LEVELS.every((_, k) => tp[k] > 0)) give('tutall');
+  if (tp.reduce((a, v) => a + (v | 0), 0) >= 30) give('tut30');
+  const ds = dailyLoad();
+  if ((ds.streak | 0) >= 3) give('daily3');
+  if ((ds.streak | 0) >= 7) give('daily7');
+  if (now.length) {
+    store.set('jl_ach', JSON.stringify(got));
+    const dl = document.createElement('dl'); dl.className = 'stats tutstars';
+    for (const a of now) addRow(dl, `🏆 Yangi yutuq: ${a.i} ${a.t}`, '✓', 'record');
+    ui.eBody.prepend(dl);
+  }
+}
+function buildAch() {
+  if (!ui.achList) return;
+  const got = achLoad();
+  ui.achList.innerHTML = '';
+  for (const a of ACH) {
+    const li = document.createElement('li'); if (!got[a.id]) li.className = 'off';
+    const ic = document.createElement('i'); ic.textContent = a.i;
+    const box = document.createElement('div'), b = document.createElement('b'), sm = document.createElement('small');
+    b.textContent = a.t; sm.textContent = a.d; box.append(b, sm); li.append(ic, box); ui.achList.appendChild(li);
+  }
+  ui.achSum.textContent = `${ACH.filter((a) => got[a.id]).length}/${ACH.length}`;
+}
+
+/* ================= 2×2: sen + 1 bot sherik, 2 ta bot raqib ================= */
+function teamCfg() { return playerCfg(3); }
+
+/* ================= Do‘stlar va zallar (Firebase yoki ?net=local sinov bazasi) ================= */
+let fbP = null;
+// Firebase: bitta ilova, anonim kirish (ro‘yxatdan o‘tmasdan har kimga o‘z ID si).
+function fbInit() {
+  if (fbP) return fbP;
+  fbP = (async () => {
+    const C = NET_CFG.firebase;
+    if (!C.databaseURL) return null;
+    if (!window.firebase || !window.firebase.database) {
+      await loadScript(FB_SDK + 'firebase-app-compat.js');
+      await loadScript(FB_SDK + 'firebase-auth-compat.js');
+      await loadScript(FB_SDK + 'firebase-database-compat.js');
+    }
+    const fb = window.firebase, app = fb.apps.length ? fb.app() : fb.initializeApp(C), db = fb.database(app);
+    let uid = null;
+    try { const auth = fb.auth(app); if (!auth.currentUser) await auth.signInAnonymously(); uid = auth.currentUser.uid; } catch (e) { console.warn('Anonim kirish yoqilmagan:', e && e.code); }
+    return { fb, app, db, uid };
+  })().catch((e) => { console.warn(e); fbP = null; return null; });
+  return fbP;
+}
+async function firebaseDB() {
+  const F = await fbInit();
+  if (!F || !F.uid) return null;
+  const { db, fb } = F, ref = (p) => db.ref(p);
+  return {
+    uid: F.uid,
+    get: (p) => ref(p).once('value').then((sn) => sn.val()),
+    set: (p, v) => ref(p).set(v),
+    update: (p, o) => ref(p).update(o),
+    remove: (p) => ref(p).remove(),
+    on: (p, cb) => { const f = (sn) => cb(sn.val()); ref(p).on('value', f); return () => ref(p).off('value', f); },
+    onDisconnect: (p, v) => (v === null ? ref(p).onDisconnect().remove() : ref(p).onDisconnect().set(v)),
+    stamp: () => fb.database.ServerValue.TIMESTAMP,
+    searchUsers: (q) => ref('users').orderByChild('nl').startAt(q).endAt(q + '').limitToFirst(8).once('value').then((sn) => { const o = []; sn.forEach((c) => { o.push(Object.assign({ uid: c.key }, c.val())); }); return o; }),
+  };
+}
+// Sinov uchun: bitta brauzerdagi oynalar o‘rtasida umumiy «baza» (localStorage; har bir tugun alohida kalitda — oynalar bir-birining yozuvini o‘chirmasin).
+function localDB() {
+  const P = 'zdb|', seg = (p) => p.split('/').filter(Boolean);
+  const rd = (k) => { try { const v = localStorage.getItem(k); return v === null ? undefined : JSON.parse(v); } catch (e) { return undefined; } };
+  const getAt = (o, ks) => ks.reduce((x, k) => (x && typeof x === 'object' ? x[k] : undefined), o);
+  const read = (p) => {
+    const ks = seg(p);
+    if (ks.length >= 2) return getAt(rd(P + ks[0] + '|' + ks[1]), ks.slice(2));
+    const out = {}; let any = false;
+    for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k && k.startsWith(P + ks[0] + '|')) { out[k.slice((P + ks[0] + '|').length)] = rd(k); any = true; } }
+    return any ? out : undefined;
+  };
+  const writeAt = (p, v) => {
+    const ks = seg(p), key = P + ks[0] + '|' + ks[1];
+    if (ks.length === 2) { if (v === null || v === undefined) localStorage.removeItem(key); else localStorage.setItem(key, JSON.stringify(v)); return; }
+    let root = rd(key); if (!root || typeof root !== 'object') root = {};
+    let o = root; const rest = ks.slice(2);
+    for (let i = 0; i < rest.length - 1; i++) { if (!o[rest[i]] || typeof o[rest[i]] !== 'object') o[rest[i]] = {}; o = o[rest[i]]; }
+    if (v === null || v === undefined) delete o[rest[rest.length - 1]]; else o[rest[rest.length - 1]] = v;
+    if (Object.keys(root).length) localStorage.setItem(key, JSON.stringify(root)); else localStorage.removeItem(key);
+  };
+  const subs = new Set();
+  const fire = () => { for (const sb of subs) { const v = read(sb.path), j = JSON.stringify(v === undefined ? null : v); if (j !== sb.last) { sb.last = j; sb.cb(JSON.parse(j)); } } };
+  addEventListener('storage', (e) => { if (e.key && e.key.startsWith(P)) fire(); });
+  let uid = sessionStorage.getItem('zuid');
+  if (!uid) { uid = 'u' + Math.random().toString(36).slice(2, 10); sessionStorage.setItem('zuid', uid); }
+  const odc = [];
+  addEventListener('pagehide', () => { for (const [pp, v] of odc) writeAt(pp, v); });
+  return {
+    uid, local: true,
+    get: async (pp) => { const v = read(pp); return v === undefined ? null : v; },
+    set: async (pp, v) => { writeAt(pp, v); fire(); },
+    update: async (pp, o) => { for (const k in o) writeAt(pp + '/' + k, o[k]); fire(); },
+    remove: async (pp) => { writeAt(pp, null); fire(); },
+    on: (pp, cb) => { const sb = { path: pp, cb, last: undefined }; subs.add(sb); setTimeout(() => { const v = read(pp); sb.last = JSON.stringify(v === undefined ? null : v); cb(v === undefined ? null : v); }, 0); return () => subs.delete(sb); },
+    onDisconnect: async (pp, v) => { odc.push([pp, v]); },
+    stamp: () => Date.now(),
+    searchUsers: async (q) => Object.entries(read('users') || {}).filter(([, x]) => x && x.nl && x.nl.startsWith(q)).slice(0, 8).map(([id, x]) => Object.assign({ uid: id }, x)),
+  };
+}
+const SOC = { db: null, tag: '', friends: {}, fsub: {}, fdata: {}, reqs: {}, invites: {}, lobbies: {}, seenInv: {}, inv: null };
+['soc', 'socId', 'socCopy', 'hallOpen', 'quickPlay', 'hallPub', 'hallList', 'frCount', 'frIn', 'frAdd', 'frMsg', 'frSearch', 'frReq', 'frList', 'invBar', 'invTxt', 'invGo', 'invNo'].forEach((id) => { ui[id] = $(id); });
+const cleanName = (n) => (n || '').toLowerCase().replace(/[.#$\[\]\/\s]/g, '').slice(0, 14) || 'mehmon';
+const myName = () => (cfg.name || '').trim().slice(0, 14) || DEF_NAME;
+const myId = () => `${myName()}#${SOC.tag}`;
+async function socialInit(local) {
+  try {
+    const db = local ? localDB() : await firebaseDB();
+    if (!db) return;
+    SOC.db = db;
+    const tstore = local ? sessionStorage : null;
+    let tag = tstore ? tstore.getItem('jl_tag') : store.get('jl_tag');
+    if (!tag) { tag = String(1000 + ((Math.random() * 9000) | 0)); if (tstore) tstore.setItem('jl_tag', tag); else store.set('jl_tag', tag); }
+    SOC.tag = tag;
+    await socPublish();
+    db.onDisconnect(`users/${db.uid}/on`, false);
+    db.on(`friends/${db.uid}`, (v) => socFriends(v || {}));
+    db.on(`requests/${db.uid}`, (v) => { SOC.reqs = v || {}; socRender(); });
+    db.on(`invites/${db.uid}`, (v) => { SOC.invites = v || {}; socInvites(); });
+    db.on('lobbies', (v) => { SOC.lobbies = v || {}; socRender(); });
+    setInterval(() => { if (SOC.db) SOC.db.update(`users/${SOC.db.uid}`, { on: true, seen: SOC.db.stamp() }).catch(() => {}); }, 30000);
+    ui.soc.hidden = false;
+    ui.oCreate.hidden = true;   // «Zal ochish» xona yaratishni almashtiradi
+    socRender();
+  } catch (e) { console.warn('social', e); }
+}
+let pubT = 0;
+function socPublish() {
+  const db = SOC.db; if (!db) return Promise.resolve();
+  const name = myName(), nl = cleanName(name);
+  ui.socId.textContent = myId();
+  return Promise.all([
+    db.update(`users/${db.uid}`, { name, nl, tag: SOC.tag, look: cfg.look, on: true, seen: db.stamp(), room: NET.code || '' }),
+    db.set(`ids/${nl}_${SOC.tag}`, db.uid),
+  ]).catch(() => {});
+}
+function socFriends(v) {
+  const db = SOC.db;
+  SOC.friends = v;
+  for (const id of Object.keys(SOC.fsub)) if (!v[id]) { SOC.fsub[id](); delete SOC.fsub[id]; delete SOC.fdata[id]; }
+  for (const id of Object.keys(v)) if (!SOC.fsub[id]) SOC.fsub[id] = db.on(`users/${id}`, (u) => { SOC.fdata[id] = u || {}; socRender(); });
+  socRender();
+}
+const liveLobby = (L) => L && L.phase === 'lobby' && (L.n | 0) < (L.max || 4) && Date.now() - (L.at || 0) < 3 * 3600e3;
+function socRow(host, look, title, sub, acts, online) {
+  const li = document.createElement('li');
+  const img = document.createElement('img'); img.src = avatarURL(clamp(look | 0, 0, 3)); img.alt = '';
+  const box = document.createElement('div'), b = document.createElement('b'), sm = document.createElement('small');
+  if (online !== undefined) { const d = document.createElement('i'); d.className = 'dot' + (online ? ' on' : ''); b.appendChild(d); }
+  b.append(title); sm.textContent = sub; box.append(b, sm);
+  const a = document.createElement('div'); a.className = 'acts';
+  for (const [label, fn, primary] of acts) { const bt = document.createElement('button'); bt.type = 'button'; bt.className = 'btn sm ' + (primary ? 'primary' : 'ghost'); bt.textContent = label; bt.addEventListener('click', fn); a.appendChild(bt); }
+  li.append(img, box, a); host.appendChild(li);
+}
+function socRender() {
+  const db = SOC.db; if (!db) return;
+  ui.socId.textContent = myId();
+  const inRoom = !!(NET.code && NET.named);
+  ui.hallOpen.parentElement.hidden = inRoom; ui.hallPub.parentElement.hidden = inRoom;
+  // zallar: ochiq yoki do‘stimniki
+  ui.hallList.innerHTML = '';
+  const halls = Object.entries(SOC.lobbies).filter(([, L]) => liveLobby(L) && (L.pub || SOC.friends[L.host] || L.host === db.uid)).sort((a, b) => (b[1].at || 0) - (a[1].at || 0)).slice(0, 8);
+  for (const [code, L] of halls) {
+    const mine = L.host === db.uid || code === NET.code;
+    socRow(ui.hallList, L.look, `${L.hostName || 'Zal'}ning zali`, `${L.n | 0}/${L.max || 4} o‘yinchi · ${DIFFS[L.diff] ? DIFFS[L.diff].name : ''}${L.team ? ' · 2×2' : ''}${L.pub ? '' : ' · do‘stlar uchun'}`,
+      mine ? [] : [['Kirish', () => enterRoom(code, false), true]]);
+  }
+  if (!halls.length) { const li = document.createElement('li'); li.className = 'empty'; li.textContent = 'Hozir ochiq zal yo‘q — o‘zing och!'; ui.hallList.appendChild(li); }
+  // do‘stlik so‘rovlari
+  ui.frReq.innerHTML = '';
+  for (const [id, r] of Object.entries(SOC.reqs)) socRow(ui.frReq, r.look, `${r.name}#${r.tag}`, 'do‘stlik so‘ramoqda', [['✓', () => socAccept(id), true], ['✕', () => db.remove(`requests/${db.uid}/${id}`)]]);
+  // do‘stlar
+  ui.frList.innerHTML = '';
+  const fr = Object.keys(SOC.friends).map((id) => [id, SOC.fdata[id] || {}]).sort((a, b) => (b[1].on ? 1 : 0) - (a[1].on ? 1 : 0));
+  for (const [id, u] of fr) {
+    const L = u.room && SOC.lobbies[u.room], acts = [];
+    if (u.on && L && liveLobby(L) && u.room !== NET.code) acts.push(['Qo‘shilish', () => enterRoom(u.room, false), true]);
+    if (u.on && NET.code && NET.named && u.room !== NET.code) acts.push(['Chaqirish', () => socInvite(id, u), !acts.length]);
+    socRow(ui.frList, u.look, `${u.name || '…'}#${u.tag || ''}`, u.on ? (u.room ? (u.room === NET.code ? 'sen bilan zalda' : 'zalda') : 'onlayn') : 'oflayn', acts, !!u.on);
+  }
+  ui.frCount.textContent = fr.length ? `· ${fr.filter(([, u]) => u.on).length}/${fr.length} onlayn` : '';
+  if (!fr.length && !Object.keys(SOC.reqs).length) { const li = document.createElement('li'); li.className = 'empty'; li.textContent = 'Do‘stingning ID sini so‘ra (masalan, Ali#4821) va yuqoriga yoz.'; ui.frList.appendChild(li); }
+}
+async function socAdd() {
+  const db = SOC.db, raw = (ui.frIn.value || '').trim();
+  ui.frSearch.innerHTML = ''; ui.frMsg.textContent = '';
+  if (!db || !raw) return;
+  const m = raw.match(/^(.+?)#(\d{4})$/);
+  if (m) {
+    const uid = await db.get(`ids/${cleanName(m[1])}_${m[2]}`);
+    if (!uid) { ui.frMsg.textContent = 'Bunday ID topilmadi. Ism va 4 xonali raqamni tekshir.'; return; }
+    socRequest(uid);
+    return;
+  }
+  const list = (await db.searchUsers(cleanName(raw))).filter((u) => u.uid !== db.uid);
+  if (!list.length) { ui.frMsg.textContent = 'Hech kim topilmadi. To‘liq ID ni yozib ko‘r: Ism#1234'; return; }
+  for (const u of list) socRow(ui.frSearch, u.look, `${u.name}#${u.tag}`, SOC.friends[u.uid] ? 'allaqachon do‘sting' : u.on ? 'onlayn' : 'oflayn', SOC.friends[u.uid] ? [] : [['➕', () => socRequest(u.uid), true]], !!u.on);
+}
+async function socRequest(uid) {
+  const db = SOC.db;
+  if (uid === db.uid) { ui.frMsg.textContent = 'Bu o‘zingning ID ing 🙂'; return; }
+  if (SOC.friends[uid]) { ui.frMsg.textContent = 'U allaqachon do‘sting.'; return; }
+  if (SOC.reqs[uid]) { socAccept(uid); return; }   // u ham so‘ragan bo‘lsa — darhol do‘st
+  await db.set(`requests/${uid}/${db.uid}`, { name: myName(), tag: SOC.tag, look: cfg.look, at: db.stamp() });
+  ui.frMsg.textContent = '✓ So‘rov yuborildi — u qabul qilgach, ro‘yxatingda chiqadi.';
+  ui.frIn.value = ''; ui.frSearch.innerHTML = '';
+}
+async function socAccept(uid) {
+  const db = SOC.db;
+  await db.set(`friends/${db.uid}/${uid}`, true);
+  await db.set(`friends/${uid}/${db.uid}`, true);
+  await db.remove(`requests/${db.uid}/${uid}`);
+}
+function socInvite(uid) {
+  const db = SOC.db;
+  if (!NET.code) return;
+  db.set(`invites/${uid}/${db.uid}`, { code: NET.code, name: myName(), at: Date.now() });
+  ui.frMsg.textContent = '✓ Taklif yuborildi.';
+}
+function socInvites() {
+  const db = SOC.db;
+  const list = Object.entries(SOC.invites).filter(([, v]) => v && v.code && Date.now() - (v.at || 0) < 5 * 60e3 && v.code !== NET.code);
+  const [id, v] = list.sort((a, b) => b[1].at - a[1].at)[0] || [];
+  if (!v) { ui.invBar.hidden = true; SOC.inv = null; return; }
+  SOC.inv = { id, v };
+  ui.invTxt.textContent = `🎲 ${v.name} seni zalga chaqiryapti!`;
+  ui.invBar.hidden = false;
+  if (!SOC.seenInv[id + v.at]) { SOC.seenInv[id + v.at] = 1; buzz([40, 30, 40]); Sound.init(); Sound.ok(); }
+}
+function invAnswer(yes) {
+  const db = SOC.db, inv = SOC.inv;
+  ui.invBar.hidden = true;
+  if (!inv) return;
+  db.remove(`invites/${db.uid}/${inv.id}`);
+  if (yes) {
+    if (G.mode === 'play' || G.mode === 'paused' || G.mode === 'won' || G.mode === 'over') toMenu();
+    enterRoom(inv.v.code, false);
+    setTimeout(() => { const el = $('online'); if (el) el.scrollIntoView({ block: 'start', behavior: 'smooth' }); }, 200);
+  }
+}
+// Zal: xona ochilganda ro‘yxatga yoziladi, egasi chiqsa o‘chadi.
+function socRoomJoined(code, host) {
+  const db = SOC.db; if (!db) return;
+  db.update(`users/${db.uid}`, { room: code }).catch(() => {});
+  if (host) {
+    db.set(`lobbies/${code}`, { host: db.uid, hostName: myName(), look: cfg.look, pub: !!ui.hallPub.checked, n: 1, max: 4, diff: selDiff(), team: cfg.team ? 1 : 0, phase: 'lobby', at: Date.now() });
+    db.onDisconnect(`lobbies/${code}`, null);
+  }
+  socRender();
+}
+function socRoomLeft(code, host) {
+  const db = SOC.db; if (!db) return;
+  db.update(`users/${db.uid}`, { room: '' }).catch(() => {});
+  if (host && code) db.remove(`lobbies/${code}`);
+}
+function socLobby(patch) { const db = SOC.db; if (db && NET.host && NET.code) db.update(`lobbies/${NET.code}`, Object.assign({ at: Date.now() }, patch)).catch(() => {}); }
+function quickPlay() {
+  const db = SOC.db; if (!db) return;
+  const open = Object.entries(SOC.lobbies).filter(([code, L]) => liveLobby(L) && L.pub && L.host !== db.uid && code !== NET.code).sort((a, b) => (b[1].n | 0) - (a[1].n | 0));
+  if (open.length) enterRoom(open[0][0], false); else createRoom();
+}
+
+/* ================= Yuklanish ekrani: 0–100%, shu payt reklama (cheklov bilan) ================= */
+['loader', 'ldFill', 'ldPct', 'ldAd', 'ldAdC', 'ldTip', 'ldKicker'].forEach((id) => { ui[id] = $(id); });
+const LD_TIPS = [
+  '🔑 Har kimning o‘z kaliti bor. Raqib kalitini ko‘rasan, lekin ololmaysan — yoniga tuzoq qo‘yib ket!',
+  '☠️ Halok bo‘lsang, kaliting o‘sha joyda qoladi — qaytib kelib olasan.',
+  '🧭 Darvozani faqat kompas ko‘rsatadi.',
+  '🎲 Har 2 daqiqada zar tashlanadi — hammaga bir xil hodisa tushadi.',
+  '🗿 Darvoza oldida qo‘riqchi kutadi: oxirgi sinovni yut!',
+  '🪄 Do‘kondan tangaga sehr ol va raqibga ishlat.',
+  '🧍 Har qahramonning o‘z kuchi bor — menyuda rasmga bosib tanla.',
+  '🐆 Hayvon quvsa — burilishlarga qoch.',
+];
+let gamesRun = 0, lastAdAt = -1e12, launching = false;
+function launch(run, opts = {}) {
+  if (launching) return;
+  launching = true;
+  gamesRun++;
+  const ad = opts.ad !== false && Ads.enabled() && gamesRun > 1 && Date.now() - lastAdAt > ADS.gapMs;
+  setMode('loading');
+  ui.loader.hidden = false; ui.ldAd.hidden = true;
+  ui.ldKicker.textContent = opts.title || 'Zar Labirinti';
+  ui.ldTip.textContent = pickRand(LD_TIPS);
+  let pct = 0;
+  const set = (v) => { pct = v; ui.ldFill.style.width = v + '%'; ui.ldPct.textContent = Math.round(v) + '%'; };
+  const to = (v, ms) => new Promise((res) => { const a = pct, t0 = performance.now(); const tk = () => { const k = Math.min(1, (performance.now() - t0) / ms); set(a + (v - a) * k); if (k < 1) requestAnimationFrame(tk); else res(); }; requestAnimationFrame(tk); });
+  set(0);
+  (async () => {
+    try {
+      await to(35, 500);
+      if (ad) { lastAdAt = Date.now(); await Ads.interstitial().catch(() => {}); }
+      await to(85, ad ? 300 : 500);
+      await new Promise((r) => setTimeout(r, 30));
+      run();   // labirint shu yerda quriladi (katta labirintda biroz vaqt oladi)
+      await to(100, 200);
+    } finally {
+      ui.loader.hidden = true; launching = false;
+      if (G.mode === 'loading') setMode('menu');
+    }
+  })();
+}
+
 /* ================= Reklama: «ko‘rib davom et» (mukofotli reklama) ================= */
 // Hozir ADS.mode = 'demo' — haqiqiy reklama o‘rniga 5 soniyalik sinov oynasi chiqadi.
 // Play Market'ga chiqarishda: 'h5' (Google H5 Games Ads, adsbygoogle skripti bilan) yoki 'admob' (Capacitor + @capacitor-community/admob) qilib qo‘ying.
-const ADS = { mode: 'demo', admobRewardId: 'ca-app-pub-XXXXXXXXXXXXXXXX/NNNNNNNNNN' };
+const ADS = { mode: 'demo', admobRewardId: 'ca-app-pub-XXXXXXXXXXXXXXXX/NNNNNNNNNN', admobInterId: 'ca-app-pub-XXXXXXXXXXXXXXXX/NNNNNNNNNN', gapMs: 180000 };
 const Ads = {
   enabled() { return ADS.mode !== 'off'; },
   rewarded() {
@@ -7855,6 +8467,17 @@ const Ads = {
     const AdMob = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.AdMob;
     if (ADS.mode === 'admob' && AdMob) return AdMob.prepareRewardVideoAd({ adId: ADS.admobRewardId }).then(() => AdMob.showRewardVideoAd()).then(() => true, () => false);
     return Ads.demo();
+  },
+  // O'yin oldidan (yuklanish paytida) ko'rsatiladigan reklama.
+  interstitial() {
+    if (ADS.mode === 'h5' && typeof window.adBreak === 'function') return new Promise((res) => { window.adBreak({ type: 'start', name: 'game-start', adBreakDone: () => res(true) }); });
+    const AdMob = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.AdMob;
+    if (ADS.mode === 'admob' && AdMob) return AdMob.prepareInterstitial({ adId: ADS.admobInterId }).then(() => AdMob.showInterstitial()).then(() => true, () => false);
+    return new Promise((res) => {   // sinov rejimi: yuklanish oynasi ichida 5 soniya
+      ui.ldAd.hidden = false;
+      let left = 5; ui.ldAdC.textContent = left + ' s';
+      const iv = setInterval(() => { left--; ui.ldAdC.textContent = left + ' s'; if (left <= 0) { clearInterval(iv); ui.ldAd.hidden = true; res(true); } }, 1000);
+    });
   },
   demo() {
     return new Promise((res) => {
@@ -7875,6 +8498,7 @@ function adRevive(p) {
     if (G.mode !== 'play' && G.mode !== 'paused') return;
     if (!ok) { toast(p, 'Reklama oxirigacha ko‘rilmadi — boshidan boshlaysan.'); return; }
     if (p.alive) return;
+    if (p.keyDropAt >= 0 && G.keyCells[p.keySlot] === p.keyDropAt) { p.gkey = true; p.keyDropAt = -1; }   // tirildi — kalit yana qo'lida
     Object.assign(p, { alive: true, lives: 1, respawnT: 0, hurtT: 0, immune: RESPAWN_IMMUNE, moving: false, moveT: 1 });
     p.ui.out.hidden = true;
     reveal(p);
@@ -7896,7 +8520,7 @@ function dailyLoad() { try { const o = JSON.parse(store.get('jl_daily') || 'null
 function startDaily() {
   leaveRoom();
   const n = dailyNo();
-  newGame(dailySeed(n), 'daily', playerCfg(0), { daily: { no: n } });
+  launch(() => newGame(dailySeed(n), 'daily', playerCfg(0), { daily: { no: n } }), { title: `Kunlik labirint #${n}` });
 }
 function dailyEnd(winner) {
   const p = me(), n = G.daily.no, won = !!winner && winner === p, st = dailyLoad();
@@ -7987,7 +8611,7 @@ function startTut(n, seed) {
   const L = LEVELS[n - 1], conf = playerCfg(0);
   const names = shuffle(BOT_NAMES.slice()), looks = shuffle([0, 1, 2, 3].filter((k) => k !== cfg.look));
   for (let k = 0; k < (L.bots || 0); k++) conf.push({ name: names[k], look: looks[k % looks.length], bot: true, skill: L.botSkill || 0 });
-  newGame(seed || L.seed, 'L' + n, conf, { tut: { n, L, done: L.tasks.map(() => false), cur: -2, tipAt: 0, dirty: true } });
+  launch(() => newGame(seed || L.seed, 'L' + n, conf, { tut: { n, L, done: L.tasks.map(() => false), cur: -2, tipAt: 0, dirty: true } }), { ad: n > 3, title: `Sarguzasht · ${n}-bosqich` });
 }
 function tutSetup() {
   const T_ = G.tut, L = T_.L;
@@ -8089,12 +8713,13 @@ function endGame(winner) {
   keysDown.clear();
   document.body.classList.remove('rewind');
   G.winner = winner;
-  const mine = !!winner && winner === me();
+  const mine = !!winner && (winner === me() || (!!G.teams && winner.team !== undefined && winner.team === me().team));
   setMode(winner ? 'won' : 'over');
+  if (mine) buzz([60, 40, 140]);
   if (mine) Sound.win(); else Sound.lose();
   const D = DIFFS[G.diff], local = winner && G.players.includes(winner), total = G.players.length + G.remotes.size;
   ui.eKicker.textContent = `Labirint №${G.seed} · ${D.name}` + (total > 1 ? ` · ${total} o‘yinchi` : '') + (G.online ? ' · onlayn' : '');
-  ui.eTitle.textContent = mine ? 'Ozodsan!' : winner ? 'Ortda qolding' : 'O‘yin tugadi';
+  ui.eTitle.textContent = G.teams ? (mine ? (winner === me() ? 'Jamoang yutdi!' : `${winner.name} jamoani olib chiqdi!`) : winner ? 'Raqib jamoa yutdi' : 'O‘yin tugadi') : mine ? 'Ozodsan!' : winner ? 'Ortda qolding' : 'O‘yin tugadi';
   if (total === 1) ui.eVerse.textContent = winner ? 'Oxirgi zar tashlandi, o‘rmon jim bo‘ldi — sen labirintdan chiqding.' : 'Tuman seni o‘z bag‘riga oldi. Labirint yana kimnidir kutmoqda…';
   else if (mine) ui.eVerse.textContent = 'Sen labirintdan birinchi bo‘lib chiqding — zar oxirgi marta jaranglab, o‘rmon jim bo‘ldi.';
   else if (winner) ui.eVerse.textContent = `${winner.name} labirintdan birinchi bo‘lib chiqdi. Keyingi safar sen birinchi bo‘l!`;
@@ -8105,7 +8730,9 @@ function endGame(winner) {
   if (G.tut) tutEnd(winner);
   else if (G.daily) dailyEnd(winner);
   else { ui.eNew.textContent = 'Yangi labirint'; ui.eSame.textContent = 'Shu labirintni qaytadan'; }
+  G.endBase = null;
   drawEndMap();
+  achCheck(winner);
   const host = !G.online || NET.host;
   ui.eNew.hidden = !host; ui.eSame.hidden = !host || (!!G.tut && !winner) || !!G.daily;
   ui.eNote.hidden = host;
@@ -8147,8 +8774,9 @@ function soloStats(winner) {
 }
 function standings(winner) {
   const rows = [];
-  for (const p of G.players) rows.push({ name: p.name + (p.bot ? ' 🤖' : ' (sen)'), look: p.look, color: p.color, alive: p.alive, fin: p.finished, lives: p.lives, dist: p.dist, rem: p.finished ? 0 : remainingFrom(p.px, p.py), me: p === winner, extra: `${p.stats.dodged} sinov yutildi` + (p.stats.deaths ? ` · ☠ ${p.stats.deaths}` : '') });
-  for (const r of remoteList()) rows.push({ name: r.name + (r.isBot ? ' 🤖' : ''), look: r.look, color: r.color, alive: r.alive, fin: r.fin, lives: r.lives, dist: r.dist, rem: r.fin ? 0 : remainingFrom(r.x, r.y), me: r === winner, extra: (r.isBot ? 'bot' : 'onlayn') + (r.deaths ? ` · ☠ ${r.deaths}` : '') });
+  const tb = (x) => (G.teams && x.team !== undefined ? (x.team === 0 ? '🟧 ' : '🟦 ') : '');
+  for (const p of G.players) rows.push({ name: tb(p) + p.name + (p.bot ? ' 🤖' : ' (sen)'), look: p.look, color: p.color, alive: p.alive, fin: p.finished, lives: p.lives, dist: p.dist, rem: p.finished ? 0 : remainingFrom(p.px, p.py), me: p === winner, extra: `${p.stats.dodged} sinov yutildi` + (p.stats.deaths ? ` · ☠ ${p.stats.deaths}` : '') });
+  for (const r of remoteList()) rows.push({ name: tb(r) + r.name + (r.isBot ? ' 🤖' : ''), look: r.look, color: r.color, alive: r.alive, fin: r.fin, lives: r.lives, dist: r.dist, rem: r.fin ? 0 : remainingFrom(r.x, r.y), me: r === winner, extra: (r.isBot ? 'bot' : 'onlayn') + (r.deaths ? ` · ☠ ${r.deaths}` : '') });
   rows.sort((a, b) => (a.me ? -1 : b.me ? 1 : a.rem === b.rem ? 0 : a.rem - b.rem));
   const ol = document.createElement('ol');
   ol.className = 'stand';
@@ -8222,6 +8850,7 @@ const cfg = { bots: 1, skill: 1, name: DEF_NAME, look: 0 };
     if (s.look >= 0 && s.look < LOOKS.length) cfg.look = s.look | 0;
     if (s.bots >= 0 && s.bots <= 3) cfg.bots = s.bots | 0;
     if (s.skill >= 0 && s.skill <= 2) cfg.skill = s.skill | 0;
+    cfg.team = s.team === true;
   } catch (e) { /* ignore */ }
 })();
 function saveCfg() { store.set('jl_cfg4', JSON.stringify(cfg)); }
@@ -8244,21 +8873,24 @@ function buildSetup() {
   inp.id = 'pname0'; inp.maxLength = 14; inp.value = cfg.name; inp.autocomplete = 'off'; inp.spellcheck = false;
   inp.setAttribute('aria-label', 'Ismingiz');
   const sm = document.createElement('small');
-  const info = () => { sm.textContent = LOOKS[cfg.look].title + ' · rasmga bosib almashtir'; };
+  const info = () => { sm.textContent = `${LOOKS[cfg.look].title}: ${ABIL[cfg.look]} · rasmga bosib almashtir`; };
   info();
   btn.addEventListener('click', () => {
-    cfg.look = (cfg.look + 1) % LOOKS.length; img.src = avatarURL(cfg.look); info(); saveCfg();
+    cfg.look = (cfg.look + 1) % LOOKS.length; img.src = avatarURL(cfg.look); info(); saveCfg(); socPublish();
     if (G.mode === 'menu' && viewers[0]) viewers[0].look = cfg.look;
   });
-  inp.addEventListener('input', () => { cfg.name = inp.value; saveCfg(); });
+  inp.addEventListener('input', () => { cfg.name = inp.value; saveCfg(); clearTimeout(pubT); pubT = setTimeout(socPublish, 800); });
   box.append(inp, sm); row.append(btn, box);
   ui.setupRoster.appendChild(row);
   syncBots();
 }
 function syncBots() {
+  $('tm' + (cfg.team ? 1 : 0)).checked = true;
+  $('botRow').hidden = !!cfg.team;
   $('bc' + cfg.bots).checked = true;
   $('bs' + cfg.skill).checked = true;
   ui.skillRow.hidden = cfg.bots === 0;
+  if (cfg.team) { ui.skillRow.hidden = false; ui.pcNote.textContent = `2×2: sen 🟧 + 1 bot sherik — 2 ta ${['oson', 'o‘rta', 'kuchli'][cfg.skill]} bot 🟦 ga qarshi. Jamoaga bitta kalit: kimdir topsa, darvoza ikkalangizga ochiladi. Onlayn xonada esa odamlar navbat bilan jamoalarga bo‘linadi.`; return; }
   ui.pcNote.textContent = cfg.bots === 0 ? 'Yakka o‘yin — faqat sen va labirint.' : `${cfg.bots} ta ${['oson', 'o‘rta', 'kuchli'][cfg.skill]} bot sen bilan bir vaqtda poyga qiladi — har birining o‘z tumani bor.`;
 }
 function buildCodex() {
@@ -8287,7 +8919,7 @@ function buildCodex() {
   entry(ui.codexJump, CHEST.icon, CHEST.name, CHEST.shart, CHEST.xus);
   for (const it of ITEMS) entry(ui.codexItem, it.icon, it.name, it.shart, it.xus);
   for (const t of TRAPS) entry(ui.codexTrap, t.icon, t.name, poolText(t.games), trapXus(t));
-  const names = Object.keys(GAMES).filter((k) => k !== 'dice' && k !== 'duel').map((k) => GAMES[k].name);
+  const names = Object.keys(GAMES).filter((k) => k !== 'dice' && k !== 'duel' && EASY_GAMES.has(k)).map((k) => GAMES[k].name);
   ui.codexGames.textContent = `${names.length} xil mini-o‘yin: ${names.join(', ')}. Har tuzoqda sinov har safar tasodifan tanlanadi, shartlari qiyinlikka qarab o‘zgaradi.`;
 }
 
@@ -8313,13 +8945,9 @@ const newPeerId = () => 'p' + Date.now().toString(36) + Math.random().toString(3
 // claude.ai «room» bilan bir xil ko‘rinish: join(nom) → { presence(patch), onPeers(cb, err), leave() }.
 // Holat JSON matn sifatida saqlanadi (Firebase massiv va bo‘sh qiymatlarni buzmasin).
 async function firebaseRoom() {
-  const C = NET_CFG.firebase;
-  if (!C.databaseURL) return null;
-  if (!window.firebase || !window.firebase.database) {
-    await loadScript(FB_SDK + 'firebase-app-compat.js');
-    await loadScript(FB_SDK + 'firebase-database-compat.js');
-  }
-  const fb = window.firebase, app = fb.apps.length ? fb.app() : fb.initializeApp(C), db = fb.database(app);
+  const F = await fbInit();
+  if (!F) return null;
+  const fb = F.fb, db = F.db;
   return {
     async join(name) {
       const me = newPeerId(), roomRef = db.ref('rooms/' + name), myRef = roomRef.child(me);
@@ -8386,8 +9014,9 @@ async function initRoom() {
     }
   } catch (e) { /* claude.ai xonasi yo‘q */ }
   try {
-    const room = /[?&]net=local\b/.test(location.search) && typeof BroadcastChannel === 'function' ? localRoom() : await firebaseRoom();
-    if (room) { NET.room = room; ui.online.hidden = false; }
+    const local = /[?&]net=local\b/.test(location.search) && typeof BroadcastChannel === 'function';
+    const room = local ? localRoom() : await firebaseRoom();
+    if (room) { NET.room = room; ui.online.hidden = false; socialInit(local); }
   } catch (e) { /* onlayn imkoniyat yo‘q */ }
 }
 function onlineStatus(msg) { ui.oStatus.textContent = msg; }
@@ -8402,13 +9031,15 @@ async function enterRoom(code, host) {
     const me = playerCfg(1)[0];
     named.presence({ v: 4, name: me.name, look: me.look, host, phase: 'lobby', diff: selDiff(), nb: host ? cfg.bots : 0 }).catch(() => {});
     NET.unsub.push(named.onPeers(onPeers, () => onlineStatus('Xona bilan aloqa uzildi.')));
-    onlineStatus(host ? 'Do‘stlaringizga kodni ayting. Hamma kirgach — «Hammaga boshlash».' : 'Xona egasi o‘yinni boshlashini kuting.');
+    onlineStatus(host ? (SOC.db ? 'Zal ochildi. Do‘stlaringni «Chaqirish» bilan taklif qil yoki kodni ayt. Hamma kirgach — «Hammaga boshlash».' : 'Do‘stlaringizga kodni ayting. Hamma kirgach — «Hammaga boshlash».') : 'Xona egasi o‘yinni boshlashini kuting.');
+    socRoomJoined(code, host);
     voiceUI();
   } catch (e) {
     onlineStatus('Xonaga ulanib bo‘lmadi. Birozdan keyin qayta urinib ko‘ring.');
   }
 }
 function leaveRoom() {
+  if (NET.code) socRoomLeft(NET.code, NET.host);
   voiceLeave();
   NET.unsub.forEach((u) => { try { u(); } catch (e) { /* ignore */ } });
   NET.unsub = [];
@@ -8416,6 +9047,7 @@ function leaveRoom() {
   NET.host = false; NET.code = '';
   ui.oLobby.hidden = true;
   G.online = false;
+  setTimeout(socRender, 0);
   G.remotes = new Map();
   voiceUI();
 }
@@ -8433,8 +9065,9 @@ function joinRoom() {
 function hostStart() {
   if (!NET.named || !NET.host) return;
   const seed = randSeed(), diff = selDiff();
-  NET.named.presence({ phase: 'play', seed, diff, nb: cfg.bots }).catch(() => {});
-  newGame(seed, diff, playerCfg(cfg.bots), { online: true });
+  NET.named.presence({ phase: 'play', seed, diff, nb: cfg.bots, tmode: cfg.team ? 1 : 0 }).catch(() => {});
+  socLobby({ phase: 'play' });
+  newGame(seed, diff, playerCfg(cfg.bots), { online: true, teams: !!cfg.team });
 }
 const peerColor = (peer) => PCOLORS[(Array.from(peer).reduce((s, ch) => s + ch.charCodeAt(0), 0) + 1) % 4];
 function readPeer(pr) {
@@ -8442,7 +9075,9 @@ function readPeer(pr) {
   const num = (v, a, b) => (typeof v === 'number' && isFinite(v) ? clamp(Math.round(v), a, b) : null);
   const wlArr = (v) => (Array.isArray(v) ? v.slice(0, PW_MAX) : []).filter(Array.isArray).map((e) => ({ id: num(e[0], 0, 1e6), cell: num(e[1], 0, 160000) })).filter((e) => e.id !== null && e.cell !== null);
   const ptArr = (v) => (Array.isArray(v) ? v.slice(0, PT_MAX) : []).filter(Array.isArray).map((e) => ({ id: num(e[0], 0, 1e6), cell: num(e[1], 0, 160000), k: num(e[2], 0, PTRAP_KEYS.length - 1), dest: num(e[3], -1, 160000) ?? -1 })).filter((e) => e.id !== null && e.cell !== null && e.k !== null);
+  const kfields = (o) => ({ ks: num(o.ks, -1, 7) ?? -1, gk: o.gk === 1, kc: num(o.kc, -1, 160000) ?? -1, team: num(o.tm, -1, 1) ?? -1 });
   return {
+    ...kfields(s), tmode: s.tmode === 1,
     name: (typeof s.name === 'string' ? s.name : 'Mehmon').slice(0, 14) || 'Mehmon', look: num(s.look, 0, 3) ?? 0, host: s.host === true,
     phase: s.phase, seed: num(s.seed, 0, 999999), diff: DIFFS[s.diff] ? s.diff : 'medium',
     x: num(s.x, 0, 400), y: num(s.y, 0, 400), f: num(s.f, 0, 3) ?? 2, lives: num(s.lives, 0, 3) ?? 3,
@@ -8455,13 +9090,14 @@ function readPeer(pr) {
       s: num(e.s, 0, 999999), b: e.b === undefined ? undefined : num(e.b, 0, 3), a: e.a === undefined ? undefined : num(e.a, 0, 1e6),
       sb: e.sb === undefined ? undefined : num(e.sb, 0, 3), vb: e.vb === undefined ? undefined : num(e.vb, 0, 3), rf: e.rf === 1 ? 1 : 0 })),
     bots: (Array.isArray(s.bots) ? s.bots.slice(0, 3) : []).filter((b) => b && typeof b === 'object').map((b) => ({
-      name: (typeof b.n === 'string' ? b.n : 'Bot').slice(0, 14) || 'Bot', look: num(b.l, 0, 3) ?? 0, x: num(b.x, 0, 400), y: num(b.y, 0, 400), f: num(b.f, 0, 3) ?? 2,
+      ...kfields(b), name: (typeof b.n === 'string' ? b.n : 'Bot').slice(0, 14) || 'Bot', look: num(b.l, 0, 3) ?? 0, x: num(b.x, 0, 400), y: num(b.y, 0, 400), f: num(b.f, 0, 3) ?? 2,
       lives: num(b.lv, 0, 3) ?? 3, alive: b.a !== false, fin: b.fin === true, finAt: num(b.fa, 0, 9e15) || 0, dist: num(b.d, 0, 1e7) || 0, jail: b.j === 1, im: b.im === 1, deaths: num(b.dc, 0, 99) || 0, pt: ptArr(b.pt), wl: wlArr(b.wl), ds: num(b.ds, 0, 20) || 0, bm: num(b.bm, 0, 99) || 0,
     })),
   };
 }
 function onPeers(change) {
   const peers = change.peers, others = peers.filter((pr) => !pr.sameTab);
+  if (NET.host && SOC.db && peers.length !== NET.lastN) { NET.lastN = peers.length; socLobby({ n: peers.length }); }
   // lobbi ro‘yxati
   ui.oPeers.innerHTML = '';
   for (const pr of peers) {
@@ -8478,7 +9114,7 @@ function onPeers(change) {
   if (!NET.host && hostPeer) {
     const h = readPeer(hostPeer);
     if (h.phase === 'play' && h.seed !== null && (G.mode === 'menu' || ((G.mode === 'over' || G.mode === 'won') && h.seed !== G.seed))) {
-      newGame(h.seed, h.diff, playerCfg(0), { online: true });
+      newGame(h.seed, h.diff, playerCfg(0), { online: true, teams: h.tmode });
     }
   }
   if (!G.online || !G.g) return;
@@ -8490,6 +9126,7 @@ function onPeers(change) {
     NET.slotSeed = G.seed;
     const ids = peers.map((pr) => pr.peer).sort(), k = ids.indexOf(NET.me);
     if (k >= 0) setKeySlot(me(), Math.min(k, 4));
+    if (G.teams && k >= 0) { me().team = k % 2; G.players.filter((q) => q.bot).forEach((q, bi) => { q.team = (ids.length + bi) % 2; }); }
     if (NET.host) G.players.filter((q) => q.bot).forEach((q, bi) => setKeySlot(q, 5 + bi));
   }
   const upsert = (key, s, color, isBot, peerId, bi) => {
@@ -8497,7 +9134,8 @@ function onPeers(change) {
     seen.add(key);
     let r = G.remotes.get(key);
     if (!r) { r = { id: 10, rx: s.x, ry: s.y, color }; G.remotes.set(key, r); }
-    Object.assign(r, { name: s.name, look: s.look, isBot, peer: peerId, bi, jail: s.jail, im: s.im, x: clamp(s.x, 0, G.N - 1), y: clamp(s.y, 0, G.N - 1), face: FACES[s.f], lives: s.lives, alive: s.alive, fin: s.fin, finAt: s.finAt, dist: s.dist, deaths: s.deaths, disguise: s.ds, bm: s.bm });
+    Object.assign(r, { name: s.name, look: s.look, isBot, peer: peerId, bi, jail: s.jail, im: s.im, x: clamp(s.x, 0, G.N - 1), y: clamp(s.y, 0, G.N - 1), face: FACES[s.f], lives: s.lives, alive: s.alive, fin: s.fin, finAt: s.finAt, dist: s.dist, deaths: s.deaths, disguise: s.ds, bm: s.bm, ks: s.ks, gk: s.gk, team: s.team >= 0 ? s.team : undefined });
+    if (s.ks >= 0 && s.kc >= 0 && G.keyCells && G.keyCells[s.ks] !== s.kc && !G.players.some((q) => q.keySlot === s.ks)) placeKey(s.ks, s.kc);   // raqib kaliti ko‘chdi (halok bo‘ldi yoki sehr)
     if (!isBot) hearSay(r, s.say);
   };
   for (const pr of others) {
@@ -8565,8 +9203,8 @@ function netFlush() {
   if (!NET.dirty || !NET.named || !G.players.length) return;
   const fc = (q) => (q.face.y < 0 ? 0 : q.face.x > 0 ? 1 : q.face.y > 0 ? 2 : 3), p = G.players[0];
   NET.dirty = false; NET.lastSent = performance.now();
-  const bots = NET.host ? G.players.filter((q) => q.bot).map((q) => ({ n: q.name, l: q.look, x: q.px, y: q.py, f: fc(q), lv: q.lives, a: q.alive, fin: q.finished, fa: q.finAt || 0, d: Math.round(q.dist), j: q.jail ? 1 : 0, dc: q.stats.deaths, pt: ptList(q), wl: wallList(q), ds: q.mask > 0 ? q.maskK + 1 : 0, bm: q.bomb > 0 ? Math.ceil(q.bomb) : 0, im: q.immune > 0 || q.cloak > 0 || q.fxq.length ? 1 : 0 })) : [];
-  NET.named.presence({ phase: 'play', seed: G.seed, diff: G.diff, x: p.px, y: p.py, f: fc(p), lives: p.lives, alive: p.alive, fin: p.finished, finAt: p.finAt || 0, dist: Math.round(p.dist), j: p.jail ? 1 : 0, dc: p.stats.deaths, pt: ptList(p), wl: wallList(p), ds: p.mask > 0 ? p.maskK + 1 : 0, bm: p.bomb > 0 ? Math.ceil(p.bomb) : 0, dl: NET.dl || null, fd: NET.feedOut, im: p.immune > 0 || p.cloak > 0 || p.fxq.length ? 1 : 0, fx: NET.fx, bots }).catch(() => {});
+  const bots = NET.host ? G.players.filter((q) => q.bot).map((q) => ({ n: q.name, l: q.look, x: q.px, y: q.py, f: fc(q), lv: q.lives, a: q.alive, fin: q.finished, fa: q.finAt || 0, d: Math.round(q.dist), j: q.jail ? 1 : 0, dc: q.stats.deaths, pt: ptList(q), wl: wallList(q), ds: q.mask > 0 ? q.maskK + 1 : 0, bm: q.bomb > 0 ? Math.ceil(q.bomb) : 0, im: q.immune > 0 || q.cloak > 0 || q.fxq.length ? 1 : 0, ks: q.keySlot, gk: q.gkey ? 1 : 0, kc: G.keyCells[q.keySlot], tm: q.team === undefined ? -1 : q.team })) : [];
+  NET.named.presence({ phase: 'play', seed: G.seed, diff: G.diff, x: p.px, y: p.py, f: fc(p), lives: p.lives, alive: p.alive, fin: p.finished, finAt: p.finAt || 0, dist: Math.round(p.dist), j: p.jail ? 1 : 0, dc: p.stats.deaths, pt: ptList(p), wl: wallList(p), ds: p.mask > 0 ? p.maskK + 1 : 0, bm: p.bomb > 0 ? Math.ceil(p.bomb) : 0, dl: NET.dl || null, fd: NET.feedOut, ks: p.keySlot, gk: p.gkey ? 1 : 0, kc: G.keyCells[p.keySlot], tm: p.team === undefined ? -1 : p.team, im: p.immune > 0 || p.cloak > 0 || p.fxq.length ? 1 : 0, fx: NET.fx, bots }).catch(() => {});
 }
 function updateRemotes(dt) {
   const k = 1 - Math.exp(-dt * 12);
@@ -9043,8 +9681,8 @@ function bindUI() {
     if (G.tut) { startTut(G.tut.n, seed); return; }
     if (G.daily) { startDaily(); return; }
     const conf = G.players.map((p) => ({ name: p.name, look: p.look, bot: !!p.bot, skill: p.bot ? BOT_SKILL.indexOf(p.bot.K) : 0 }));
-    if (G.online && NET.host && NET.named) { NET.named.presence({ phase: 'play', seed, diff: G.diff, nb: conf.filter((c) => c.bot).length }).catch(() => {}); newGame(seed, G.diff, conf, { online: true }); }
-    else newGame(seed, G.diff, conf);
+    if (G.online && NET.host && NET.named) { NET.named.presence({ phase: 'play', seed, diff: G.diff, nb: conf.filter((c) => c.bot).length, tmode: G.teams ? 1 : 0 }).catch(() => {}); newGame(seed, G.diff, conf, { online: true, teams: G.teams }); }
+    else { const tm = G.teams; launch(() => newGame(seed, G.diff, conf, { teams: tm })); }
   };
   ui.pRestart.addEventListener('click', () => again(G.seed));
   ui.pNew.addEventListener('click', () => again(randSeed()));
@@ -9058,12 +9696,21 @@ function bindUI() {
   ui.eSame.addEventListener('click', () => again(G.seed));
   ui.eMenu.addEventListener('click', toMenu);
   ui.eShare.addEventListener('click', () => dailyShare());
+  ui.eReplay.addEventListener('click', replayRoutes);
+  document.querySelectorAll('input[name="tmode"]').forEach((inp) => inp.addEventListener('change', () => { cfg.team = inp.value === '1'; saveCfg(); syncBots(); }));
   ui.oCreate.addEventListener('click', createRoom);
   ui.oJoin.addEventListener('click', joinRoom);
   ui.oStart.addEventListener('click', hostStart);
   ui.oLeave.addEventListener('click', () => { leaveRoom(); onlineStatus(''); });
   ui.oMic.addEventListener('click', voiceToggle);
   ui.oMicOff.addEventListener('click', voiceLeave);
+  ui.hallOpen.addEventListener('click', createRoom);
+  ui.quickPlay.addEventListener('click', quickPlay);
+  ui.frAdd.addEventListener('click', socAdd);
+  ui.frIn.addEventListener('keydown', (e) => { if (e.key === 'Enter') socAdd(); });
+  ui.socCopy.addEventListener('click', () => { const t = myId(); if (navigator.clipboard) navigator.clipboard.writeText(t).then(() => { ui.frMsg.textContent = `📋 ${t} nusxalandi — do‘stingga yubor.`; }, () => {}); });
+  ui.invGo.addEventListener('click', () => invAnswer(true));
+  ui.invNo.addEventListener('click', () => invAnswer(false));
   document.querySelectorAll('input[name="diff"]').forEach((inp) => inp.addEventListener('change', () => store.set('jl_diff', inp.value)));
   document.querySelectorAll('input[name="bots"]').forEach((inp) => inp.addEventListener('change', () => { cfg.bots = +inp.value; saveCfg(); syncBots(); }));
   document.querySelectorAll('input[name="skill"]').forEach((inp) => inp.addEventListener('change', () => { cfg.skill = +inp.value; saveCfg(); syncBots(); }));
@@ -9094,7 +9741,9 @@ function stepWorld(dt) {
   if (G.mode === 'play') updateVans(dt);
   if (G.ptraps.length) expireTraps();
   if (G.walls.length) expireWalls();
-  G.leaderT = (G.leaderT || 0) - dt; if (G.leaderT <= 0) { G.leaderT = 0.5; updateLeader(); }
+  G.leaderT = (G.leaderT || 0) - dt; if (G.leaderT <= 0) { G.leaderT = 0.5; updateLeader(); refreshKeys(); }
+  if (G.sleepT > 0) G.sleepT -= dt;
+  if (!G.tut && G.time >= G.nextZar) { G.nextZar += 120; zarEvent(); }
 }
 function frame(now) {
   const dt = Math.min(0.05, Math.max(0, (now - lastT) / 1000));
@@ -9132,7 +9781,7 @@ function boot() {
   initRoom();
 }
 
-window.__jl = { startDaily, dailyNo, dailyText, adRevive, Ads, ADS, startTut, tutTick, tutLoad, LEVELS, TASKS, finish, DIFFS, endGame, G, NET, VOICE, voiceJoin, voiceLeave, voiceToggle, voiceMute, voiceUI, sdpPack, sdpUnpack, playerDown, respawn, loseLife, pipsTick, pipView, pipOpen, pipClose, updateHUD, generate, stepWorld, bfs, bfsMulti, botInit, toolsTab, shopTab, shopRows, buyMap, MAPS, MAP_KEYS, scrDesc, SCRAMBLES, scrVec, buyMapUI, ITEMS, ITEM_IX, takeGateKey, learnKeyMap, learnChestMap, nearestGate, setKeySlot, FX, trapXus, fxTok, botKeyHint, TOOLS, toolTargets, fireTool, toolsOpen, toolsPick, toolsDo, toolsKey, toolsRender, addTool, botTools, leaderTarget, newGame, cardMain, cardDir, EFFECTS, trapCard, beastCard, chestCard, portalStep, teleportTo, pickTarget, keysDown, GAMES, QGEN, RIDDLES, TRAPS, BEASTS, CHEST, REWARDS, TIERS, ECON, pickReward, challengeResult, giveCoins, WORDS, openCard, playerCfg, cfg, describe, lvl, closeCard, cardBack, sendToJail, freeFromJail, jailCard, banditCatch, callBandit, applyFx, applyGift, sabotage, rivalTargets, pickReward, takeCoins, tryStep, onEnterTile, readPeer, PTRAPS, PTRAP_KEYS, PT_MAX, PT_LIFE, myTraps, destOk, trapSpot, trapCommit, trapPlace, placedHit, trapTaken, expireTraps, ptList, mapPickOpen, mapPickClose, mapPickSet, mapPickMove, mapPickZoom, mapPickConfirm, mapPickDraw, botTraps, startAmnesia, endAmnesia, reflectFx, T, MASKS, maskOf, priceOf, canPay, toolCost, fireSelf, fireChaos, hasBad, cleanse, moveKey, feed, feedShow, FEED_Q, TARGET_KEYS, FOE_KEYS, PLACE_KEYS, validSpot, startMask, freshTools, freshFx, drawRadar, revengeOn, PWALL, PW_LIFE, PW_MAX, myWalls, wallCheck, wallPlace, wallSet, expireWalls, dropWalls, wallList, botWalls, updateLeader, BAIT_FX, trapFx, netDirty, netFlush, bombTick, bombPass, bombExplode, duelCandidates, duelChallenge, duelAccept, duelDecline, duelAbort, duelNet, duelUI, DUEL_S, DUEL_COUNT, DUEL_R, dlSet };
+window.__jl = { SOC, socAdd, socAccept, quickPlay, launch, zarEvent, guardCard, ghostPuff, dropKey, refreshKeys, hasKey, replayRoutes, achLoad, teamCfg, ZAR_EV, startDaily, dailyNo, dailyText, adRevive, Ads, ADS, startTut, tutTick, tutLoad, LEVELS, TASKS, finish, DIFFS, endGame, G, NET, VOICE, voiceJoin, voiceLeave, voiceToggle, voiceMute, voiceUI, sdpPack, sdpUnpack, playerDown, respawn, loseLife, pipsTick, pipView, pipOpen, pipClose, updateHUD, generate, stepWorld, bfs, bfsMulti, botInit, toolsTab, shopTab, shopRows, buyMap, MAPS, MAP_KEYS, scrDesc, SCRAMBLES, scrVec, buyMapUI, ITEMS, ITEM_IX, takeGateKey, learnKeyMap, learnChestMap, nearestGate, setKeySlot, FX, trapXus, fxTok, botKeyHint, TOOLS, toolTargets, fireTool, toolsOpen, toolsPick, toolsDo, toolsKey, toolsRender, addTool, botTools, leaderTarget, newGame, cardMain, cardDir, EFFECTS, trapCard, beastCard, chestCard, portalStep, teleportTo, pickTarget, keysDown, GAMES, QGEN, RIDDLES, TRAPS, BEASTS, CHEST, REWARDS, TIERS, ECON, pickReward, challengeResult, giveCoins, WORDS, openCard, playerCfg, cfg, describe, lvl, closeCard, cardBack, sendToJail, freeFromJail, jailCard, banditCatch, callBandit, applyFx, applyGift, sabotage, rivalTargets, pickReward, takeCoins, tryStep, onEnterTile, readPeer, PTRAPS, PTRAP_KEYS, PT_MAX, PT_LIFE, myTraps, destOk, trapSpot, trapCommit, trapPlace, placedHit, trapTaken, expireTraps, ptList, mapPickOpen, mapPickClose, mapPickSet, mapPickMove, mapPickZoom, mapPickConfirm, mapPickDraw, botTraps, startAmnesia, endAmnesia, reflectFx, T, MASKS, maskOf, priceOf, canPay, toolCost, fireSelf, fireChaos, hasBad, cleanse, moveKey, feed, feedShow, FEED_Q, TARGET_KEYS, FOE_KEYS, PLACE_KEYS, validSpot, startMask, freshTools, freshFx, drawRadar, revengeOn, PWALL, PW_LIFE, PW_MAX, myWalls, wallCheck, wallPlace, wallSet, expireWalls, dropWalls, wallList, botWalls, updateLeader, BAIT_FX, trapFx, netDirty, netFlush, bombTick, bombPass, bombExplode, duelCandidates, duelChallenge, duelAccept, duelDecline, duelAbort, duelNet, duelUI, DUEL_S, DUEL_COUNT, DUEL_R, dlSet };
 boot();
 })();
 </script>

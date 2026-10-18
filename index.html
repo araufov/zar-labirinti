@@ -132,6 +132,7 @@ kbd { font-family: var(--font-ui); font-size: .72rem; padding: 2px 6px; border-r
 .socme b { color: #ffe7a6; font-size: 1.05rem; letter-spacing: .02em; }
 .btn.sm { min-height: 34px; padding: 4px 12px; font-size: .78rem; }
 .socbtns .btn { flex: 1 1 130px; }
+.ambl { justify-content: center; margin: 6px 0 0; }
 .socpub { display: flex; gap: 8px; align-items: center; margin: 8px 0 4px; font-size: .84rem; color: var(--muted); }
 .soclist { margin: 6px 0 4px; padding: 0; list-style: none; display: grid; gap: 6px; }
 .soclist:empty { display: none; }
@@ -921,6 +922,7 @@ Kalitingni top, darvozani och va hammadan oldin chiq.</p></div>
       </fieldset>
       <button class="btn primary big" id="bStart" type="button">Zarni tashla — boshla <kbd>Enter</kbd></button>
       <p class="note">Ovozni yoqib o‘ynang: barabanlar tuzoqdan, bo‘kirish hayvondan ogohlantiradi.</p>
+      <label class="socpub ambl"><input type="checkbox" id="ambChk"> 🌬️ Fon ovozi (yengil shamol) — xohlasang o‘chir</label>
     </div>
     <div class="side">
       <details class="guide">
@@ -2199,7 +2201,7 @@ const ui = {};
 /* ================= Ovoz (Web Audio) ================= */
 // Ovoz: Web Audio sintez. Zanjir: effektlar → (quruq + reverb) → kompressor → chiqish. Bir xil ovoz 50 ms ichida qayta chalinmaydi.
 const Sound = {
-  ctx: null, out: null, master: null, wet: null, amb: null, noise: null, muted: store.get('jl_mute') === '1', quiet: false, last: {}, asleep: false,
+  ctx: null, out: null, master: null, wet: null, amb: null, noise: null, muted: store.get('jl_mute') === '1', ambOn: store.get('jl_amb') !== '0', quiet: false, last: {}, asleep: false,
   init() {
     if (this.ctx) { if (this.ctx.state === 'suspended' && !this.asleep) this.ctx.resume().catch(() => {}); return; }
     const AC = window.AudioContext || window.webkitAudioContext;
@@ -2239,18 +2241,14 @@ const Sound = {
     const ac = this.ctx; if (!ac || this.amb) return;
     const g = ac.createGain(); g.gain.value = 0; g.connect(this.out);
     const wind = ac.createBufferSource(); wind.buffer = this.noise; wind.loop = true;
-    const lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 420; lp.Q.value = 0.6;
-    const lfo = ac.createOscillator(), lg = ac.createGain(); lfo.frequency.value = 0.11; lg.gain.value = 220; lfo.connect(lg); lg.connect(lp.frequency);
-    const wg = ac.createGain(); wg.gain.value = 0.12;
+    const lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 260; lp.Q.value = 0.4;   // past, yumshoq shamol
+    const lfo = ac.createOscillator(), lg = ac.createGain(); lfo.frequency.value = 0.07; lg.gain.value = 90; lfo.connect(lg); lg.connect(lp.frequency);
+    const wg = ac.createGain(); wg.gain.value = 0.035;
     wind.connect(lp); lp.connect(wg); wg.connect(g); wind.start(); lfo.start();
-    const cr = ac.createOscillator(), cg = ac.createGain(), ct = ac.createOscillator(), ctg = ac.createGain();   // chigirtka: 4.2 kHz, 28 Hz titrash
-    cr.type = 'sine'; cr.frequency.value = 4200; cg.gain.value = 0;
-    ct.type = 'square'; ct.frequency.value = 28; ctg.gain.value = 0.012; ct.connect(ctg); ctg.connect(cg.gain);
-    cr.connect(cg); cg.connect(g); cr.start(); ct.start();
-    this.amb = { g, cg, t: 0 };
+    this.amb = { g, t: 0 };
     const bird = () => {
       if (!this.amb) return;
-      if (!this.muted && !this.asleep && (G.mode === 'play' || G.mode === 'menu')) {
+      if (!this.muted && !this.asleep && this.ambOn && G.mode === 'play') {
         const f0 = 1800 + Math.random() * 1400, n = 2 + ((Math.random() * 3) | 0);
         for (let k = 0; k < n; k++) this.tone('sine', f0 + Math.random() * 300, f0 * (0.8 + Math.random() * 0.5), 0.12, 0.05, k * 0.14);
       }
@@ -2261,9 +2259,8 @@ const Sound = {
   },
   ambTick() {
     if (!this.amb) return;
-    const on = G.mode === 'play' || G.mode === 'menu', m = me(), danger = on && m && (m.drumD <= 5.2 || G.beasts.some((b) => b.state === 'chase' && b.target === m.id));
-    this.amb.g.gain.setTargetAtTime(on ? (danger ? 0.5 : 1) : 0, this.ctx.currentTime, 0.6);
-    this.amb.cg.gain.setTargetAtTime(on && !danger ? 0.012 : 0, this.ctx.currentTime, 0.8);
+    const on = this.ambOn && G.mode === 'play', m = me(), danger = on && m && (m.drumD <= 5.2 || G.beasts.some((b) => b.state === 'chase' && b.target === m.id));
+    this.amb.g.gain.setTargetAtTime(on ? (danger ? 0.5 : 1) : 0, this.ctx.currentTime, 1.2);
     setTimeout(() => this.ambTick(), 500);
   },
   env(g, t, a, peak, dec) {
@@ -9839,6 +9836,7 @@ function bindUI() {
   ui.dailyShare.addEventListener('click', dailyShare);
   ui.bPause.addEventListener('click', () => (G.mode === 'play' ? pause() : resume()));
   ui.bSound.addEventListener('click', () => { Sound.init(); Sound.setMuted(!Sound.muted); syncSound(); });
+  const ambChk = $('ambChk'); ambChk.checked = Sound.ambOn; ambChk.addEventListener('change', () => { Sound.ambOn = ambChk.checked; store.set('jl_amb', ambChk.checked ? '1' : '0'); });
   ui.bMap.addEventListener('click', toggleMap);
   ui.zIn.addEventListener('click', () => setZoom(G.zoom * 1.15));
   ui.zOut.addEventListener('click', () => setZoom(G.zoom / 1.15));

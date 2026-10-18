@@ -34,7 +34,6 @@ if [ "$PUB_IP" != "$LOC_IP" ]; then EXT="external-ip=$PUB_IP/$LOC_IP"; fi
 cat > /etc/turnserver.conf <<EOF
 # Zar Labirinti TURN
 listening-port=3478
-alt-listening-port=443
 listening-ip=0.0.0.0
 $EXT
 relay-ip=$LOC_IP
@@ -64,6 +63,11 @@ sed -i 's/^#\?TURNSERVER_ENABLED=.*/TURNSERVER_ENABLED=1/' /etc/default/coturn 2
 
 echo "== 5/5 Firewall va ishga tushirish"
 ufw --force reset >/dev/null
+# 443-portni ham 3478 ga yo'naltirish (qattiq firewall'lar uchun) — ufw orqali doimiy
+if ! grep -q 'REDIRECT --to-port 3478' /etc/ufw/before.rules; then
+  printf '\n*nat\n:PREROUTING ACCEPT [0:0]\n-A PREROUTING -p tcp --dport 443 -j REDIRECT --to-port 3478\n-A PREROUTING -p udp --dport 443 -j REDIRECT --to-port 3478\nCOMMIT\n' >> /etc/ufw/before.rules
+fi
+
 ufw default deny incoming >/dev/null
 ufw default allow outgoing >/dev/null
 ufw allow OpenSSH >/dev/null

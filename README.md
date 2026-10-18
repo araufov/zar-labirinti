@@ -1,0 +1,45 @@
+# Zar Labirinti (PWA)
+
+Tumanli labirint o‘yini: botlar yoki do‘stlar bilan poyga, duel, bomba, devor va hazil sehrlari.
+Bitta `index.html` — kutubxonalarsiz; PWA sifatida o‘rnatiladi va oflayn ishlaydi.
+
+## Rejimlar
+- **🎓 Sarguzasht** — 10 ta qisqa o‘rgatuvchi bosqich (yurish → kalit → kompas → tuzoq → hayvon → sandiq → do‘kon → poyga → zar bilan sakrash → yakuniy sinov). Har bosqichda 3 ta yulduz: chiqish, hamma vazifalar, jon yo‘qotmaslik. Keyingi bosqich oldingisi o‘tilganda ochiladi.
+- **📅 Kunlik labirint** — har kuni hamma uchun bitta labirint (sana bo‘yicha). Natija va seriya (🔥) saqlanadi, «Ulashish» tugmasi natijani matn qilib yuboradi.
+- **Erkin o‘yin** — avvalgidek: qiyinlik, botlar soni va kuchi.
+
+## Reklama (ko‘rib davom etish)
+Jonlar tugaganda bir o‘yinda bir marta «📺 Reklama ko‘rib, shu joydan davom et» taklifi chiqadi.
+`index.html` ichida `const ADS = { mode: 'demo', ... }`:
+- `demo` — hozirgi holat: 5 soniyalik sinov oynasi (haqiqiy reklama yo‘q).
+- `h5` — Google H5 Games Ads (AdSense) skripti sahifaga qo‘shilgandan keyin.
+- `admob` — ilova Capacitor bilan o‘ralib, @capacitor-community/admob o‘rnatilganda; `admobRewardId` ga o‘z ID ingizni yozing.
+- `off` — taklif umuman chiqmaydi.
+`h5` va `admob` qismlari haqiqiy reklama hisobisiz sinab ko‘rilmagan — ulashda bir marta tekshirish kerak.
+
+## Fayllar
+- `index.html` — o‘yin
+- `manifest.webmanifest` — ilova nomi, rangi, ikonkalari
+- `sw.js` — oflayn kesh (service worker)
+- `icons/` — ikonkalar (192, 512, maskable 512, iOS 180, favicon)
+
+## GitHub Pages orqali joylash
+1. Bu fayllarni (papkani emas, ichidagilarni) yangi ombor ildiziga yuklang.
+2. Ombor sozlamalari → **Pages** → *Deploy from a branch* → `main` / `(root)` → Save.
+3. 1–2 daqiqadan keyin `https://<login>.github.io/<ombor-nomi>/` ishlaydi (HTTPS — PWA uchun shart).
+
+## O‘rnatish
+- **Android (Chrome):** menyu ⋮ → «Ilovani o‘rnatish» (yoki pastdagi taklif).
+- **iPhone/iPad (Safari):** Ulashish → «Bosh ekranga qo‘shish».
+- **Kompyuter (Chrome/Edge):** manzil qatoridagi o‘rnatish belgisi.
+
+## Yangilash
+O‘yinni o‘zgartirgach `sw.js` ichidagi `VERSION` ni oshiring (`jl-v4` → `jl-v5`), aks holda eski nusxa keshda qolishi mumkin.
+
+## Eslatma
+Onlayn xona va ovozli suhbat:
+- claude.ai ichida — o‘z serveri bilan, sozlash shart emas.
+- GitHub Pages / PWA da — `index.html` dagi `NET_CFG.firebase` ga Firebase Realtime Database sozlamalari yozilganda yoqiladi (bo‘sh bo‘lsa «Onlayn xona» bo‘limi yashirin turadi).
+- Ovoz mobil internetda ham ulanishi uchun `NET_CFG.turn` ga TURN (masalan, metered.ca) login/parolini yozing.
+- Sinov: `index.html?net=local` — bitta brauzerdagi ikki oyna o‘zaro o‘ynaydi (serversiz).
+Botlarga qarshi o‘yin va bitta qurilmada bir necha kishi bilan o‘ynash to‘liq ishlaydi.

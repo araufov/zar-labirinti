@@ -3888,12 +3888,6 @@ const TOOLS = {
   sic: { grp: 'Hayvonlar', icon: '🚐', name: 'Ovchini yuborish', price: ECON.price.rare, text: 'Ovchi Burgut raqibning izidan tushib, uni quvadi.' },
   swap: { grp: 'Joy almashtirish', icon: '🔀', name: 'Joy almashtirish', price: ECON.price.legend, text: 'Oldinda ketayotgan raqib bilan o‘rningni almashtirasan.' },
   chaos: { grp: 'Joy almashtirish', all: true, icon: '🌪️', name: 'Tartibsizlik', price: ECON.price.epic, text: 'Hamma o‘yinchi (sen ham) joylari tasodifan almashadi — yetakchi ortga, ortda qolgan oldinga!' },
-  s_torch: { grp: 'O‘zim uchun', self: true, icon: '🔥', name: 'Mash’al', price: ECON.price.common, text: '60 soniya tumanda uzoqroqni ko‘rasan.' },
-  s_boots: { grp: 'O‘zim uchun', self: true, icon: '👟', name: 'Tezyurar etik', price: ECON.price.common, text: '20 soniya ikki baravar tez yurasan.' },
-  s_compass: { grp: 'O‘zim uchun', self: true, icon: '🧭', name: 'Kompas', price: ECON.price.common, text: '75 soniya darvoza qaysi tomonda ekanini ko‘rsatadi.' },
-  s_shield: { grp: 'O‘zim uchun', self: true, icon: '🛡️', name: 'Qalqon', price: ECON.price.rare, text: 'Keyingi yutqazilgan sinovda hech narsa yo‘qotmaysan.' },
-  s_life: { grp: 'O‘zim uchun', self: true, icon: '❤️', name: '+1 jon', price: ECON.price.epic, text: 'Bitta jon qaytadi (3 tadan oshmaydi).' },
-  s_box: { grp: 'O‘zim uchun', self: true, icon: '🎁', name: 'Sirli quti', price: 8, text: 'Tasodifiy sehr tushadi — arzon, lekin nima chiqishi noma’lum (yolg‘iz o‘yinda — tanga).' },
   cleanse: { grp: 'Himoya', self: true, icon: '🧼', name: 'Tozalash', price: ECON.price.common, text: 'Senga qilingan hamma xalaqit (muz, yelim, aralash boshqaruv, akleroz, maska, teskari dunyo…) yo‘qoladi.' },
   radar: { grp: 'Himoya', self: true, icon: '📡', name: 'Radar', price: ECON.price.common, text: `${RADAR_S} soniya atrofdagi yashirin tuzoqlarni ko‘rsatadi; ustiga bossang tuzoq zararsizlanadi (+${ECON.disarm} 💰).` },
 };
@@ -3934,10 +3928,10 @@ const priceOf = (p, base) => Math.ceil(base * (p.taxT > 0 ? 2 : 1));
 const canPay = (p, cost) => p.coins >= cost && !(p.shutT > 0);
 const revengeOn = (p, id) => !!(p.revenge && p.revenge.id === id && G.time < p.revenge.until);
 // Do‘kon qatorlari (faol varaqdagilar): raqib bo‘lsa «Xalaqit» varag‘i bor; «Xaritalar» varag‘i har doim.
-const shopTab = (p) => (rivalTargets(p).length ? (p.sab.tab || 'tool') : (p.sab.tab === 'map' ? 'map' : 'tool'));
+const shopTab = (p) => (rivalTargets(p).length ? (p.sab.tab || 'tool') : 'map');
 function shopRows(p) {
-  const rows = [], tab = shopTab(p), solo = !rivalTargets(p).length;
-  if (tab === 'tool') for (const k of FOE_KEYS) { if (solo && !(TOOLS[k].grp === 'O‘zim uchun')) continue; rows.push({ type: 'tool', key: k }); }
+  const rows = [], tab = shopTab(p);
+  if (tab === 'tool') for (const k of FOE_KEYS) rows.push({ type: 'tool', key: k });
   else if (tab === 'trap') { for (const k of PTRAP_KEYS) rows.push({ type: 'trap', key: k }); rows.push({ type: 'wall', key: 'wall' }); }
   else for (const k of MAP_KEYS) rows.push({ type: 'map', key: k });
   return rows;
@@ -4058,22 +4052,7 @@ function cleanse(p) {
   netDirty(p, true);
 }
 // O‘ziga ishlatiladigan sehrlar: tozalash va radar.
-const SELF_GIFT = { s_torch: 'torch', s_boots: 'boots', s_compass: 'compass', s_shield: 'shield', s_life: 'fruit' };
 function fireSelf(p, key) {
-  if (SELF_GIFT[key] || key === 's_box') {
-    if (key === 's_life' && p.lives >= 3) return { ok: false, msg: 'Joning to‘la.' };
-    if (key === 's_shield' && p.shield > 0) return { ok: false, msg: 'Qalqon allaqachon bor.' };
-    if (key === 's_torch' && p.torch > 30) return { ok: false, msg: 'Mash’al hali yonib turibdi.' };
-    const err = payTool(p, key, priceOf(p, TOOLS[key].price));
-    if (err) return { ok: false, msg: err };
-    if (key === 's_box') {
-      const pool = TARGET_KEYS.concat(['chaos', 'cleanse', 'radar']), k = pickRand(pool);
-      if (TOOLS[k].self) { p.tools[k]++; toast(p, `🎁 Qutidan ${TOOLS[k].icon} ${TOOLS[k].name} chiqdi — sumkangda.`, 3200); }
-      else addTool(p, k);
-    } else { applyGift(p, SELF_GIFT[key]); toast(p, `${TOOLS[key].icon} ${TOOLS[key].name} — sotib olindi.`, 2600); }
-    ears(p, () => Sound.pickup());
-    return { ok: true };
-  }
   if (key === 'cleanse' && !hasBad(p)) return { ok: false, msg: 'Senda tozalanadigan xalaqit yo‘q.' };
   if (key === 'radar' && p.radar > 0) return { ok: false, msg: 'Radar allaqachon yoniq.' };
   const err = payTool(p, key, priceOf(p, TOOLS[key].price));
@@ -5158,9 +5137,9 @@ function toolsBuild(p, targets) {
   const numKbd = (n) => (touchUI || n > 10 ? null : sabEl('kbd', 'k', String(n % 10)));   // faqat 1–9 va 0 bosiladi
   if (S.step === 'tools') {
     const rivals = rivalTargets(p).length, tab = shopTab(p);
-    {
+    if (rivals) {
       const bar = sabEl('div', 'sab-tabs');
-      for (const [id, label, hot] of (rivals ? [['tool', '🪄 Sehrlar', 'Q'], ['trap', '🪤 Tuzoq', 'R'], ['map', '🗺️ Xaritalar', 'E']] : [['tool', '🎒 O‘zim uchun', 'Q'], ['map', '🗺️ Xaritalar', 'E']])) {
+      for (const [id, label, hot] of [['tool', '🪄 Xalaqit', 'Q'], ['trap', '🪤 Tuzoq', 'R'], ['map', '🗺️ Xaritalar', 'E']]) {
         const b = sabEl('button', 'sab-tab' + (tab === id ? ' on' : ''));
         b.type = 'button'; if (!touchUI) b.append(sabEl('kbd', 'k', hot)); b.append(label);
         b.addEventListener('click', () => toolsTab(p, id));
@@ -5209,10 +5188,10 @@ function toolsRender(p) {
   const u = p.ui, S = p.sab;
   if (!u || !u.sabBtn) return;
   const playing = G.mode === 'play', rivals = playing ? rivalTargets(p).length : 0;
-  const show = playing && p.alive && !p.finished && !p.card && !(G.tut && G.tut.n < 7);
+  const show = playing && p.alive && !p.finished && !p.card && !(G.tut && !G.tut.L.bots);
   const total = FOE_KEYS.reduce((a, k) => a + p.tools[k], 0) + PTRAP_KEYS.reduce((a, k) => a + p.tbag[k], 0);
   u.sabBtn.hidden = !show;
-  const afford = FOE_KEYS.some((k) => TOOLS[k].grp === 'O‘zim uchun' && canPay(p, priceOf(p, TOOLS[k].price))) || (rivals > 0 && (FOE_KEYS.some((k) => p.tools[k] > 0 || canPay(p, priceOf(p, TOOLS[k].price))) || PLACE_KEYS.some((k) => p.tbag[k] > 0))) || MAP_KEYS.some((k) => !MAPS[k].has(p) && !MAPS[k].useless(p) && canPay(p, priceOf(p, MAPS[k].price())));
+  const afford = (rivals > 0 && (FOE_KEYS.some((k) => p.tools[k] > 0 || canPay(p, priceOf(p, TOOLS[k].price))) || PLACE_KEYS.some((k) => p.tbag[k] > 0))) || MAP_KEYS.some((k) => !MAPS[k].has(p) && !MAPS[k].useless(p) && canPay(p, priceOf(p, MAPS[k].price())));
   u.sabBtn.classList.toggle('locked', p.shutT > 0);
   u.sabBtn.classList.toggle('ready', show && afford);
   const nTxt = total ? String(total) : '';

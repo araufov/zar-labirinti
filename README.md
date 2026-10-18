@@ -29,7 +29,6 @@ Jonlar tugaganda bir o‘yinda bir marta «📺 Reklama ko‘rib, shu joydan dav
 ## v1.4
 - Bitta darvoza — labirint ichida yashiringan (chetda emas), kirishdan uzoq, boshi berk yo‘lak oxirida.
 - 2×2: kalitni topgan sherik uni darvozaga olib borib ochadi; jamoa ikkala sherik ham chiqqanda yutadi (onlayn jamoada: sherik kalit bilan chiqqan bo‘lsa darvoza ochiq).
-- Do‘kon: «🎒 O‘zim uchun» bo‘limi (mash’al, etik, kompas, qalqon, +1 jon, sirli quti) — yolg‘iz o‘yinda ham ishlaydi.
 - Fon ovozi: chigirtka olib tashlandi, shamol juda yengil, menyuda o‘chirgich.
 
 ## Sifat (v1.2)

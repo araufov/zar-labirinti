@@ -26,6 +26,12 @@ Jonlar tugaganda bir o‘yinda bir marta «📺 Reklama ko‘rib, shu joydan dav
 - `off` — taklif umuman chiqmaydi.
 `h5` va `admob` qismlari haqiqiy reklama hisobisiz sinab ko‘rilmagan — ulashda bir marta tekshirish kerak.
 
+## v1.4
+- Bitta darvoza — labirint ichida yashiringan (chetda emas), kirishdan uzoq, boshi berk yo‘lak oxirida.
+- 2×2: kalitni topgan sherik uni darvozaga olib borib ochadi; jamoa ikkala sherik ham chiqqanda yutadi (onlayn jamoada: sherik kalit bilan chiqqan bo‘lsa darvoza ochiq).
+- Do‘kon: «🎒 O‘zim uchun» bo‘limi (mash’al, etik, kompas, qalqon, +1 jon, sirli quti) — yolg‘iz o‘yinda ham ishlaydi.
+- Fon ovozi: chigirtka olib tashlandi, shamol juda yengil, menyuda o‘chirgich.
+
 ## Sifat (v1.2)
 - Ovoz: kompressor + reverb zanjiri, bir xil ovoz 50 ms ichida takrorlanmaydi, fon rejimida butunlay to‘xtaydi, o‘rmon atrof-muhiti (shamol, chigirtka, qush), qadam/tanga/karta ovozlari.
 - Grafika: devor soyalari, o‘t tutamlari, mox bosgan toshlar, quyosh dog‘lari, uch qatlamli tuman, issiq mash’al nuri, vinyetka. Zaif telefonda (3 s davomida <40 FPS) qimmat effektlar o‘zi o‘chadi (`jl_lowfx`).
@@ -54,7 +60,8 @@ O‘yinni o‘zgartirgach `sw.js` ichidagi `VERSION` ni oshiring (`jl-v6` → `j
 ## Eslatma
 Onlayn xona va ovozli suhbat:
 - claude.ai ichida — o‘z serveri bilan, sozlash shart emas.
-- GitHub Pages / PWA da — `index.html` dagi `NET_CFG.firebase` ga Firebase Realtime Database sozlamalari yozilganda yoqiladi (bo‘sh bo‘lsa «Onlayn xona» bo‘limi yashirin turadi).
+- GitHub Pages / PWA da — Firebase loyihasi `zar-labirinti` ulangan (`NET_CFG.firebase`). Baza test rejimida: qoidalar 2026-11-17 da yopiladi — ungacha konsolda Rules → `database.rules.json` dagi qoidalarni joylang.
+- Sinov: `?guest=1` — shu brauzerda ikkinchi alohida foydalanuvchi (xotirasiz kirish).
 - Ovoz mobil internetda ham ulanishi uchun `NET_CFG.turn` ga TURN (masalan, metered.ca) login/parolini yozing.
 - Sinov: `index.html?net=local` — bitta brauzerdagi ikki oyna o‘zaro o‘ynaydi (serversiz).
 Botlarga qarshi o‘yin va bitta qurilmada bir necha kishi bilan o‘ynash to‘liq ishlaydi.

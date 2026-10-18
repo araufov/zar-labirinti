@@ -10,7 +10,8 @@ if [ "$(id -u)" -ne 0 ]; then echo "root kerak: sudo bash turn-setup.sh"; exit 1
 echo "== 1/5 Paketlar"
 export DEBIAN_FRONTEND=noninteractive
 apt-get update -qq
-apt-get install -y -qq coturn curl ufw iptables-persistent >/dev/null
+apt-get remove -y -qq iptables-persistent netfilter-persistent >/dev/null 2>&1 || true
+apt-get install -y -qq coturn curl ufw >/dev/null
 
 echo "== 2/5 IP aniqlash"
 PUB_IP="$(curl -4 -fsS https://api.ipify.org || curl -4 -fsS https://ifconfig.me)"
@@ -33,6 +34,7 @@ if [ "$PUB_IP" != "$LOC_IP" ]; then EXT="external-ip=$PUB_IP/$LOC_IP"; fi
 cat > /etc/turnserver.conf <<EOF
 # Zar Labirinti TURN
 listening-port=3478
+alt-listening-port=443
 listening-ip=0.0.0.0
 $EXT
 relay-ip=$LOC_IP
@@ -60,15 +62,6 @@ simple-log
 EOF
 sed -i 's/^#\?TURNSERVER_ENABLED=.*/TURNSERVER_ENABLED=1/' /etc/default/coturn 2>/dev/null || echo 'TURNSERVER_ENABLED=1' > /etc/default/coturn
 
-# 443 va 80 portlarni ham 3478 ga yo'naltirish (qattiq firewall'lar uchun)
-for P in 443 80; do
-  for PROTO in tcp udp; do
-    iptables -t nat -C PREROUTING -p $PROTO --dport $P -j REDIRECT --to-port 3478 2>/dev/null || \
-    iptables -t nat -A PREROUTING -p $PROTO --dport $P -j REDIRECT --to-port 3478
-  done
-done
-netfilter-persistent save >/dev/null 2>&1 || true
-
 echo "== 5/5 Firewall va ishga tushirish"
 ufw --force reset >/dev/null
 ufw default deny incoming >/dev/null
@@ -76,7 +69,6 @@ ufw default allow outgoing >/dev/null
 ufw allow OpenSSH >/dev/null
 ufw allow 3478/tcp >/dev/null;  ufw allow 3478/udp >/dev/null
 ufw allow 443/tcp  >/dev/null;  ufw allow 443/udp  >/dev/null
-ufw allow 80/tcp   >/dev/null;  ufw allow 80/udp   >/dev/null
 ufw allow 49152:65535/udp >/dev/null
 ufw --force enable >/dev/null
 

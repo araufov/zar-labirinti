@@ -1,6 +1,6 @@
 // Zar Labirinti — oflayn ishlash uchun service worker.
 // Yangi versiya chiqarilganda VERSION ni oshiring: eski kesh avtomatik o‘chadi.
-const VERSION = 'jl-v6';
+const VERSION = 'jl-v7';
 const FONTS = 'jl-fonts-v1';
 const CORE = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/maskable-512.png', './icons/apple-180.png', './icons/favicon.svg', './icons/favicon-32.png'];
 

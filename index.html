@@ -9084,11 +9084,13 @@ function buildCodex() {
 // Firebase konsolidan olingan firebaseConfig ni shu yerga qo‘ying (claude.ai ichida bu ishlatilmaydi — u yerda o‘z serveri bor).
 const NET_CFG = {
   firebase: {
-    apiKey: '',
-    authDomain: '',
-    databaseURL: '',   // masalan: https://zar-labirinti-default-rtdb.europe-west1.firebasedatabase.app
-    projectId: '',
-    appId: '',
+    apiKey: 'AIzaSyCzn9-HM60doQ_OQcJxaw7jCKqxE6R8wTE',
+    authDomain: 'zar-labirinti.firebaseapp.com',
+    databaseURL: 'https://zar-labirinti-default-rtdb.europe-west1.firebasedatabase.app',
+    projectId: 'zar-labirinti',
+    storageBucket: 'zar-labirinti.firebasestorage.app',
+    messagingSenderId: '461883101026',
+    appId: '1:461883101026:web:6fc55229469710445a263b',
   },
   // Ovoz mobil internetda ham ulanishi uchun TURN (masalan, metered.ca). Bo‘sh bo‘lsa faqat STUN ishlaydi.
   turn: { urls: ['turn:global.relay.metered.ca:80', 'turn:global.relay.metered.ca:80?transport=tcp', 'turn:global.relay.metered.ca:443', 'turns:global.relay.metered.ca:443?transport=tcp'], username: '', credential: '' },

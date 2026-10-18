@@ -933,6 +933,7 @@ Kalitingni top, darvozani och va hammadan oldin chiq.</p></div>
       <button class="btn primary big" id="bStart" type="button">Zarni tashla — boshla <kbd>Enter</kbd></button>
       <p class="note">Ovozni yoqib o‘ynang: barabanlar tuzoqdan, bo‘kirish hayvondan ogohlantiradi.</p>
       <label class="socpub ambl"><input type="checkbox" id="ambChk"> 🌬️ Fon ovozi (yengil shamol) — xohlasang o‘chir</label>
+      <p class="note" style="opacity:.45;font-size:.75em">v1.4.4</p>
     </div>
     <div class="side">
       <details class="guide">
@@ -9495,7 +9496,7 @@ async function readAll(readable, cap) {
 }
 // SDP presence'ga sig‘ishi uchun siqiladi (deflate + base64url). Siqish yo‘q brauzerda — oddiy base64.
 // TURN yo‘qligi uchun foydasiz TCP nomzodlar va IPv6 link-local manzillar tashlab yuboriladi (UDP bilan ulanish).
-const sdpSlim = (sdp) => sdp.split(/\r?\n/).filter((l) => !(l.startsWith('a=candidate:') && (/ tcp /i.test(l) || / fe80:/i.test(l)))).join('\r\n');
+const sdpSlim = (sdp) => sdp.split(/\r?\n/).filter((l) => !(l.startsWith('a=candidate:') && ((/ tcp /i.test(l) && !/ typ relay/i.test(l)) || / fe80:/i.test(l)))).join('\r\n');
 async function sdpPack(sdp) {
   const raw = new TextEncoder().encode(sdpSlim(sdp));
   if (typeof CompressionStream === 'function') {
@@ -9561,8 +9562,10 @@ function voiceGather(pc) {
     let t2 = 0;
     const done = () => { clearTimeout(t1); clearTimeout(t2); pc.removeEventListener('icegatheringstatechange', ch); pc.removeEventListener('icecandidate', cand); resolve(); };
     const ch = () => { if (pc.iceGatheringState === 'complete') done(); };
-    const cand = (e) => { if (e.candidate && /typ (srflx|relay)/.test(e.candidate.candidate) && !t2) t2 = setTimeout(done, 350); };
-    const t1 = setTimeout(done, 2500);
+    // TURN bor bo‘lsa relay nomzodini kutamiz (mobil internetda faqat u ishlaydi); yo‘q bo‘lsa — srflx yetarli
+    const want = NET_CFG.turn.username ? /typ relay/ : /typ (srflx|relay)/;
+    const cand = (e) => { if (e.candidate && want.test(e.candidate.candidate) && !t2) t2 = setTimeout(done, 350); };
+    const t1 = setTimeout(done, NET_CFG.turn.username ? 5000 : 2500);
     pc.addEventListener('icegatheringstatechange', ch); pc.addEventListener('icecandidate', cand);
   });
 }
@@ -9634,6 +9637,19 @@ async function voiceApply(E, sig) {
   E.out = null;
   voicePublish();
 }
+// Aloqa qaysi yo‘ldan o‘rnatilgani (to‘g‘ridan-to‘g‘ri yoki TURN server orqali) — sinov uchun ko‘rsatiladi
+async function voiceVia(E, pc) {
+  try {
+    const st = await pc.getStats();
+    let pair = null;
+    st.forEach((r) => { if (r.type === 'transport' && r.selectedCandidatePairId) pair = st.get(r.selectedCandidatePairId); });
+    if (!pair) st.forEach((r) => { if (r.type === 'candidate-pair' && (r.selected || r.state === 'succeeded') && !pair) pair = r; });
+    if (!pair) return;
+    const lc = st.get(pair.localCandidateId), rc = st.get(pair.remoteCandidateId);
+    E.via = (lc && lc.candidateType === 'relay') || (rc && rc.candidateType === 'relay') ? 'relay' : 'direct';
+    voiceUI();
+  } catch (e) { /* ignore */ }
+}
 function voiceConn(E, pc) {
   if (E.pc !== pc) return;
   const st = pc.connectionState;
@@ -9641,6 +9657,7 @@ function voiceConn(E, pc) {
     clearTimeout(E.timer); clearTimeout(E.dtimer);
     E.state = 'connected'; E.fails = 0;
     if (E.out) { E.out = null; voicePublish(); }
+    voiceVia(E, pc);
   } else if (st === 'failed') voiceRetry(E, 'uzildi');
   else if (st === 'disconnected') { clearTimeout(E.dtimer); E.dtimer = setTimeout(() => { if (E.pc === pc && pc.connectionState !== 'connected') voiceRetry(E, 'uzildi'); }, 6000); }
   voiceUI();
@@ -9745,7 +9762,8 @@ function voiceStatus() {
   const tot = VOICE.peers.size, n = Array.from(VOICE.peers.values()).filter((E) => E.state === 'connected').length;
   const me = VOICE.track ? (VOICE.muted ? '🔇 Mikrofon o‘chiq' : '🎙 Mikrofon yoqiq') : '🎧 Faqat eshitish';
   if (VOICE.full) return `${me} · suhbat to‘la (${VOICE_MAX} kishi)`;
-  return `${me} · ${tot ? `${n}/${tot} ulandi` : 'boshqalarni kutmoqda'}`;
+  const relay = [...VOICE.peers.values()].filter((E) => E.state === 'connected' && E.via === 'relay').length;
+  return `${me} · ${tot ? `${n}/${tot} ulandi${relay ? ` (${relay} server orqali)` : ''}` : 'boshqalarni kutmoqda'}`;
 }
 function voiceUI() {
   const inRoom = !!(NET.room && NET.named), live = VOICE.on && !!VOICE.track && !VOICE.muted;

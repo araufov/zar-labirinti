@@ -933,7 +933,7 @@ Kalitingni top, darvozani och va hammadan oldin chiq.</p></div>
       <button class="btn primary big" id="bStart" type="button">Zarni tashla — boshla <kbd>Enter</kbd></button>
       <p class="note">Ovozni yoqib o‘ynang: barabanlar tuzoqdan, bo‘kirish hayvondan ogohlantiradi.</p>
       <label class="socpub ambl"><input type="checkbox" id="ambChk"> 🌬️ Fon ovozi (yengil shamol) — xohlasang o‘chir</label>
-      <p class="note" style="opacity:.45;font-size:.75em">v1.5</p>
+      <p class="note" style="opacity:.45;font-size:.75em">v1.5.1</p>
     </div>
     <div class="side">
       <details class="guide">
@@ -3777,7 +3777,7 @@ function setKeySlot(p, slot) {
   if (nw >= 0 && p.explored[nw]) mmSet(p, nw);
 }
 function takeGateKey(p, i) {
-  p.gkey = true; mmSet(p, i); p.guardOk = false;
+  p.gkey = true; mmSet(p, i); p.guardOk = false; p.guardSeq = null; p.guardStep = 0;
   if (!p.bot) buzz(60);
   if (p.bot) botSay(p, 5, true);
   emit(p.px, p.py, 22, 'gold'); Sound.pickup();
@@ -11323,7 +11323,7 @@ function newGame(seed, diff, cfg, opts = {}) {
   NET.fx = []; NET.seen = {}; NET.slotSeed = -1; NET.pdone = new Set();
   setupWorld(seed, diff, cfg);
   for (const p of G.players) { reveal(p); markVisited(p, G.start); }
-  for (const p of G.players) { p.cam = { x: p.px, y: p.py }; p.face = { x: 0, y: -1 }; p.route = [G.start]; p.keyDropAt = -1; p.guardOk = false; p.ghostUsed = false; }
+  for (const p of G.players) { p.cam = { x: p.px, y: p.py }; p.face = { x: 0, y: -1 }; p.route = [G.start]; p.keyDropAt = -1; p.guardOk = false; p.guardSeq = null; p.guardStep = 0; p.ghostUsed = false; }
   if (G.teams && !G.online) G.players.forEach((p, k) => { p.team = k < 2 ? 0 : 1; });
   refreshKeys();
   viewers = G.players.filter((q) => !q.bot).slice(0, 1);   // ekran faqat o‘yinchining o‘ziga qaraydi (botlarning ko‘zi bilan emas)
@@ -11466,13 +11466,24 @@ function ghostPuff(p) {
 }
 
 /* ================= Darvoza qo'riqchisi: kalit bilan darvozaga yetganda oxirgi sinov ================= */
-const GUARD_GAMES = [V('gatequiz')];   // darvozada — eng qiyin savollar
+// Darvozada ketma-ket 2 ta uzun (1 daqiqadan ko‘p) o‘yin. Ikkalasini yutgan o‘tadi.
+const GUARD_POOL = ['breakout', 'archero', 'helix', 'stackball', 'billiard', 'blockblast'];
 function guardCard(p) {
-  const game = pickRand(GUARD_GAMES);
-  openCard(p, { kind: 'guard', icon: '🗿', kicker: kick('Darvoza qo‘riqchisi', game), title: 'Oxirgi sinov', rhyme: 'Kalit qo‘lingda, eshik ro‘parangda,\nLekin qo‘riqchi turibdi yo‘lingda.', shart: describe(game, lvl()),
-    xus: 'Yutsang — darvoza ochiladi. Yutqazsang — 5 qadam ortga uloqtirilasan va yana urinib ko‘rasan.', game,
-    onResult: (ok) => { if (ok) { p.guardOk = true; Sound.ok(); return 'Qo‘riqchi yo‘l berdi — endi darvozaga kir!'; } Sound.hurt(); return 'Qo‘riqchi seni ortga itarib yubordi!'; },
-    onClose: (ok) => { if (!ok && p.alive) pushBack(p, 5, 'dust'); } });
+  if (!p.guardSeq) { p.guardSeq = shuffle(GUARD_POOL.slice()).slice(0, 2); p.guardStep = 0; }
+  const step = p.guardStep | 0, game = V(p.guardSeq[step]), last = step === 1;
+  openCard(p, { kind: 'guard', icon: '🗿', kicker: kick(`Darvoza qo‘riqchisi · ${step + 1}/2`, game), title: last ? 'Oxirgi sinov' : 'Birinchi sinov',
+    rhyme: last ? 'Bir sinovdan o‘tding, biri qoldi,\nQo‘riqchi so‘nggi kuchini oldi.' : 'Kalit qo‘lingda, eshik ro‘parangda,\nLekin qo‘riqchi turibdi yo‘lingda.', shart: describe(game, lvl()),
+    xus: last ? 'Yutsang — darvoza ochiladi. Yutqazsang — 5 qadam ortga uloqtirilasan; qaytib kelsang, faqat shu o‘yin qayta beriladi.' : 'Qo‘riqchi 2 ta sinov beradi. Bunisini yutsang — darhol ikkinchisi boshlanadi. Yutqazsang — 5 qadam ortga uloqtirilasan.', game,
+    onResult: (ok) => {
+      if (!ok) { Sound.hurt(); return 'Qo‘riqchi seni ortga itarib yubordi!'; }
+      Sound.ok();
+      if (!last) { p.guardStep = 1; return '1/2 sinov yutildi! Endi oxirgisi.'; }
+      p.guardOk = true; p.guardSeq = null; p.guardStep = 0; return 'Qo‘riqchi yo‘l berdi — endi darvozaga kir!';
+    },
+    onClose: (ok) => {
+      if (!ok) { if (p.alive) pushBack(p, 5, 'dust'); return; }
+      if (!last) setTimeout(() => { if (!p.card && p.alive && !p.guardOk && G.mode === 'play' && hasKey(p)) guardCard(p); }, 350);
+    } });
 }
 
 /* ================= Yo'llarni takrorlash: o'yin oxirida hamma yurgan yo'l 8 soniyada ================= */

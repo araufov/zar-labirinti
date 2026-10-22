@@ -3,6 +3,9 @@
 Tumanli labirint o‘yini: botlar yoki do‘stlar bilan poyga, duel, bomba, devor va hazil sehrlari.
 Bitta `index.html` — kutubxonalarsiz; PWA sifatida o‘rnatiladi va oflayn ishlaydi.
 
+## Yangilanish (v1.5.1)
+- **Darvoza qo‘riqchisi:** savollar o‘rniga ketma-ket 2 ta uzun mini-o‘yin (G‘isht sindirish, Mergan, Girdob minora, Sakrovchi to‘p, Bilyard, Blok jumbog‘i — tasodifiy). Ikkalasini yutgan o‘tadi; birinchisini yutib, ikkinchisida yutqazsa — qaytib kelganda faqat ikkinchisi qayta beriladi.
+
 ## Yangilanish (v1.5)
 - **16 ta yangi mini-o‘yin:** Yugurish (3 yo‘lak), Uchtalik, G‘isht sindirish, Birlashtirish, Sudoku 4×4, Konchi, Tosh-qaychi-qog‘oz, Raqamlar jadvali, Blok jumbog‘i, Girdob minora, Olomon darvozalari, Tepalik poygasi, Mergan, Qora tuynuk, Bilyard, Sakrovchi to‘p (jami 42 xil). Mashina, bilyard, minora, to‘p, yugurish, Mergan, Qora tuynuk, olomon va g‘isht sindirish — haqiqiy fizika bilan.
 - **Darvoza qo‘riqchisi** endi faqat eng qiyin savollarni beradi (3–4 ta matematika, mantiq, ehtimol, ilm, tarix; 1 ta xato kechiriladi).

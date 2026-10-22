@@ -13,7 +13,7 @@
 <link rel="icon" type="image/svg+xml" href="icons/favicon.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
 <link rel="apple-touch-icon" href="icons/apple-180.png">
-<meta name="description" content="1 km² tumanli labirint: botlar yoki do‘stlar bilan poyga, ovozli suhbat, 42 xil mini-o‘yin, duel, bomba, teskari dunyo va maskalash kabi hazil sehrlari, ko‘zgu, akleroz, tuzoq va devor qo‘yish.">
+<meta name="description" content="1000 darajali tumanli labirint: jonli raqib bilan poyga, ovozli suhbat, 42 xil mini-o‘yin, duel, bomba, teskari dunyo va maskalash kabi hazil sehrlari, ko‘zgu, akleroz, tuzoq va devor qo‘yish.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,500;0,700;1,400;1,500&family=Alegreya+Sans:wght@400;500;700;800&family=Rakkas&display=swap">
@@ -208,6 +208,12 @@ kbd { font-family: var(--font-ui); font-size: .72rem; padding: 2px 6px; border-r
 .tl.locked { opacity: .42; cursor: default; }
 .tl.locked small { color: var(--muted); }
 .tut-go { width: 100%; }
+.lvcard { border-color: var(--brass); }
+.lv-nav { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 0 0 8px; font-weight: 800; color: var(--brass); font-variant-numeric: tabular-nums; }
+.lv-nav .btn { min-height: 36px; padding: 4px 14px; }
+.lv-nav .btn:disabled { opacity: .35; cursor: default; }
+.tl.boss { border-color: #e4683c; }
+.tl.boss b { font-size: 1rem; }
 .freehd { margin: 0 0 4px; }
 .guide > summary { cursor: pointer; list-style: none; display: flex; align-items: center; gap: 8px; }
 .guide > summary::-webkit-details-marker { display: none; }
@@ -850,6 +856,13 @@ body.flip #view { transform: rotate(180deg); }
       <h1 class="title" id="gameTitle"><span class="big">Zar</span><span class="sub">Labirinti</span></h1>
       <div class="orb"><p>Zar tashlandi — tuman ko‘tarildi.
 Kalitingni top, darvozani och va hammadan oldin chiq.</p></div>
+      <section class="tut lvcard" aria-labelledby="lvH">
+        <div class="tut-head"><h3 class="h3" id="lvH">🏔 Darajalar</h3><span class="tut-sum" id="lvSum"></span></div>
+        <p class="tut-lead" id="lvLead"></p>
+        <div class="lv-nav"><button class="btn ghost sm" id="lvPrev" type="button" aria-label="Oldingi 10 daraja">◀</button><span id="lvPage"></span><button class="btn ghost sm" id="lvNext" type="button" aria-label="Keyingi 10 daraja">▶</button></div>
+        <div class="tut-grid" id="lvGrid"></div>
+        <button class="btn primary tut-go" id="lvGo" type="button"></button>
+      </section>
       <section class="tut" aria-labelledby="tutH">
         <div class="tut-head"><h3 class="h3" id="tutH">🎓 Sarguzasht</h3><span class="tut-sum" id="tutSum"></span></div>
         <p class="tut-lead" id="tutLead"></p>
@@ -933,7 +946,7 @@ Kalitingni top, darvozani och va hammadan oldin chiq.</p></div>
       <button class="btn primary big" id="bStart" type="button">Zarni tashla — boshla <kbd>Enter</kbd></button>
       <p class="note">Ovozni yoqib o‘ynang: barabanlar tuzoqdan, bo‘kirish hayvondan ogohlantiradi.</p>
       <label class="socpub ambl"><input type="checkbox" id="ambChk"> 🌬️ Fon ovozi (yengil shamol) — xohlasang o‘chir</label>
-      <p class="note" style="opacity:.45;font-size:.75em">v1.5.1</p>
+      <p class="note" style="opacity:.45;font-size:.75em">v1.6</p>
     </div>
     <div class="side">
       <details class="guide">
@@ -1009,6 +1022,17 @@ Kalitingni top, darvozani och va hammadan oldin chiq.</p></div>
     <p class="ldpct" id="ldPct">0%</p>
     <div class="ldad" id="ldAd" hidden><b>📺 Reklama</b><span id="ldAdTxt">Sinov rejimi: haqiqiy reklama ulanganda bu yerda chiqadi.</span><span class="ldadc" id="ldAdC"></span></div>
     <p class="verse ldtip" id="ldTip"></p>
+  </section>
+</div>
+
+<!-- Raqib izlash -->
+<div id="mm" class="overlay loader" hidden>
+  <section class="board" style="max-width:440px" aria-live="polite">
+    <p class="eyebrow" id="mmKicker"></p>
+    <h2 class="title"><span class="big sm" id="mmTitle">Raqib qidirilmoqda…</span></h2>
+    <p class="verse" id="mmTxt"></p>
+    <p class="ldpct" id="mmT">0:00</p>
+    <div class="actions"><button class="btn ghost" id="mmCancel" type="button">Bekor qilish</button></div>
   </section>
 </div>
 
@@ -5895,7 +5919,7 @@ const ARROW = { up: '↑', right: '→', down: '↓', left: '←' };
 const dirName = (d) => (d[0] > 0 ? 'right' : d[0] < 0 ? 'left' : d[1] < 0 ? 'up' : 'down');
 const mapLvl = () => DIFFS[G.diff].lvl;
 // Mini-o'yinlar bir pog'ona qiyinroq (o'rgatish bosqichlarida — odatdagidek).
-const lvl = () => Math.min(2, DIFFS[G.diff].lvl + (G.tut ? 0 : 1));
+const lvl = () => (DIFFS[G.diff].gl !== undefined ? DIFFS[G.diff].gl : Math.min(2, DIFFS[G.diff].lvl + (G.tut ? 0 : 1)));
 const FX = () => DIFFS[G.diff].fx;   // tuzoq ta’sirining davomiyligi xaritaga qarab: oson < o‘rta < qiyin
 // Matndagi {fever}, {flood}… belgilar joriy xarita (yoki kitobda — oson–qiyin oralig‘i) qiymati bilan almashtiriladi.
 const fxTok = (str, F) => str.replace(/\{(\w+)\}/g, (m, k) => (F ? F[k] : `${DIFFS.easy.fx[k]}–${DIFFS.hard.fx[k]}`));
@@ -11199,6 +11223,7 @@ function botStep(p) {
 function botCard(p, o) {
   const spec = o.game, c = Object.assign({}, o, { p, bot: true, stage: 'play', ok: false, saved: false });
   c.wait = (spec.type === 'dice' ? 1 + Math.random() * 0.8 : spec.type === 'riddle' ? 4 + Math.random() * 5 : 3 + Math.random() * 4) * p.bot.K.think;
+  if (G.lv && spec.type !== 'dice') c.wait = (o.kind === 'guard' ? 30 + Math.random() * 20 : 6 + Math.random() * 8) * p.bot.K.think;   // darajalarda bot ham odamdek vaqt sarflaydi
   p.card = c;
 }
 function botOdds(p, spec) {
@@ -11231,7 +11256,7 @@ function botCardUpdate(p, dt) {
       ok = a + b >= spec.need;
       if (ok) break;
     }
-  } else ok = Math.random() < botOdds(p, spec);
+  } else ok = Math.random() < (G.lv && c.kind === 'guard' ? 0.72 : botOdds(p, spec));   // darajalarda qo‘riqchida bot cheksiz aylanib qolmasin
   c.ok = ok; c.stage = 'result';
   if (c.onResult) c.onResult(ok, c);
   p.card = null;
@@ -11315,7 +11340,8 @@ function newGame(seed, diff, cfg, opts = {}) {
   G.online = !!opts.online;
   G.tut = opts.tut || null;
   G.daily = opts.daily || null;
-  G.teams = !!opts.teams && !opts.tut && !opts.daily;
+  G.lv = opts.lv || null;
+  G.teams = !!opts.teams && !opts.tut && !opts.daily && !opts.lv;
   G.gateOpen = [false, false];
   G.reviveUsed = false;
   G.nextZar = 100; G.zarN = 0; G.sleepT = 0;
@@ -11336,6 +11362,7 @@ function newGame(seed, diff, cfg, opts = {}) {
   const rivals = G.players.length - 1;
   if (G.teams && !G.online) toast(me(), `🟧 2×2: sen va ${G.players[1] ? G.players[1].name : 'sherik'} bir jamoasiz. Kalitni topgan sherik darvozaga olib borib ochadi — keyin ikkalangiz ham chiqasiz!`, 6000);
   if (G.tut) { tutSetup(); voiceUI(); return; }
+  if (G.lv) { lvStart(); voiceUI(); if (G.online) netDirty(me(), true); return; }
   if (G.daily) { toast(me(), `📅 Kunlik labirint #${G.daily.no}. Bugun hamma aynan shu labirintni o‘ynaydi — tezroq chiq va natijangni do‘stlaringga yubor!`, 5200); voiceUI(); return; }
   toast(me(), `Kirish yopildi.${rivals ? ` ${rivals} ta raqib ham yo‘lga chiqdi.` : ''} 🔑 Kalitni top (ko‘pincha boshi berk yo‘lakda) → 🚪 darvozani och. Darvoza labirint ichida yashiringan — 🧭 kompas ko‘rsatadi.`, 5000);
   if (rivals || G.online) {
@@ -11393,6 +11420,7 @@ function toMenu() {
 }
 function selDiff() { const r = document.querySelector('input[name="diff"]:checked'); return r ? r.value : 'medium'; }
 function refreshBest() {
+  buildLv();
   buildTut();
   buildAch();
   buildDaily();
@@ -12118,6 +12146,210 @@ function buildTut() {
   ui.tutGo.onclick = () => startTut(next >= 0 ? next + 1 : 1);
 }
 
+/* ================= Darajalar: 1000 ta daraja, har birida jonli raqib (topilmasa — bot) ================= */
+const LV_MAX = 1000;
+const lvSeed = (n) => 200000 + (Math.imul(n + 13, 2246822519) >>> 0) % 700000;
+const lvBoss = (n) => n % 10 === 0;
+const lvB = (n) => Math.floor((n - 1) / 10);                       // 10 talik guruh — raqib shu guruhdan izlanadi
+const lvPar = (n) => 240 + (lvBoss(n) ? 60 : 0);                   // 3-yulduz uchun vaqt
+const lvBotSkill = (n) => Math.min(2, (n < 20 ? 0 : n < 200 ? 1 : 2) + (lvBoss(n) && n >= 20 ? 1 : 0));
+function lvDef(n) {
+  const f = 1 - Math.exp(-(n - 1) / 160), boss = lvBoss(n), bz = boss ? 1 : 0;   // f: 0 → ~1, sekin o‘sadi
+  const cells = Math.round(7 + 5 * f) + bz * 2;
+  const E = DIFFS.easy.fx, M = DIFFS.medium.fx, H = DIFFS.hard.fx, fx = {};
+  for (const k in E) fx[k] = Math.round(f < 0.6 ? lerp(E[k], M[k], f / 0.6) : lerp(M[k], H[k], (f - 0.6) * 0.8));
+  return {
+    name: `${n}-daraja`, cells,
+    traps: Math.round(cells * (0.35 + 0.4 * f)) + bz * 2, obstacles: Math.round(cells / 9 + 3 * f), pathObs: n < 8 ? 0 : f > 0.6 ? 2 : 1,
+    portals: n < 12 ? 0 : 1 + Math.round(2 * f), items: Math.round(cells * 0.45), coins: Math.round(cells * 0.4), chests: Math.max(1, Math.round(cells / 5)),
+    beasts: [n >= 5 ? 1 + bz : 0, n >= 25 ? 1 : 0, n >= 15 ? 1 : 0, n >= 40 && (f > 0.5 || bz) ? 1 : 0],
+    vanStep: Math.round(500 - 120 * f), monkeyR: Math.round(10 + 8 * f), lvl: n < 60 ? 0 : n < 300 ? 1 : 2, gl: n < 30 ? 0 : n < 150 ? 1 : 2, fx, noMaps: n < 5,
+  };
+}
+function lvEnsure(key) {
+  if (DIFFS[key]) return true;
+  const m = /^P(\d{1,4})$/.exec(key || ''), n = m ? +m[1] : 0;
+  if (n < 1 || n > LV_MAX) return false;
+  DIFFS[key] = lvDef(n);
+  return true;
+}
+function lvLoad() { const s = store.get('jl_lv') || ''; return /^[0-3]*$/.test(s) ? s.slice(0, LV_MAX) : ''; }
+function lvSave(s) { store.set('jl_lv', s); }
+const lvNextN = () => Math.min(LV_MAX, lvLoad().length + 1);
+
+/* ---- Raqib izlash: Firebase'dagi navbat (mmq). Topilmasa — bot. ---- */
+['mm', 'mmKicker', 'mmTitle', 'mmTxt', 'mmT', 'mmCancel', 'lvSum', 'lvLead', 'lvGrid', 'lvGo', 'lvPrev', 'lvNext', 'lvPage'].forEach((id) => { ui[id] = $(id); });
+const MM = { st: '', lv: 0, t0: 0, roomT: 0, timer: 0, unsub: null, sess: 0, host: false, joinLv: 0 };
+const MM_WAIT = 8000, MM_ROOM = 9000;
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+function mmShow(title, txt) { if (title) ui.mmTitle.textContent = title; if (txt) ui.mmTxt.textContent = txt; }
+function startLevel(n) {
+  leaveRoom(); mmStop();
+  n = clamp(n | 0, 1, Math.min(LV_MAX, lvNextN()));
+  lvEnsure('P' + n);
+  Sound.init();
+  MM.lv = n; MM.t0 = Date.now(); MM.st = 'search'; MM.host = false; MM.joinLv = 0;
+  const sess = ++MM.sess;
+  setMode('matching');
+  ui.mm.hidden = false;
+  ui.mmKicker.textContent = `${n}-daraja` + (lvBoss(n) ? ' · 👑 Boss' : '');
+  mmShow('Raqib qidirilmoqda…', 'Shu darajalardagi jonli o‘yinchi izlanmoqda. Topilmasa — bot bilan o‘ynaysiz.');
+  ui.mmT.textContent = '0:00';
+  MM.timer = setInterval(mmTick, 250);
+  if (!SOC.db || !NET.room) {
+    MM.st = 'nodb';
+    mmShow('Raqib: bot', 'Onlayn ulanish yo‘q — bu safar bot bilan o‘ynaysiz.');
+    setTimeout(() => { if (MM.sess === sess && MM.st === 'nodb') mmBot(); }, 1400);
+    return;
+  }
+  mmSearch(sess);
+}
+function mmTick() {
+  if (!MM.st) return;
+  const el = Date.now() - MM.t0, s = Math.floor(el / 1000);
+  ui.mmT.textContent = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+  if ((MM.st === 'search' || MM.st === 'host') && el > MM_WAIT) { mmShow('Raqib: bot', 'Hozir bu darajada bo‘sh o‘yinchi yo‘q — bot bilan o‘ynaysiz.'); mmBot(); return; }
+  if (MM.st === 'join' && el > MM_WAIT + 5000) { mmBot(); return; }
+  if (MM.st === 'room' && Date.now() - MM.roomT > MM_ROOM) { leaveRoom(); mmBot(); }
+}
+async function mmSearch(sess) {
+  const db = SOC.db, me = db.uid, live = () => MM.sess === sess && (MM.st === 'search' || MM.st === 'host');
+  while (live()) {
+    const all = (await db.get('mmq').catch(() => null)) || {};
+    if (!live()) return;
+    const now = Date.now(), myB = lvB(MM.lv), span = now - MM.t0 > 4000 ? 5 : 0;
+    const cands = Object.entries(all)
+      .filter(([id, e]) => id !== me && e && typeof e === 'object' && !e.with && !e.acc && now - (+e.ts || 0) < 15000 && Math.abs((e.b | 0) - myB) <= span && (MM.st !== 'host' || id < me))
+      .sort((a, b) => Math.abs(a[1].b - myB) - Math.abs(b[1].b - myB) || a[1].ts - b[1].ts);
+    if (cands.length) {
+      const [hid, he] = cands[0];
+      if (MM.st === 'host') { mmUnsub(); await db.remove(`mmq/${me}`).catch(() => {}); }
+      MM.st = 'join';
+      await db.update(`mmq/${hid}`, { with: me }).catch(() => {});
+      const code = await mmWaitAcc(hid, me, sess);
+      if (MM.sess !== sess) return;
+      if (code) {
+        MM.st = 'room'; MM.roomT = Date.now(); MM.joinLv = MM.lv;
+        mmShow('Raqib topildi!', `${(he.name || 'O‘yinchi').slice(0, 14)} bilan poyga boshlanmoqda…`);
+        enterRoom(code, false, { quiet: true });
+        return;
+      }
+      MM.st = 'search';
+      continue;
+    }
+    if (MM.st === 'search') await mmBecomeHost(sess);
+    await sleep(2000);
+  }
+}
+function mmWaitAcc(hid, me, sess) {
+  return new Promise((res) => {
+    let done = false, un = null;
+    const fin = (v) => { if (done) return; done = true; if (un) un(); res(v); };
+    un = SOC.db.on(`mmq/${hid}`, (v) => { if (MM.sess !== sess || !v) { fin(null); return; } if (v.acc && v.acc !== me) fin(null); else if (v.acc === me && okCode(v.code || '')) fin(v.code); });
+    setTimeout(() => fin(null), 4000);
+  });
+}
+async function mmBecomeHost(sess) {
+  const db = SOC.db, me = db.uid;
+  MM.st = 'host';
+  await db.set(`mmq/${me}`, { lv: MM.lv, b: lvB(MM.lv), ts: Date.now(), name: myName() }).catch(() => {});
+  db.onDisconnect(`mmq/${me}`, null);
+  MM.unsub = db.on(`mmq/${me}`, (v) => {
+    if (MM.sess !== sess || MM.st !== 'host' || !v || !v.with || v.acc) return;
+    const abc = 'abcdefghjkmnpqrstuvwxyz23456789';
+    let code = 'm'; for (let k = 0; k < 5; k++) code += abc[(Math.random() * abc.length) | 0];
+    MM.st = 'room'; MM.host = true; MM.roomT = Date.now();
+    mmUnsub();
+    db.update(`mmq/${me}`, { acc: v.with, code }).catch(() => {});
+    mmShow('Raqib topildi!', 'Poyga boshlanmoqda…');
+    enterRoom(code, true, { quiet: true });
+    setTimeout(() => db.remove(`mmq/${me}`).catch(() => {}), 6000);
+  });
+}
+function mmUnsub() { if (MM.unsub) { try { MM.unsub(); } catch (e) { /* ignore */ } MM.unsub = null; } }
+// Xona ichida: ikkala odam kirgach xona egasi poygani boshlaydi
+function mmPeers(others) {
+  if (MM.st !== 'room' || !MM.host || !NET.named || others.length < 1) return;
+  const n = MM.lv;
+  MM.st = 'starting';
+  NET.named.presence({ phase: 'play', seed: lvSeed(n), diff: 'P' + n, nb: 0, tmode: 0, lv: n }).catch(() => {});
+  newGame(lvSeed(n), 'P' + n, playerCfg(0), { online: true, lv: { n, vs: 'live' } });
+}
+function mmStop() {
+  MM.sess++;
+  clearInterval(MM.timer); MM.timer = 0;
+  mmUnsub();
+  if (SOC.db && (MM.st === 'host' || MM.st === 'search')) SOC.db.remove(`mmq/${SOC.db.uid}`).catch(() => {});
+  MM.st = '';
+  if (ui.mm) ui.mm.hidden = true;
+}
+function mmCancel() { mmStop(); leaveRoom(); toMenu(); }
+function mmBot() {
+  const n = MM.lv;
+  mmStop(); leaveRoom();
+  const conf = playerCfg(0), names = shuffle(BOT_NAMES.slice()), looks = shuffle([0, 1, 2, 3].filter((k) => k !== cfg.look));
+  conf.push({ name: names[0], look: looks[0], bot: true, skill: lvBotSkill(n) });
+  launch(() => newGame(lvSeed(n), 'P' + n, conf, { lv: { n, vs: 'bot' } }), { title: `${n}-daraja` + (lvBoss(n) ? ' · 👑 Boss' : '') });
+}
+function lvStart() {
+  const L = G.lv, n = L.n, rival = L.vs === 'bot' ? G.players.find((q) => q.bot) : null;
+  mmStop();
+  toast(me(), `🏔 ${n}-daraja${lvBoss(n) ? ' · 👑 Boss' : ''}. ${rival ? `Raqib: ${rival.name} (bot)` : 'Raqib — jonli o‘yinchi'}. 🔑 Kalitni top, 🚪 darvozadan birinchi chiq!`, 5200);
+}
+function lvEnd(winner) {
+  const n = G.lv.n, p = me(), won = !!winner && winner === p;
+  const noLoss = p.stats.deaths === 0 && p.lives === 3, par = lvPar(n), fast = G.time <= par;
+  const stars = won ? 1 + (noLoss ? 1 : 0) + (fast ? 1 : 0) : 0;
+  let s = lvLoad();
+  if (won) {
+    if (n === s.length + 1) s += String(stars);
+    else if (n <= s.length && stars > +s[n - 1]) s = s.slice(0, n - 1) + stars + s.slice(n);
+    lvSave(s);
+    lvPage = -1;
+  }
+  const last = n >= LV_MAX, vs = G.lv.vs === 'live' ? 'jonli raqib' : 'bot';
+  ui.eKicker.textContent = `${n}-daraja${lvBoss(n) ? ' · 👑 Boss' : ''} · ${vs}`;
+  ui.eTitle.textContent = won ? (last ? '1000 daraja!' : lvBoss(n) ? 'Boss yengildi!' : 'Daraja o‘tildi!') : winner ? 'Raqib oldinroq chiqdi' : 'O‘yin tugadi';
+  ui.eVerse.textContent = won
+    ? '⭐'.repeat(stars) + '☆'.repeat(3 - stars) + '  ' + (stars < 3 ? 'Uchala yulduz uchun qayta o‘ynab ko‘r.' : 'Ajoyib — uchala yulduz!')
+    : 'Bu safar raqib tezroq bo‘ldi. Qaytadan urin — darajani o‘tish uchun raqibdan oldin chiqish kerak.';
+  const dl = document.createElement('dl');
+  dl.className = 'stats tutstars';
+  addRow(dl, '⭐ Raqibdan oldin chiqding', won ? '✓' : '✗', won ? 'record' : '');
+  addRow(dl, '⭐ Bitta ham jon yo‘qotmading', noLoss ? '✓' : '✗', noLoss && won ? 'record' : '');
+  addRow(dl, `⭐ ${fmtTime(par)} ichida chiqding`, won ? (fast ? '✓ ' : '✗ ') + fmtTime(G.time) : '✗', won && fast ? 'record' : '');
+  ui.eBody.prepend(dl);
+  ui.eNew.textContent = won && !last ? `Keyingi: ${n + 1}-daraja ▶` : 'Qaytadan';
+  ui.eSame.textContent = 'Shu darajani qaytadan';
+}
+let lvPage = -1;
+function buildLv() {
+  if (!ui.lvGrid) return;
+  const s = lvLoad(), done = s.length, next = Math.min(LV_MAX, done + 1), sum = Array.from(s).reduce((a, c) => a + +c, 0), maxPage = lvB(next);
+  if (lvPage < 0 || lvPage > maxPage) lvPage = maxPage;
+  ui.lvSum.textContent = `${done}/${LV_MAX} · ⭐ ${sum}`;
+  ui.lvPage.textContent = `${lvPage * 10 + 1}–${lvPage * 10 + 10}`;
+  ui.lvPrev.disabled = lvPage <= 0;
+  ui.lvNext.disabled = lvPage >= maxPage;
+  ui.lvGrid.innerHTML = '';
+  for (let n = lvPage * 10 + 1; n <= lvPage * 10 + 10; n++) {
+    const b = document.createElement('button'), st = +s[n - 1] || 0, open = n <= next;
+    b.type = 'button'; b.className = 'tl' + (n === next && done < LV_MAX ? ' next' : '') + (open ? '' : ' locked') + (lvBoss(n) ? ' boss' : '');
+    b.disabled = !open;
+    b.setAttribute('aria-label', `${n}-daraja` + (lvBoss(n) ? ', boss' : '') + (open ? (st ? `, ${st} yulduz` : '') : ', yopiq'));
+    const nb = document.createElement('b'); nb.textContent = (lvBoss(n) ? '👑' : '') + n;
+    const sm = document.createElement('small'); sm.textContent = open ? (n <= done ? '★'.repeat(st) + '☆'.repeat(3 - st) : '▶') : '🔒';
+    b.append(nb, sm);
+    b.addEventListener('click', () => startLevel(n));
+    ui.lvGrid.appendChild(b);
+  }
+  ui.lvLead.textContent = done === 0 ? 'Har darajada jonli raqib bilan poyga: kim birinchi chiqsa — o‘sha yutadi. 1000 ta daraja, har biri 3–5 daqiqa.'
+    : done >= LV_MAX ? 'Hamma 1000 daraja o‘tildi! Yulduzlarni to‘ldirish uchun qayta o‘ynang.'
+    : `Keyingi: ${next}-daraja${lvBoss(next) ? ' — 👑 Boss' : ''}. Raqibdan oldin chiq!`;
+  ui.lvGo.textContent = done >= LV_MAX ? '🏔 Qayta o‘ynash' : `▶ ${next}-daraja`;
+  ui.lvGo.onclick = () => startLevel(next);
+}
+
 /* ================= Natija ================= */
 function endGame(winner) {
   if (G.mode === 'over' || G.mode === 'won') return;
@@ -12143,12 +12375,13 @@ function endGame(winner) {
   ui.eShare.hidden = true;
   if (G.tut) tutEnd(winner);
   else if (G.daily) dailyEnd(winner);
+  else if (G.lv) lvEnd(winner);
   else { ui.eNew.textContent = 'Yangi labirint'; ui.eSame.textContent = 'Shu labirintni qaytadan'; }
   G.endBase = null;
   drawEndMap();
   achCheck(winner);
-  const host = !G.online || NET.host;
-  ui.eNew.hidden = !host; ui.eSame.hidden = !host || (!!G.tut && !winner) || !!G.daily;
+  const host = !G.online || NET.host || !!G.lv;
+  ui.eNew.hidden = !host; ui.eSame.hidden = !host || (!!G.tut && !winner) || !!G.daily || (!!G.lv && winner !== me());
   ui.eNote.hidden = host;
   ui.eNote.textContent = 'Xona egasi yangi o‘yinni boshlasa, sizda ham avtomatik boshlanadi.';
   if (local && G.online) netDirty(winner, true);
@@ -12436,17 +12669,19 @@ async function initRoom() {
   } catch (e) { /* onlayn imkoniyat yo‘q */ }
 }
 function onlineStatus(msg) { ui.oStatus.textContent = msg; }
-async function enterRoom(code, host) {
+async function enterRoom(code, host, opts = {}) {
   if (!NET.room) return;
   leaveRoom();
-  onlineStatus('Ulanmoqda…');
+  NET.quiet = !!opts.quiet;
+  if (!NET.quiet) onlineStatus('Ulanmoqda…');
   try {
     const named = await NET.room.join('jl-' + code);
     NET.named = named; NET.code = code; NET.host = host;
-    ui.oLobby.hidden = false; ui.oCodeShow.textContent = code; ui.oStart.hidden = !host;
+    if (!NET.quiet) { ui.oLobby.hidden = false; ui.oCodeShow.textContent = code; ui.oStart.hidden = !host; }
     const me = playerCfg(1)[0];
     named.presence({ v: 4, name: me.name, look: me.look, host, phase: 'lobby', diff: selDiff(), nb: host ? cfg.bots : 0 }).catch(() => {});
     NET.unsub.push(named.onPeers(onPeers, () => onlineStatus('Xona bilan aloqa uzildi.')));
+    if (NET.quiet) { voiceUI(); return; }
     onlineStatus(host ? (SOC.db ? 'Zal ochildi. Do‘stlaringni «Chaqirish» bilan taklif qil yoki kodni ayt. Hamma kirgach — «Hammaga boshlash».' : 'Do‘stlaringizga kodni ayting. Hamma kirgach — «Hammaga boshlash».') : 'Xona egasi o‘yinni boshlashini kuting.');
     socRoomJoined(code, host);
     voiceUI();
@@ -12460,7 +12695,7 @@ function leaveRoom() {
   NET.unsub.forEach((u) => { try { u(); } catch (e) { /* ignore */ } });
   NET.unsub = [];
   if (NET.named) { NET.named.leave().catch(() => {}); NET.named = null; }
-  NET.host = false; NET.code = '';
+  NET.host = false; NET.code = ''; NET.quiet = false;
   ui.oLobby.hidden = true;
   G.online = false;
   setTimeout(socRender, 0);
@@ -12495,7 +12730,7 @@ function readPeer(pr) {
   return {
     ...kfields(s), tmode: s.tmode === 1,
     name: (typeof s.name === 'string' ? s.name : 'Mehmon').slice(0, 14) || 'Mehmon', look: num(s.look, 0, 3) ?? 0, host: s.host === true,
-    phase: s.phase, seed: num(s.seed, 0, 999999), diff: DIFFS[s.diff] ? s.diff : 'medium',
+    phase: s.phase, seed: num(s.seed, 0, 999999), diff: lvEnsure(s.diff) ? s.diff : 'medium', lv: num(s.lv, 1, LV_MAX) || 0,
     x: num(s.x, 0, 400), y: num(s.y, 0, 400), f: num(s.f, 0, 3) ?? 2, lives: num(s.lives, 0, 3) ?? 3,
     alive: s.alive !== false, fin: s.fin === true, finAt: num(s.finAt, 0, 9e15) || 0, dist: num(s.dist, 0, 1e7) || 0, nb: num(s.nb, 0, 3) || 0, jail: s.j === 1, im: s.im === 1, deaths: num(s.dc, 0, 99) || 0, pt: ptArr(s.pt), wl: wlArr(s.wl), ds: num(s.ds, 0, 20) || 0, bm: num(s.bm, 0, 99) || 0,
     dl: s.dl && typeof s.dl === 'object' ? { to: typeof s.dl.to === 'string' ? s.dl.to.slice(0, 40) : '', id: num(s.dl.id, 0, 1e9), st: typeof s.dl.st === 'string' ? s.dl.st.slice(0, 4) : '', n: num(s.dl.n, 0, 9999) || 0 } : null,
@@ -12513,7 +12748,7 @@ function readPeer(pr) {
 }
 function onPeers(change) {
   const peers = change.peers, others = peers.filter((pr) => !pr.sameTab);
-  if (NET.host && SOC.db && peers.length !== NET.lastN) { NET.lastN = peers.length; socLobby({ n: peers.length }); }
+  if (NET.host && SOC.db && !NET.quiet && peers.length !== NET.lastN) { NET.lastN = peers.length; socLobby({ n: peers.length }); }
   // lobbi ro‘yxati
   ui.oPeers.innerHTML = '';
   for (const pr of peers) {
@@ -12525,12 +12760,14 @@ function onPeers(change) {
     const sm = document.createElement('small'); sm.textContent = [pr.sameTab ? 'siz' : '', s.host ? 'xona egasi' : '', s.host && s.nb ? `+${s.nb} bot` : '', s.phase === 'play' ? 'o‘ynamoqda' : ''].filter(Boolean).join(' · ');
     li.append(img, nm, ' ', sm); ui.oPeers.appendChild(li);
   }
+  if (NET.quiet) mmPeers(others);
   // xona egasi boshlagan bo‘lsa — biz ham boshlaymiz
   const hostPeer = others.find((pr) => readPeer(pr).host);
   if (!NET.host && hostPeer) {
     const h = readPeer(hostPeer);
-    if (h.phase === 'play' && h.seed !== null && (G.mode === 'menu' || ((G.mode === 'over' || G.mode === 'won') && h.seed !== G.seed))) {
-      newGame(h.seed, h.diff, playerCfg(0), { online: true, teams: h.tmode });
+    if (h.phase === 'play' && h.seed !== null && (G.mode === 'menu' || (G.mode === 'matching' && MM.st === 'room') || ((G.mode === 'over' || G.mode === 'won') && h.seed !== G.seed))) {
+      const lvo = h.lv ? { n: MM.joinLv || h.lv, vs: 'live' } : null; MM.joinLv = 0;
+      newGame(h.seed, h.diff, playerCfg(0), { online: true, teams: h.tmode && !lvo, lv: lvo });
     }
   }
   if (!G.online || !G.g) return;
@@ -13103,6 +13340,9 @@ window.addEventListener('pagehide', voiceLeave);
 function bindUI() {
   ui.bStart.addEventListener('click', startLocal);
   ui.dailyGo.addEventListener('click', startDaily);
+  ui.mmCancel.addEventListener('click', mmCancel);
+  ui.lvPrev.addEventListener('click', () => { lvPage = Math.max(0, lvPage - 1); buildLv(); });
+  ui.lvNext.addEventListener('click', () => { lvPage++; buildLv(); });
   ui.dailyShare.addEventListener('click', dailyShare);
   ui.bPause.addEventListener('click', () => (G.mode === 'play' ? pause() : resume()));
   ui.bSound.addEventListener('click', () => { Sound.init(); Sound.setMuted(!Sound.muted); syncSound(); });
@@ -13114,6 +13354,7 @@ function bindUI() {
   const again = (seed) => {
     if (G.tut) { startTut(G.tut.n, seed); return; }
     if (G.daily) { startDaily(); return; }
+    if (G.lv) { startLevel(G.lv.n); return; }
     const conf = G.players.map((p) => ({ name: p.name, look: p.look, bot: !!p.bot, skill: p.bot ? BOT_SKILL.indexOf(p.bot.K) : 0 }));
     if (G.online && NET.host && NET.named) { NET.named.presence({ phase: 'play', seed, diff: G.diff, nb: conf.filter((c) => c.bot).length, tmode: G.teams ? 1 : 0 }).catch(() => {}); newGame(seed, G.diff, conf, { online: true, teams: G.teams }); }
     else { const tm = G.teams; launch(() => newGame(seed, G.diff, conf, { teams: tm })); }
@@ -13123,6 +13364,7 @@ function bindUI() {
   ui.pMenu.addEventListener('click', toMenu);
   ui.eNew.addEventListener('click', () => {
     if (G.daily) { startDaily(); return; }
+    if (G.lv) { const won = !!G.winner && G.winner === me(); startLevel(won ? Math.min(LV_MAX, G.lv.n + 1) : G.lv.n); return; }
     if (!G.tut) { again(randSeed()); return; }
     const n = G.tut.n, won = !!G.winner && G.winner === me();
     if (won && n < LEVELS.length) startTut(n + 1); else if (won) startLocal(); else startTut(n);
@@ -13222,7 +13464,7 @@ function boot() {
   initRoom();
 }
 
-window.__jl = { FXQ, Sound, SP, openCard, cardMain, closeCard, finishCard, SOC, socAdd, socAccept, quickPlay, launch, zarEvent, guardCard, ghostPuff, dropKey, refreshKeys, hasKey, replayRoutes, achLoad, teamCfg, ZAR_EV, startDaily, dailyNo, dailyText, adRevive, Ads, ADS, startTut, tutTick, tutLoad, LEVELS, TASKS, finish, DIFFS, endGame, G, NET, VOICE, voiceJoin, voiceLeave, voiceToggle, voiceMute, voiceUI, sdpPack, sdpUnpack, playerDown, respawn, loseLife, pipsTick, pipView, pipOpen, pipClose, updateHUD, generate, stepWorld, bfs, bfsMulti, botInit, toolsTab, shopTab, shopRows, buyMap, MAPS, MAP_KEYS, scrDesc, SCRAMBLES, scrVec, buyMapUI, ITEMS, ITEM_IX, takeGateKey, learnKeyMap, learnChestMap, nearestGate, setKeySlot, FX, trapXus, fxTok, botKeyHint, TOOLS, toolTargets, fireTool, toolsOpen, toolsPick, toolsDo, toolsKey, toolsRender, addTool, botTools, leaderTarget, newGame, cardMain, cardDir, EFFECTS, trapCard, beastCard, chestCard, portalStep, teleportTo, pickTarget, keysDown, GAMES, QGEN, RIDDLES, TRAPS, BEASTS, CHEST, REWARDS, TIERS, ECON, pickReward, challengeResult, giveCoins, WORDS, openCard, playerCfg, cfg, describe, lvl, closeCard, cardBack, sendToJail, freeFromJail, jailCard, banditCatch, callBandit, applyFx, applyGift, sabotage, rivalTargets, pickReward, takeCoins, tryStep, onEnterTile, readPeer, PTRAPS, PTRAP_KEYS, PT_MAX, PT_LIFE, myTraps, destOk, trapSpot, trapCommit, trapPlace, placedHit, trapTaken, expireTraps, ptList, mapPickOpen, mapPickClose, mapPickSet, mapPickMove, mapPickZoom, mapPickConfirm, mapPickDraw, botTraps, startAmnesia, endAmnesia, reflectFx, T, MASKS, maskOf, priceOf, canPay, toolCost, fireSelf, fireChaos, hasBad, cleanse, moveKey, feed, feedShow, FEED_Q, TARGET_KEYS, FOE_KEYS, PLACE_KEYS, validSpot, startMask, freshTools, freshFx, drawRadar, revengeOn, PWALL, PW_LIFE, PW_MAX, myWalls, wallCheck, wallPlace, wallSet, expireWalls, dropWalls, wallList, botWalls, updateLeader, BAIT_FX, trapFx, netDirty, netFlush, bombTick, bombPass, bombExplode, duelCandidates, duelChallenge, duelAccept, duelDecline, duelAbort, duelNet, duelUI, DUEL_S, DUEL_COUNT, DUEL_R, dlSet };
+window.__jl = { startLevel, MM, lvLoad, lvDef, lvEnsure, mmBot, stepWorld, playerCfg, FXQ, Sound, SP, openCard, cardMain, closeCard, finishCard, SOC, socAdd, socAccept, quickPlay, launch, zarEvent, guardCard, ghostPuff, dropKey, refreshKeys, hasKey, replayRoutes, achLoad, teamCfg, ZAR_EV, startDaily, dailyNo, dailyText, adRevive, Ads, ADS, startTut, tutTick, tutLoad, LEVELS, TASKS, finish, DIFFS, endGame, G, NET, VOICE, voiceJoin, voiceLeave, voiceToggle, voiceMute, voiceUI, sdpPack, sdpUnpack, playerDown, respawn, loseLife, pipsTick, pipView, pipOpen, pipClose, updateHUD, generate, stepWorld, bfs, bfsMulti, botInit, toolsTab, shopTab, shopRows, buyMap, MAPS, MAP_KEYS, scrDesc, SCRAMBLES, scrVec, buyMapUI, ITEMS, ITEM_IX, takeGateKey, learnKeyMap, learnChestMap, nearestGate, setKeySlot, FX, trapXus, fxTok, botKeyHint, TOOLS, toolTargets, fireTool, toolsOpen, toolsPick, toolsDo, toolsKey, toolsRender, addTool, botTools, leaderTarget, newGame, cardMain, cardDir, EFFECTS, trapCard, beastCard, chestCard, portalStep, teleportTo, pickTarget, keysDown, GAMES, QGEN, RIDDLES, TRAPS, BEASTS, CHEST, REWARDS, TIERS, ECON, pickReward, challengeResult, giveCoins, WORDS, openCard, playerCfg, cfg, describe, lvl, closeCard, cardBack, sendToJail, freeFromJail, jailCard, banditCatch, callBandit, applyFx, applyGift, sabotage, rivalTargets, pickReward, takeCoins, tryStep, onEnterTile, readPeer, PTRAPS, PTRAP_KEYS, PT_MAX, PT_LIFE, myTraps, destOk, trapSpot, trapCommit, trapPlace, placedHit, trapTaken, expireTraps, ptList, mapPickOpen, mapPickClose, mapPickSet, mapPickMove, mapPickZoom, mapPickConfirm, mapPickDraw, botTraps, startAmnesia, endAmnesia, reflectFx, T, MASKS, maskOf, priceOf, canPay, toolCost, fireSelf, fireChaos, hasBad, cleanse, moveKey, feed, feedShow, FEED_Q, TARGET_KEYS, FOE_KEYS, PLACE_KEYS, validSpot, startMask, freshTools, freshFx, drawRadar, revengeOn, PWALL, PW_LIFE, PW_MAX, myWalls, wallCheck, wallPlace, wallSet, expireWalls, dropWalls, wallList, botWalls, updateLeader, BAIT_FX, trapFx, netDirty, netFlush, bombTick, bombPass, bombExplode, duelCandidates, duelChallenge, duelAccept, duelDecline, duelAbort, duelNet, duelUI, DUEL_S, DUEL_COUNT, DUEL_R, dlSet };
 boot();
 })();
 </script>

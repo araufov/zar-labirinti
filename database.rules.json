@@ -2,29 +2,62 @@
   "rules": {
     "users": {
       ".read": "auth != null",
-      ".indexOn": ["nl"],
-      "$uid": { ".write": "auth != null && auth.uid == $uid" }
+      ".indexOn": [
+        "nl"
+      ],
+      "$uid": {
+        ".write": "auth != null && auth.uid == $uid"
+      }
     },
-    "ids": { ".read": "auth != null", "$id": { ".write": "auth != null" } },
+    "ids": {
+      ".read": "auth != null",
+      "$id": {
+        ".write": "auth != null"
+      }
+    },
     "friends": {
       "$uid": {
         ".read": "auth != null && auth.uid == $uid",
-        "$fid": { ".write": "auth != null && (auth.uid == $uid || auth.uid == $fid)" }
+        "$fid": {
+          ".write": "auth != null && (auth.uid == $uid || auth.uid == $fid)"
+        }
       }
     },
     "requests": {
       "$uid": {
         ".read": "auth != null && auth.uid == $uid",
-        "$from": { ".write": "auth != null && (auth.uid == $from || auth.uid == $uid)" }
+        "$from": {
+          ".write": "auth != null && (auth.uid == $from || auth.uid == $uid)"
+        }
       }
     },
     "invites": {
       "$uid": {
         ".read": "auth != null && auth.uid == $uid",
-        "$from": { ".write": "auth != null && (auth.uid == $from || auth.uid == $uid)" }
+        "$from": {
+          ".write": "auth != null && (auth.uid == $from || auth.uid == $uid)"
+        }
       }
     },
-    "lobbies": { ".read": "auth != null", "$code": { ".write": "auth != null" } },
-    "rooms": { "$name": { ".read": "auth != null", "$peer": { ".write": "auth != null" } } }
+    "lobbies": {
+      ".read": "auth != null",
+      "$code": {
+        ".write": "auth != null"
+      }
+    },
+    "rooms": {
+      "$name": {
+        ".read": "auth != null",
+        "$peer": {
+          ".write": "auth != null"
+        }
+      }
+    },
+    "mmq": {
+      ".read": "auth != null",
+      "$uid": {
+        ".write": "auth != null"
+      }
+    }
   }
 }

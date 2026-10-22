@@ -3,6 +3,12 @@
 Tumanli labirint o‘yini: botlar yoki do‘stlar bilan poyga, duel, bomba, devor va hazil sehrlari.
 Bitta `index.html` — kutubxonalarsiz; PWA sifatida o‘rnatiladi va oflayn ishlaydi.
 
+## Yangilanish (v1.6)
+- **🏔 Darajalar — 1000 ta daraja** (menyuda eng tepada). Har daraja o‘z raqamidan avtomatik quriladi (hammada bir xil), qiyinlik asta-sekin oshadi: labirint kattalashadi, tuzoq va hayvonlar ko‘payadi, mini-o‘yinlar qiyinlashadi. Har 10-daraja — 👑 Boss.
+- Har darajada **jonli raqib**: Firebase navbati (`mmq`) orqali shu 10 talik guruhdagi o‘yinchi izlanadi (4 soniyadan keyin ±5 guruh), 8 soniyada topilmasa — bot. Kim birinchi chiqsa — o‘sha yutadi; darajani o‘tish uchun raqibdan oldin chiqish kerak.
+- Yulduzlar: ⭐ raqibdan oldin chiqish, ⭐ jon yo‘qotmaslik, ⭐ 4 daqiqa ichida (boss — 5). Natija `jl_lv` da saqlanadi.
+- Darajalarda bot ham kartalarga odamdek vaqt sarflaydi (darvozada 30–50 s), raqib adolatli bo‘lishi uchun.
+
 ## Yangilanish (v1.5.1)
 - **Darvoza qo‘riqchisi:** savollar o‘rniga ketma-ket 2 ta uzun mini-o‘yin (G‘isht sindirish, Mergan, Girdob minora, Sakrovchi to‘p, Bilyard, Blok jumbog‘i — tasodifiy). Ikkalasini yutgan o‘tadi; birinchisini yutib, ikkinchisida yutqazsa — qaytib kelganda faqat ikkinchisi qayta beriladi.
 
